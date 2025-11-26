@@ -170,6 +170,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         edgeLabelBackground: '#051423',
       },
       themeCSS: `
+        /* Flowchart Node Styling */
         .node rect, .node circle, .node polygon, .node path {
             stroke: #00f2ff !important;
             stroke-width: 3px !important;
@@ -197,6 +198,71 @@ export const themes: Record<ThemeType, ThemeConfig> = {
             color: #00f2ff !important;
             font-weight: 600;
             text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+        }
+        
+        /* Sequence Diagram Styling - Match cyberpunk neon aesthetic */
+        /* Actor boxes - neon cyan border with glow */
+        .actor {
+            fill: #051423 !important;
+            stroke: #00f2ff !important;
+            stroke-width: 3px !important;
+            rx: 10px !important;
+            ry: 10px !important;
+            filter: drop-shadow(0 0 8px rgba(0, 242, 255, 0.5)) drop-shadow(0 0 16px rgba(0, 242, 255, 0.3));
+        }
+        .actor text {
+            fill: #00f2ff !important;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+        }
+        .actor-line {
+            stroke: #00f2ff !important;
+            stroke-width: 2px !important;
+            filter: drop-shadow(0 0 6px rgba(0, 242, 255, 0.6));
+        }
+        .activation0, .activation1, .activation2 {
+            fill: rgba(0, 242, 255, 0.1) !important;
+            stroke: #00f2ff !important;
+            stroke-width: 3px !important;
+        }
+        /* Message lines - neon glow */
+        .messageLine0, .messageLine1 {
+            stroke: #00f2ff !important;
+            stroke-width: 2px !important;
+            filter: drop-shadow(0 0 6px rgba(0, 242, 255, 0.6));
+        }
+        /* Note boxes */
+        .note {
+            fill: #051423 !important;
+            stroke: #ff00ff !important;
+            stroke-width: 2px !important;
+            rx: 10px !important;
+            ry: 10px !important;
+            filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.4));
+        }
+        .noteText {
+            fill: #ff00ff !important;
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(255, 0, 255, 0.4);
+        }
+        /* Loop/Alt/Opt boxes */
+        .labelBox {
+            fill: #051423 !important;
+            stroke: #00f2ff !important;
+            stroke-width: 2px !important;
+            rx: 10px !important;
+            ry: 10px !important;
+            filter: drop-shadow(0 0 6px rgba(0, 242, 255, 0.4));
+        }
+        .labelText, .loopText {
+            fill: #00f2ff !important;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+        }
+        .loopLine {
+            stroke: #00f2ff !important;
+            stroke-width: 2px !important;
+            filter: drop-shadow(0 0 4px rgba(0, 242, 255, 0.5));
         }
       `
     },
@@ -298,17 +364,36 @@ export const themes: Record<ThemeType, ThemeConfig> = {
             ry: 8px !important;
         }
         .actor text {
-            fill: #3A2E2C !important;
+            fill: #6B5B4F !important;
             font-weight: 600;
         }
         .actor-line {
             stroke: #D2B48C !important;
             stroke-width: 2px !important;
+            opacity: 0.7;
         }
         .activation0, .activation1, .activation2 {
             fill: #fff3e0 !important;
             stroke: #D2B48C !important;
             stroke-width: 2px !important;
+            opacity: 0.9;
+        }
+        /* Message lines - softer brown */
+        .messageLine0, .messageLine1 {
+            stroke: #B8956A !important;
+            stroke-width: 1.5px !important;
+            opacity: 0.75;
+        }
+        /* Message text - softer color */
+        .messageText {
+            fill: #8B7355 !important;
+            font-family: "Open Sans", "Noto Sans SC", sans-serif;
+            font-weight: 500;
+        }
+        /* Sequence diagram arrows - match message line color */
+        #arrowhead path, .arrowheadPath {
+            fill: #B8956A !important;
+            stroke: #B8956A !important;
         }
         /* Note boxes - warm yellow tone */
         .note {
@@ -319,7 +404,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
             ry: 8px !important;
         }
         .noteText {
-            fill: #3A2E2C !important;
+            fill: #8B7355 !important;
             font-family: "Open Sans", "Noto Sans SC", sans-serif;
             font-weight: 500;
         }
@@ -332,14 +417,14 @@ export const themes: Record<ThemeType, ThemeConfig> = {
             ry: 8px !important;
         }
         .labelText, .loopText {
-            fill: #3A2E2C !important;
+            fill: #6B5B4F !important;
             font-family: "Open Sans", "Noto Sans SC", sans-serif;
             font-weight: 600;
         }
         .loopLine {
             stroke: #D2B48C !important;
             stroke-width: 1.5px !important;
-            opacity: 0.6;
+            opacity: 0.5;
         }
       `
     },
@@ -442,6 +527,24 @@ export const themes: Record<ThemeType, ThemeConfig> = {
             fill: rgba(115, 209, 200, 0.3) !important;
             stroke: #73D1C8 !important;
             stroke-width: 3px !important;
+        }
+        /* Message lines - dark grey, visible */
+        .messageLine0, .messageLine1 {
+            stroke: #566573 !important;
+            stroke-width: 3px !important;
+            stroke-dasharray: 8 5;
+            stroke-linecap: round;
+        }
+        /* Message text - dark grey */
+        .messageText {
+            fill: #566573 !important;
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 500;
+        }
+        /* Sequence diagram arrows - match message line color */
+        #arrowhead path, .arrowheadPath {
+            fill: #566573 !important;
+            stroke: #566573 !important;
         }
         /* Note boxes - Yellow like decision nodes */
         .note {
