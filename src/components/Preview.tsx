@@ -515,6 +515,30 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
           }
         }
         
+        // Apply theme-specific xychart styles
+        if (themeConfig.mermaidConfig.themeCSS) {
+          const themeCSS = themeConfig.mermaidConfig.themeCSS;
+
+          // Extract all xychart-related styles
+          const xychartStartIndex = themeCSS.indexOf('/* XYChart');
+          if (xychartStartIndex !== -1) {
+            // Find the end of xychart styles (next comment or end of string)
+            let xychartEndIndex = themeCSS.indexOf('/*', xychartStartIndex + 5);
+            if (xychartEndIndex === -1) {
+              xychartEndIndex = themeCSS.length;
+            }
+
+            let xychartStyles = themeCSS.substring(xychartStartIndex, xychartEndIndex).trim();
+
+            // Remove the svg[aria-roledescription="xychart"] prefix since we're injecting inside the SVG
+            xychartStyles = xychartStyles.replace(/svg\[aria-roledescription="xychart"\]\s+/g, '');
+
+            if (xychartStyles) {
+              customStyles += `\n${xychartStyles}\n`;
+            }
+          }
+        }
+
         if (customStyles) {
           const styleTag = `<style>${customStyles}</style>`;
           // Inject style after defs or at the beginning

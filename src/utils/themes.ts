@@ -31,17 +31,16 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         .cluster rect { stroke-dasharray: 4 4; stroke: #d4d4d4; fill: #fafafa; }
         
         /* XYChart styles - High contrast colors */
-        .xychart .plot-line-0 { stroke: #3b82f6 !important; stroke-width: 3px !important; }
-        .xychart .plot-line-1 { stroke: #10b981 !important; stroke-width: 3px !important; }
-        .xychart .plot-line-2 { stroke: #f59e0b !important; stroke-width: 3px !important; }
-        .xychart .plot-bar-0 { fill: #3b82f6 !important; stroke: #2563eb !important; stroke-width: 1px !important; }
-        .xychart .plot-bar-1 { fill: #10b981 !important; stroke: #059669 !important; stroke-width: 1px !important; }
-        .xychart .plot-bar-2 { fill: #f59e0b !important; stroke: #d97706 !important; stroke-width: 1px !important; }
-        .xychart .tick { stroke: #e5e5e5 !important; }
-        .xychart .tick text { fill: #171717 !important; font-size: 12px !important; }
-        .xychart .chart-title { fill: #171717 !important; font-weight: 600 !important; font-size: 16px !important; }
-        .xychart .axis-label { fill: #525252 !important; font-size: 13px !important; }
-        .xychart .legend text { fill: #171717 !important; font-size: 12px !important; }
+        .line-plot-0 path { stroke: #3b82f6 !important; stroke-width: 3px !important; }
+        .line-plot-1 path { stroke: #10b981 !important; stroke-width: 3px !important; }
+        .line-plot-2 path { stroke: #f59e0b !important; stroke-width: 3px !important; }
+        .bar-plot-0 rect { fill: #3b82f6 !important; stroke: #2563eb !important; stroke-width: 1px !important; }
+        .bar-plot-1 rect { fill: #10b981 !important; stroke: #059669 !important; stroke-width: 1px !important; }
+        .bar-plot-2 rect { fill: #f59e0b !important; stroke: #d97706 !important; stroke-width: 1px !important; }
+        .chart-title text { fill: #171717 !important; font-weight: 600 !important; font-size: 20px !important; }
+        .left-axis .label text, .bottom-axis .label text { fill: #171717 !important; font-size: 14px !important; }
+        .left-axis .title text { fill: #525252 !important; font-size: 16px !important; }
+        .bottom-axis .title text { fill: #525252 !important; font-size: 16px !important; }
       `
     },
     bgClass: 'bg-white',
@@ -71,17 +70,16 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         .edgePath .path { stroke-width: 1.5px; }
         
         /* XYChart styles - Bright colors for dark theme */
-        .xychart .plot-line-0 { stroke: #60a5fa !important; stroke-width: 3px !important; }
-        .xychart .plot-line-1 { stroke: #34d399 !important; stroke-width: 3px !important; }
-        .xychart .plot-line-2 { stroke: #fbbf24 !important; stroke-width: 3px !important; }
-        .xychart .plot-bar-0 { fill: #3b82f6 !important; stroke: #60a5fa !important; stroke-width: 1px !important; }
-        .xychart .plot-bar-1 { fill: #10b981 !important; stroke: #34d399 !important; stroke-width: 1px !important; }
-        .xychart .plot-bar-2 { fill: #f59e0b !important; stroke: #fbbf24 !important; stroke-width: 1px !important; }
-        .xychart .tick { stroke: #27272a !important; }
-        .xychart .tick text { fill: #f4f4f5 !important; font-size: 12px !important; }
-        .xychart .chart-title { fill: #f4f4f5 !important; font-weight: 600 !important; font-size: 16px !important; }
-        .xychart .axis-label { fill: #d4d4d8 !important; font-size: 13px !important; }
-        .xychart .legend text { fill: #f4f4f5 !important; font-size: 12px !important; }
+        .line-plot-0 path { stroke: #60a5fa !important; stroke-width: 3px !important; }
+        .line-plot-1 path { stroke: #34d399 !important; stroke-width: 3px !important; }
+        .line-plot-2 path { stroke: #fbbf24 !important; stroke-width: 3px !important; }
+        .bar-plot-0 rect { fill: #3b82f6 !important; stroke: #60a5fa !important; stroke-width: 1px !important; }
+        .bar-plot-1 rect { fill: #10b981 !important; stroke: #34d399 !important; stroke-width: 1px !important; }
+        .bar-plot-2 rect { fill: #f59e0b !important; stroke: #fbbf24 !important; stroke-width: 1px !important; }
+        .chart-title text { fill: #f4f4f5 !important; font-weight: 600 !important; font-size: 20px !important; }
+        .left-axis .label text, .bottom-axis .label text { fill: #f4f4f5 !important; font-size: 14px !important; }
+        .left-axis .title text { fill: #d4d4d8 !important; font-size: 16px !important; }
+        .bottom-axis .title text { fill: #d4d4d8 !important; font-size: 16px !important; }
       `
     },
     bgClass: 'bg-[#09090b]',
@@ -172,17 +170,17 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         
         /* XYChart styles - Notion-style colors */
-        .xychart .plot-line-0 { stroke: #3b82f6 !important; stroke-width: 3px !important; }
-        .xychart .plot-line-1 { stroke: #10b981 !important; stroke-width: 3px !important; }
-        .xychart .plot-line-2 { stroke: #f59e0b !important; stroke-width: 3px !important; }
-        .xychart .plot-bar-0 { fill: #93c5fd !important; stroke: #3b82f6 !important; stroke-width: 1px !important; rx: 4px !important; }
-        .xychart .plot-bar-1 { fill: #86efac !important; stroke: #10b981 !important; stroke-width: 1px !important; rx: 4px !important; }
-        .xychart .plot-bar-2 { fill: #fde68a !important; stroke: #f59e0b !important; stroke-width: 1px !important; rx: 4px !important; }
-        .xychart .tick { stroke: #e2e8f0 !important; }
-        .xychart .tick text { fill: #334155 !important; font-size: 12px !important; }
-        .xychart .chart-title { fill: #334155 !important; font-weight: 600 !important; font-size: 16px !important; }
-        .xychart .axis-label { fill: #64748b !important; font-size: 13px !important; }
-        .xychart .legend text { fill: #334155 !important; font-size: 12px !important; }
+        .line-plot-0 path { stroke: #3b82f6 !important; stroke-width: 3px !important; }
+        .line-plot-1 path { stroke: #10b981 !important; stroke-width: 3px !important; }
+        .line-plot-2 path { stroke: #f59e0b !important; stroke-width: 3px !important; }
+        .bar-plot-0 rect { fill: #93c5fd !important; stroke: #3b82f6 !important; stroke-width: 1px !important; rx: 4px !important; }
+        .bar-plot-1 rect { fill: #86efac !important; stroke: #10b981 !important; stroke-width: 1px !important; rx: 4px !important; }
+        .bar-plot-2 rect { fill: #fde68a !important; stroke: #f59e0b !important; stroke-width: 1px !important; rx: 4px !important; }
+        .ticks path { stroke: #e2e8f0 !important; }
+        .left-axis .label text, .bottom-axis .label text { fill: #334155 !important; font-size: 12px !important; }
+        .chart-title text { fill: #334155 !important; font-weight: 600 !important; font-size: 16px !important; }
+        .left-axis .title text, .bottom-axis .title text { fill: #64748b !important; font-size: 13px !important; }
+        .legend text { fill: #334155 !important; font-size: 12px !important; }
       `
     },
     bgClass: 'bg-white',
@@ -305,57 +303,57 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         
         /* XYChart styles - Neon cyberpunk aesthetic */
-        .xychart .plot-line-0 { 
+        .line-plot-0 path {
             stroke: #00f2ff !important; 
             stroke-width: 3px !important; 
             filter: drop-shadow(0 0 8px rgba(0, 242, 255, 0.8));
         }
-        .xychart .plot-line-1 { 
+        .line-plot-1 path {
             stroke: #ff00ff !important; 
             stroke-width: 3px !important; 
             filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.8));
         }
-        .xychart .plot-line-2 { 
+        .line-plot-2 path {
             stroke: #00ff00 !important; 
             stroke-width: 3px !important; 
             filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.8));
         }
-        .xychart .plot-bar-0 { 
+        .bar-plot-0 rect {
             fill: #00f2ff !important; 
             stroke: #00f2ff !important;
             stroke-width: 2px !important;
             filter: drop-shadow(0 0 12px rgba(0, 242, 255, 0.7));
         }
-        .xychart .plot-bar-1 { 
+        .bar-plot-1 rect {
             fill: #ff00ff !important; 
             stroke: #ff00ff !important;
             stroke-width: 2px !important;
             filter: drop-shadow(0 0 12px rgba(255, 0, 255, 0.7));
         }
-        .xychart .plot-bar-2 { 
+        .bar-plot-2 rect {
             fill: #00ff00 !important; 
             stroke: #00ff00 !important;
             stroke-width: 2px !important;
             filter: drop-shadow(0 0 12px rgba(0, 255, 0, 0.7));
         }
-        .xychart .tick { stroke: #00f2ff !important; opacity: 0.3; }
-        .xychart .tick text { 
+        .ticks path { stroke: #00f2ff !important; opacity: 0.3; }
+        .left-axis .label text, .bottom-axis .label text {
             fill: #00f2ff !important; 
             font-size: 12px !important;
             text-shadow: 0 0 8px rgba(0, 242, 255, 0.6);
         }
-        .xychart .chart-title { 
+        .chart-title text {
             fill: #00f2ff !important; 
             font-weight: 700 !important;
             font-size: 18px !important;
             text-shadow: 0 0 15px rgba(0, 242, 255, 0.8);
         }
-        .xychart .axis-label { 
+        .left-axis .title text, .bottom-axis .title text {
             fill: #00f2ff !important; 
             font-size: 13px !important;
             text-shadow: 0 0 10px rgba(0, 242, 255, 0.6);
         }
-        .xychart .legend text { 
+        .legend text {
             fill: #00f2ff !important; 
             font-size: 12px !important;
             text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
@@ -398,17 +396,17 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         .node rect, .node circle, .node ellipse, .node polygon, .node path { stroke-width: 2px !important; }
         
         /* XYChart styles - Monochrome with different shades */
-        .xychart .plot-line-0 { stroke: #000000 !important; stroke-width: 3px !important; }
-        .xychart .plot-line-1 { stroke: #525252 !important; stroke-width: 3px !important; stroke-dasharray: 8 4 !important; }
-        .xychart .plot-line-2 { stroke: #737373 !important; stroke-width: 3px !important; stroke-dasharray: 4 4 !important; }
-        .xychart .plot-bar-0 { fill: #000000 !important; stroke: #000000 !important; stroke-width: 2px !important; }
-        .xychart .plot-bar-1 { fill: #404040 !important; stroke: #000000 !important; stroke-width: 2px !important; }
-        .xychart .plot-bar-2 { fill: #737373 !important; stroke: #000000 !important; stroke-width: 2px !important; }
-        .xychart .tick { stroke: #d4d4d4 !important; }
-        .xychart .tick text { fill: #000000 !important; font-size: 12px !important; }
-        .xychart .chart-title { fill: #000000 !important; font-weight: 700 !important; font-size: 16px !important; }
-        .xychart .axis-label { fill: #525252 !important; font-size: 13px !important; }
-        .xychart .legend text { fill: #000000 !important; font-size: 12px !important; }
+        .line-plot-0 path { stroke: #000000 !important; stroke-width: 3px !important; }
+        .line-plot-1 path { stroke: #525252 !important; stroke-width: 3px !important; stroke-dasharray: 8 4 !important; }
+        .line-plot-2 path { stroke: #737373 !important; stroke-width: 3px !important; stroke-dasharray: 4 4 !important; }
+        .bar-plot-0 rect { fill: #000000 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        .bar-plot-1 rect { fill: #404040 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        .bar-plot-2 rect { fill: #737373 !important; stroke: #000000 !important; stroke-width: 2px !important; }
+        .ticks path { stroke: #d4d4d4 !important; }
+        .left-axis .label text, .bottom-axis .label text { fill: #000000 !important; font-size: 12px !important; }
+        .chart-title text { fill: #000000 !important; font-weight: 700 !important; font-size: 16px !important; }
+        .left-axis .title text, .bottom-axis .title text { fill: #525252 !important; font-size: 13px !important; }
+        .legend text { fill: #000000 !important; font-size: 12px !important; }
       `
     },
     bgClass: 'bg-white',
@@ -538,49 +536,49 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         
         /* XYChart styles - Warm Ghibli aesthetic */
-        .xychart .plot-line-0 { 
+        .line-plot-0 path {
             stroke: #C67C4E !important; 
             stroke-width: 3px !important;
         }
-        .xychart .plot-line-1 { 
+        .line-plot-1 path {
             stroke: #8FAE5D !important; 
             stroke-width: 3px !important;
         }
-        .xychart .plot-line-2 { 
+        .line-plot-2 path {
             stroke: #D4915D !important; 
             stroke-width: 3px !important;
         }
-        .xychart .plot-bar-0 { 
+        .bar-plot-0 rect {
             fill: #E8C4A8 !important; 
             stroke: #C67C4E !important;
             stroke-width: 1px !important;
             rx: 6px !important;
             filter: drop-shadow(0 2px 6px rgba(58, 46, 44, 0.12));
         }
-        .xychart .plot-bar-1 { 
+        .bar-plot-1 rect {
             fill: #C9DBA8 !important; 
             stroke: #8FAE5D !important;
             stroke-width: 1px !important;
             rx: 6px !important;
             filter: drop-shadow(0 2px 6px rgba(58, 46, 44, 0.12));
         }
-        .xychart .plot-bar-2 { 
+        .bar-plot-2 rect {
             fill: #F5D5B8 !important; 
             stroke: #D4915D !important;
             stroke-width: 1px !important;
             rx: 6px !important;
             filter: drop-shadow(0 2px 6px rgba(58, 46, 44, 0.12));
         }
-        .xychart .tick { stroke: #E8D5C4 !important; }
-        .xychart .tick text { fill: #6B5B4F !important; font-size: 12px !important; }
-        .xychart .chart-title { 
+        .ticks path { stroke: #E8D5C4 !important; }
+        .left-axis .label text, .bottom-axis .label text { fill: #6B5B4F !important; font-size: 12px !important; }
+        .chart-title text {
             fill: #3A2E2C !important; 
             font-weight: 600 !important;
             font-size: 16px !important;
             font-family: "Open Sans", "Noto Sans SC", sans-serif;
         }
-        .xychart .axis-label { fill: #6B5B4F !important; font-size: 13px !important; }
-        .xychart .legend text { fill: #6B5B4F !important; font-size: 12px !important; }
+        .left-axis .title text, .bottom-axis .title text { fill: #6B5B4F !important; font-size: 13px !important; }
+        .legend text { fill: #6B5B4F !important; font-size: 12px !important; }
       `
     },
     bgClass: 'bg-[#FDF6E3]',
@@ -767,57 +765,57 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         
         /* XYChart styles - Soft Pop colorful aesthetic */
-        .xychart .plot-line-0 { 
+        .line-plot-0 path {
             stroke: #4A90E2 !important; 
             stroke-width: 3px !important;
         }
-        .xychart .plot-line-1 { 
+        .line-plot-1 path {
             stroke: #E94B8A !important; 
             stroke-width: 3px !important;
         }
-        .xychart .plot-line-2 { 
+        .line-plot-2 path {
             stroke: #F5A623 !important; 
             stroke-width: 3px !important;
         }
-        .xychart .plot-bar-0 { 
+        .bar-plot-0 rect {
             fill: #A8D5F5 !important; 
             stroke: #4A90E2 !important;
             stroke-width: 2px !important;
             rx: 8px !important;
             filter: drop-shadow(0 8px 12px rgba(74, 144, 226, 0.25));
         }
-        .xychart .plot-bar-1 { 
+        .bar-plot-1 rect {
             fill: #F5A8C8 !important; 
             stroke: #E94B8A !important;
             stroke-width: 2px !important;
             rx: 8px !important;
             filter: drop-shadow(0 8px 12px rgba(233, 75, 138, 0.25));
         }
-        .xychart .plot-bar-2 { 
+        .bar-plot-2 rect {
             fill: #FCDFA6 !important; 
             stroke: #F5A623 !important;
             stroke-width: 2px !important;
             rx: 8px !important;
             filter: drop-shadow(0 8px 12px rgba(245, 166, 35, 0.25));
         }
-        .xychart .tick { stroke: #CBD5E1 !important; }
-        .xychart .tick text { 
+        .ticks path { stroke: #CBD5E1 !important; }
+        .left-axis .label text, .bottom-axis .label text {
             fill: #2D3748 !important; 
             font-size: 12px !important;
             font-family: "JetBrains Mono", "Noto Sans SC", monospace;
         }
-        .xychart .chart-title { 
+        .chart-title text {
             fill: #2D3748 !important; 
             font-weight: 700 !important;
             font-size: 16px !important;
             font-family: "JetBrains Mono", "Noto Sans SC", monospace;
         }
-        .xychart .axis-label { 
+        .left-axis .title text, .bottom-axis .title text {
             fill: #566573 !important; 
             font-size: 13px !important;
             font-family: "JetBrains Mono", "Noto Sans SC", monospace;
         }
-        .xychart .legend text { 
+        .legend text {
             fill: #2D3748 !important; 
             font-size: 12px !important;
             font-family: "JetBrains Mono", "Noto Sans SC", monospace;
@@ -879,45 +877,45 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         
         /* XYChart styles - Dark minimal aesthetic */
-        .xychart .plot-line-0 { 
+        .line-plot-0 path {
             stroke: #ffffff !important; 
             stroke-width: 3px !important;
         }
-        .xychart .plot-line-1 { 
+        .line-plot-1 path {
             stroke: #a3a3a3 !important; 
             stroke-width: 3px !important;
             stroke-dasharray: 8 4 !important;
         }
-        .xychart .plot-line-2 { 
+        .line-plot-2 path {
             stroke: #737373 !important; 
             stroke-width: 3px !important;
             stroke-dasharray: 4 4 !important;
         }
-        .xychart .plot-bar-0 { 
+        .bar-plot-0 rect {
             fill: #525252 !important;
             stroke: #ffffff !important;
             stroke-width: 2px !important;
         }
-        .xychart .plot-bar-1 { 
+        .bar-plot-1 rect {
             fill: #404040 !important;
             stroke: #a3a3a3 !important;
             stroke-width: 2px !important;
         }
-        .xychart .plot-bar-2 { 
+        .bar-plot-2 rect {
             fill: #262626 !important;
             stroke: #737373 !important;
             stroke-width: 2px !important;
         }
-        .xychart .tick { stroke: #404040 !important; }
-        .xychart .tick text { fill: #e5e5e5 !important; font-size: 12px !important; }
-        .xychart .chart-title { 
+        .ticks path { stroke: #404040 !important; }
+        .left-axis .label text, .bottom-axis .label text { fill: #e5e5e5 !important; font-size: 12px !important; }
+        .chart-title text {
             fill: #ffffff !important; 
             font-weight: 400 !important;
             font-size: 16px !important;
             font-family: "Inter", "Noto Sans SC", system-ui, sans-serif;
         }
-        .xychart .axis-label { fill: #a3a3a3 !important; font-size: 13px !important; }
-        .xychart .legend text { fill: #e5e5e5 !important; font-size: 12px !important; }
+        .left-axis .title text, .bottom-axis .title text { fill: #a3a3a3 !important; font-size: 13px !important; }
+        .legend text { fill: #e5e5e5 !important; font-size: 12px !important; }
       `
     },
     bgClass: 'bg-[#1a1a1a]',
@@ -1064,48 +1062,48 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         
         /* XYChart styles - Wireframe/Blueprint aesthetic with multiple series */
-        .xychart .plot-line-0 { 
+        .line-plot-0 path {
             stroke: #333333 !important; 
             stroke-width: 3px !important;
         }
-        .xychart .plot-line-1 { 
+        .line-plot-1 path {
             stroke: #666666 !important; 
             stroke-width: 3px !important;
             stroke-dasharray: 8 4 !important;
         }
-        .xychart .plot-line-2 { 
+        .line-plot-2 path {
             stroke: #999999 !important; 
             stroke-width: 3px !important;
             stroke-dasharray: 4 4 !important;
         }
-        .xychart .plot-bar-0 { 
+        .bar-plot-0 rect {
             fill: #ffffff !important;
             stroke: #333333 !important;
             stroke-width: 2px !important;
             rx: 2px !important;
         }
-        .xychart .plot-bar-1 { 
+        .bar-plot-1 rect {
             fill: #e8e8e8 !important;
             stroke: #666666 !important;
             stroke-width: 2px !important;
             rx: 2px !important;
         }
-        .xychart .plot-bar-2 { 
+        .bar-plot-2 rect {
             fill: #d4d4d4 !important;
             stroke: #999999 !important;
             stroke-width: 2px !important;
             rx: 2px !important;
         }
-        .xychart .tick { stroke: #999999 !important; stroke-dasharray: 4 2 !important; }
-        .xychart .tick text { fill: #333333 !important; font-size: 12px !important; }
-        .xychart .chart-title { 
+        .ticks path { stroke: #999999 !important; stroke-dasharray: 4 2 !important; }
+        .left-axis .label text, .bottom-axis .label text { fill: #333333 !important; font-size: 12px !important; }
+        .chart-title text {
             fill: #333333 !important; 
             font-weight: 500 !important;
             font-size: 16px !important;
             font-family: "Helvetica Neue", "Noto Sans SC", Arial, sans-serif;
         }
-        .xychart .axis-label { fill: #666666 !important; font-size: 13px !important; }
-        .xychart .legend text { fill: #333333 !important; font-size: 12px !important; }
+        .left-axis .title text, .bottom-axis .title text { fill: #666666 !important; font-size: 13px !important; }
+        .legend text { fill: #333333 !important; font-size: 12px !important; }
       `
     },
     bgClass: 'bg-[#f5f5f5]',
@@ -1338,72 +1336,72 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         
         /* XYChart styles - Hand-drawn sketch aesthetic */
-        .xychart .plot-line-0 { 
+        .line-plot-0 path {
             stroke: #1a1a1a !important; 
             stroke-width: 3px !important;
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: url(#roughen-line) drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.1));
         }
-        .xychart .plot-line-1 { 
+        .line-plot-1 path {
             stroke: #8B4513 !important; 
             stroke-width: 3px !important;
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: url(#roughen-line) drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.1));
         }
-        .xychart .plot-line-2 { 
+        .line-plot-2 path {
             stroke: #2F5233 !important; 
             stroke-width: 3px !important;
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: url(#roughen-line) drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.1));
         }
-        .xychart .plot-bar-0 { 
+        .bar-plot-0 rect {
             fill: #ffe8cc !important;
             stroke: #1a1a1a !important;
             stroke-width: 2.8px !important;
             rx: 4px !important;
             filter: url(#roughen) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.15));
         }
-        .xychart .plot-bar-1 { 
+        .bar-plot-1 rect {
             fill: #ffd9a3 !important;
             stroke: #8B4513 !important;
             stroke-width: 2.8px !important;
             rx: 4px !important;
             filter: url(#roughen) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.15));
         }
-        .xychart .plot-bar-2 { 
+        .bar-plot-2 rect {
             fill: #c8e6c9 !important;
             stroke: #2F5233 !important;
             stroke-width: 2.8px !important;
             rx: 4px !important;
             filter: url(#roughen) drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.15));
         }
-        .xychart .tick { 
+        .ticks path {
             stroke: #1a1a1a !important; 
             stroke-width: 1.5px !important;
             opacity: 0.4;
         }
-        .xychart .tick text { 
+        .left-axis .label text, .bottom-axis .label text {
             fill: #1a1a1a !important; 
             font-size: 14px !important;
             font-family: "Caveat", "Patrick Hand", "Kalam", cursive;
             font-weight: 600;
         }
-        .xychart .chart-title { 
+        .chart-title text {
             fill: #1a1a1a !important; 
             font-weight: 700 !important;
             font-size: 22px !important;
             font-family: "Caveat", "Patrick Hand", "Kalam", cursive;
         }
-        .xychart .axis-label { 
+        .left-axis .title text, .bottom-axis .title text {
             fill: #1a1a1a !important; 
             font-size: 16px !important;
             font-family: "Caveat", "Patrick Hand", "Kalam", cursive;
             font-weight: 600;
         }
-        .xychart .legend text { 
+        .legend text {
             fill: #1a1a1a !important; 
             font-size: 14px !important;
             font-family: "Caveat", "Patrick Hand", "Kalam", cursive;
