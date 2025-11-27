@@ -1,6 +1,6 @@
 import type { MermaidConfig } from 'mermaid';
 
-export type ThemeType = 'linearLight' | 'linearDark' | 'notion' | 'cyberpunk' | 'monochrome' | 'ghibli' | 'softPop' | 'darkMinimal' | 'wireframe' | 'handDrawn';
+export type ThemeType = 'linearLight' | 'linearDark' | 'notion' | 'cyberpunk' | 'monochrome' | 'ghibli' | 'softPop' | 'darkMinimal' | 'wireframe' | 'handDrawn' | 'grafana';
 
 export interface ThemeConfig {
   name: string;
@@ -1396,6 +1396,283 @@ export const themes: Record<ThemeType, ThemeConfig> = {
             radial-gradient(circle at 2px 2px, rgba(26, 26, 26, 0.03) 1px, transparent 1px)
         `,
             backgroundSize: '30px 30px'
+        }
+    },
+    grafana: {
+        name: 'Grafana',
+        mermaidConfig: {
+            theme: 'base',
+            themeVariables: {
+                darkMode: true,
+                background: '#181B1F', // Grafana dark background
+                primaryColor: '#1F2428', // Slightly lighter for contrast
+                primaryTextColor: '#D8D9DA', // Light grey text
+                primaryBorderColor: '#3D434B', // Subtle borders
+                lineColor: '#5794F2', // Grafana signature blue
+                secondaryColor: '#262B31',
+                tertiaryColor: '#2C3235',
+                fontFamily: '"Roboto", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+                fontSize: '14px',
+            },
+            themeCSS: `
+        /* Grafana-inspired monitoring dashboard style */
+        
+        /* Flowchart nodes - Clean technical look */
+        .node rect, .node circle, .node polygon {
+          fill: #1F2428 !important;
+          stroke: #3D434B !important;
+          stroke-width: 2px !important;
+          rx: 3px !important;
+          ry: 3px !important;
+          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+        
+        .node .label {
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+          font-weight: 500;
+          fill: #D8D9DA !important;
+          font-size: 14px;
+        }
+        
+        /* Connection lines - Grafana blue */
+        .edgePath .path {
+          stroke: #5794F2 !important;
+          stroke-width: 2px !important;
+          stroke-linecap: round;
+        }
+        
+        .arrowheadPath {
+          fill: #5794F2 !important;
+          stroke: #5794F2 !important;
+        }
+        
+        .edgeLabel {
+          background-color: #181B1F !important;
+          color: #D8D9DA !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+          font-size: 13px;
+          font-weight: 400;
+        }
+        
+        /* Sequence Diagram - Dashboard panel style */
+        .actor {
+          fill: #1F2428 !important;
+          stroke: #3D434B !important;
+          stroke-width: 2px !important;
+          rx: 3px !important;
+          ry: 3px !important;
+          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+        
+        .actor text {
+          fill: #D8D9DA !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+          font-weight: 500;
+        }
+        
+        .actor-line {
+          stroke: #3D434B !important;
+          stroke-width: 1.5px !important;
+          stroke-dasharray: 5 5 !important;
+        }
+        
+        .activation0, .activation1, .activation2 {
+          fill: rgba(87, 148, 242, 0.15) !important;
+          stroke: #5794F2 !important;
+          stroke-width: 2px !important;
+        }
+        
+        .messageLine0, .messageLine1 {
+          stroke: #5794F2 !important;
+          stroke-width: 2px !important;
+          stroke-linecap: round;
+        }
+        
+        .messageText {
+          fill: #D8D9DA !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+          font-weight: 400;
+          font-size: 13px;
+        }
+        
+        #arrowhead path, .arrowheadPath {
+          fill: #5794F2 !important;
+          stroke: #5794F2 !important;
+        }
+        
+        /* Note boxes - Warning style */
+        .note {
+          fill: #2C2817 !important;
+          stroke: #FADE2A !important;
+          stroke-width: 2px !important;
+          rx: 3px !important;
+          ry: 3px !important;
+          filter: drop-shadow(0 2px 4px rgba(250, 222, 42, 0.1));
+        }
+        
+        .noteText {
+          fill: #FADE2A !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+          font-weight: 500;
+          font-size: 13px;
+        }
+        
+        /* Loop/Alt/Opt boxes */
+        .labelBox {
+          fill: rgba(87, 148, 242, 0.1) !important;
+          stroke: #5794F2 !important;
+          stroke-width: 2px !important;
+          rx: 3px !important;
+          ry: 3px !important;
+        }
+        
+        .labelText, .loopText {
+          fill: #5794F2 !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+          font-weight: 600;
+          font-size: 13px;
+        }
+        
+        .loopLine {
+          stroke: #5794F2 !important;
+          stroke-width: 2px !important;
+          stroke-dasharray: 5 5 !important;
+        }
+        
+        /* Cluster/Subgraph styling */
+        .cluster rect {
+          fill: rgba(87, 148, 242, 0.05) !important;
+          stroke: #3D434B !important;
+          stroke-width: 2px !important;
+          stroke-dasharray: 6 4 !important;
+          rx: 3px !important;
+          ry: 3px !important;
+        }
+        
+        .cluster text {
+          fill: #73BF69 !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+          font-weight: 600;
+        }
+        
+        /* XYChart styles - Classic Grafana time series colors */
+        .line-plot-0 path {
+          stroke: #5794F2 !important; /* Classic Grafana blue */
+          stroke-width: 3px !important;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          filter: drop-shadow(0 0 4px rgba(87, 148, 242, 0.5));
+        }
+        .line-plot-1 path {
+          stroke: #FF9830 !important; /* Grafana orange */
+          stroke-width: 3px !important;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          filter: drop-shadow(0 0 4px rgba(255, 152, 48, 0.5));
+        }
+        .line-plot-2 path {
+          stroke: #73BF69 !important; /* Grafana green */
+          stroke-width: 3px !important;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          filter: drop-shadow(0 0 4px rgba(115, 191, 105, 0.5));
+        }
+        .bar-plot-0 rect {
+          fill: rgba(87, 148, 242, 0.25) !important;
+          stroke: #5794F2 !important;
+          stroke-width: 2px !important;
+          rx: 2px !important;
+          filter: drop-shadow(0 2px 4px rgba(87, 148, 242, 0.3));
+        }
+        .bar-plot-1 rect {
+          fill: rgba(255, 152, 48, 0.25) !important;
+          stroke: #FF9830 !important;
+          stroke-width: 2px !important;
+          rx: 2px !important;
+          filter: drop-shadow(0 2px 4px rgba(255, 152, 48, 0.3));
+        }
+        .bar-plot-2 rect {
+          fill: rgba(115, 191, 105, 0.25) !important;
+          stroke: #73BF69 !important;
+          stroke-width: 2px !important;
+          rx: 2px !important;
+          filter: drop-shadow(0 2px 4px rgba(115, 191, 105, 0.3));
+        }
+        .ticks path {
+          stroke: #3D434B !important;
+          opacity: 0.5;
+        }
+        .chart-title text {
+          fill: #FFFFFF !important;
+          font-weight: 500 !important;
+          font-size: 18px !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+        }
+        .left-axis .label text, .bottom-axis .label text {
+          fill: #9FA7B3 !important;
+          font-size: 12px !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+        }
+        .left-axis .title text, .bottom-axis .title text {
+          fill: #D8D9DA !important;
+          font-size: 14px !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+          font-weight: 500;
+        }
+        .legend text {
+          fill: #D8D9DA !important;
+          font-size: 13px !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+        }
+        
+        /* State diagram styling */
+        .statediagram-state .state-inner {
+          fill: #1F2428 !important;
+          stroke: #3D434B !important;
+        }
+        
+        .stateLabel text {
+          fill: #D8D9DA !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+        }
+        
+        /* Gantt chart styling */
+        .taskText, .taskTextOutsideRight, .taskTextOutsideLeft {
+          fill: #D8D9DA !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+        }
+        
+        .sectionTitle {
+          fill: #5794F2 !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+          font-weight: 600;
+        }
+        
+        .titleText {
+          fill: #FFFFFF !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+        }
+        
+        /* Pie chart */
+        .pieTitleText {
+          fill: #FFFFFF !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+        }
+        
+        .legendText {
+          fill: #D8D9DA !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+        }
+      `
+        },
+        bgClass: 'bg-[#181B1F]',
+        bgStyle: {
+            backgroundColor: '#181B1F',
+            backgroundImage: `
+        linear-gradient(rgba(61, 67, 75, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(61, 67, 75, 0.15) 1px, transparent 1px)
+      `,
+            backgroundSize: '24px 24px'
         }
     },
 };
