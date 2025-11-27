@@ -7,6 +7,8 @@ import type { BackgroundStyle } from '../utils/backgrounds';
 import type { FontOption } from '../utils/fonts';
 import { useLanguage } from '../contexts/LanguageContext';
 import ColorPicker from './ColorPicker';
+import AnnotationLayer from './AnnotationLayer';
+import type { Annotation, AnnotationType, Point } from '../types/annotation';
 
 interface PreviewProps {
   code: string;
@@ -14,10 +16,14 @@ interface PreviewProps {
   customBackground?: BackgroundStyle;
   customFont?: FontOption;
   onCodeChange?: (code: string) => void;
+  selectedTool: AnnotationType | 'select' | null;
+  onSelectTool: (tool: AnnotationType | 'select') => void;
+  onAnnotationCountChange: (count: number) => void;
 }
 
 export interface PreviewHandle {
   exportImage: (transparent: boolean) => Promise<void>;
+  clearAnnotations: () => void;
 }
 
 // Initialize globally once
@@ -27,7 +33,7 @@ mermaid.initialize({
   suppressErrorRendering: true, // 隐藏错误渲染到 DOM
 });
 
-const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, customBackground, customFont, onCodeChange }, ref) => {
+const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, customBackground, customFont, onCodeChange, selectedTool, onSelectTool, onAnnotationCountChange }, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>('');
@@ -45,6 +51,14 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
   // 节点颜色映射 - 用于 CSS hack
   const [nodeColors, setNodeColors] = useState<Record<string, { fill: string; stroke: string }>>({});
   
+  // 标注功能状态
+  const [annotations, setAnnotations] = useState<Annotation[]>([]);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [drawStart, setDrawStart] = useState<Point | null>(null);
+  const [currentMousePos, setCurrentMousePos] = useState<Point | null>(null);
+  const [selectedAnnotationId, setSelectedAnnotationId] = useState<string | null>(null);
+  const svgOverlayRef = useRef<SVGSVGElement>(null);
+
   // Determine actual background and font to use
   const actualBg = customBackground?.id === 'default' ? themeConfig.bgClass : (customBackground?.bgClass || themeConfig.bgClass);
   const actualBgStyle = customBackground?.id === 'default' ? themeConfig.bgStyle : (customBackground?.bgStyle || themeConfig.bgStyle);
@@ -90,9 +104,194 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
     };
   }, []);
 
+  // 将屏幕坐标转换为 SVG 坐标
+  const screenToSVGCoords = (clientX: number, clientY: number): Point | null => {
+    if (!containerRef.current) return null;
+
+    const rect = containerRef.current.getBoundingClientRect();
+    // 容器坐标
+    const containerX = clientX - rect.left;
+    const containerY = clientY - rect.top;
+
+    // 转换为 SVG 坐标系（考虑平移和缩放）
+    const svgX = (containerX - rect.width / 2 - position.x) / scale;
+    const svgY = (containerY - rect.height / 2 - position.y) / scale;
+
+    return { x: svgX, y: svgY };
+  };
+
+  // 标注工具 - 开始绘制或选择
+  const handleAnnotationMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
+    // 如果是选择模式且点击的是 SVG 背景（不是标注元素），取消选择
+    if (selectedTool === 'select' && e.target === e.currentTarget) {
+      setSelectedAnnotationId(null);
+      return;
+    }
+
+    if (!selectedTool || selectedTool === 'select') return;
+
+    const coords = screenToSVGCoords(e.clientX, e.clientY);
+    if (!coords) return;
+
+    setIsDrawing(true);
+    setDrawStart(coords);
+    setCurrentMousePos(coords);
+
+    // 对于文本工具，立即创建
+    if (selectedTool === 'text') {
+      const newAnnotation: Annotation = {
+        id: `annotation-${Date.now()}`,
+        type: 'text',
+        position: coords,
+        text: '双击编辑',
+        fontSize: 16,
+        fontWeight: 'normal',
+        color: '#4F46E5',
+        strokeWidth: 2
+      };
+      setAnnotations(prev => [...prev, newAnnotation]);
+      // 创建标注后自动切换到选择模式
+      onSelectTool('select');
+      setIsDrawing(false);
+      setDrawStart(null);
+      setCurrentMousePos(null);
+    }
+  };
+
+  // 标注工具 - 绘制中
+  const handleAnnotationMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!isDrawing || !drawStart) return;
+
+    const coords = screenToSVGCoords(e.clientX, e.clientY);
+    if (!coords) return;
+
+    setCurrentMousePos(coords);
+  };
+
+  // 标注工具 - 完成绘制
+  const handleAnnotationMouseUp = (e: React.MouseEvent<SVGSVGElement>) => {
+    if (!isDrawing || !drawStart || !selectedTool || selectedTool === 'select') {
+      setIsDrawing(false);
+      setDrawStart(null);
+      setCurrentMousePos(null);
+      return;
+    }
+
+    const coords = screenToSVGCoords(e.clientX, e.clientY);
+    if (!coords) {
+      setIsDrawing(false);
+      setDrawStart(null);
+      setCurrentMousePos(null);
+      return;
+    }
+
+    const { x, y } = coords;
+
+    // 检查是否是有效的绘制（移动了至少10像素）
+    const distance = Math.sqrt((x - drawStart.x) ** 2 + (y - drawStart.y) ** 2);
+    if (distance < 10 && selectedTool !== 'text') {
+      setIsDrawing(false);
+      setDrawStart(null);
+      return;
+    }
+
+    const newAnnotation: Annotation | null = (() => {
+      const baseId = `annotation-${Date.now()}`;
+
+      switch (selectedTool) {
+        case 'arrow':
+          return {
+            id: baseId,
+            type: 'arrow' as const,
+            start: drawStart,
+            end: { x, y },
+            color: '#4F46E5',
+            strokeWidth: 3
+          };
+
+        case 'line':
+          return {
+            id: baseId,
+            type: 'line' as const,
+            start: drawStart,
+            end: { x, y },
+            color: '#4F46E5',
+            strokeWidth: 3
+          };
+
+        case 'rect':
+          return {
+            id: baseId,
+            type: 'rect' as const,
+            position: {
+              x: Math.min(drawStart.x, x),
+              y: Math.min(drawStart.y, y)
+            },
+            width: Math.abs(x - drawStart.x),
+            height: Math.abs(y - drawStart.y),
+            color: '#4F46E5',
+            fill: 'rgba(79, 70, 229, 0.1)',
+            opacity: 0.8,
+            strokeWidth: 2
+          };
+
+        case 'circle':
+          const radius = Math.sqrt((x - drawStart.x) ** 2 + (y - drawStart.y) ** 2);
+          return {
+            id: baseId,
+            type: 'circle' as const,
+            center: drawStart,
+            radius,
+            color: '#4F46E5',
+            fill: 'rgba(79, 70, 229, 0.1)',
+            opacity: 0.8,
+            strokeWidth: 2
+          };
+
+        default:
+          return null;
+      }
+    })();
+
+    if (newAnnotation) {
+      setAnnotations(prev => [...prev, newAnnotation]);
+      // 创建标注后自动切换到选择模式
+      onSelectTool('select');
+    }
+
+    setIsDrawing(false);
+    setDrawStart(null);
+    setCurrentMousePos(null);
+  };
+
+  // 切换工具时重置绘制状态
+  useEffect(() => {
+    if (selectedTool === 'select' || selectedTool === null) {
+      setIsDrawing(false);
+      setDrawStart(null);
+      setCurrentMousePos(null);
+    }
+  }, [selectedTool]);
+
+  // 通知标注数量变化
+  useEffect(() => {
+    onAnnotationCountChange(annotations.length);
+  }, [annotations.length, onAnnotationCountChange]);
+
+  // 更新标注
+  const handleUpdateAnnotation = (id: string, updates: Partial<Annotation>) => {
+    setAnnotations(prev => prev.map(a => a.id === id ? { ...a, ...updates } as Annotation : a));
+  };
+
+  // 删除标注
+  const handleDeleteAnnotation = (id: string) => {
+    setAnnotations(prev => prev.filter(a => a.id !== id));
+  };
+
   // 拖动开始
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.button !== 0) return; // 只处理左键
+    if (selectedTool && selectedTool !== 'select') return; // 如果选中了绘制工具，不进行画布拖动
     setIsDragging(true);
     setDragStart({ x: e.clientX, y: e.clientY });
     dragStartPos.current = { ...position };
@@ -292,6 +491,10 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
   };
 
   useImperativeHandle(ref, () => ({
+    clearAnnotations: () => {
+      setAnnotations([]);
+      setSelectedAnnotationId(null);
+    },
     exportImage: async (transparent: boolean) => {
       if (!contentRef.current || !svg) return;
       
@@ -579,7 +782,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
     >
        {/* 错误提示 */}
        {error && (
-        <div className="absolute top-4 right-4 bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded-md text-sm shadow-sm z-20">
+        <div className="absolute top-20 right-4 bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded-md text-sm shadow-sm z-20">
                {error}
            </div>
        )}
@@ -642,9 +845,9 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
        
        {/* SVG 内容容器 */}
        <div 
-         className="w-full h-full flex items-center justify-center overflow-hidden"
+        className="w-full h-full flex items-center justify-center overflow-hidden relative"
          style={{
-           cursor: isDragging ? 'grabbing' : 'grab',
+           cursor: selectedTool && selectedTool !== 'select' ? 'crosshair' : (isDragging ? 'grabbing' : 'grab'),
          }}
        >
          <div 
@@ -659,6 +862,117 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
            }}
            dangerouslySetInnerHTML={{ __html: svg }} 
          />
+
+        {/* 标注覆盖层 */}
+        <svg
+          ref={svgOverlayRef}
+          className="absolute inset-0 w-full h-full pointer-events-auto"
+          style={{
+            cursor: selectedTool && selectedTool !== 'select' ? 'crosshair' : 'inherit',
+          }}
+          onMouseDown={handleAnnotationMouseDown}
+          onMouseMove={handleAnnotationMouseMove}
+          onMouseUp={handleAnnotationMouseUp}
+        >
+          <g
+            transform={`translate(${containerRef.current ? containerRef.current.offsetWidth / 2 : 0}, ${containerRef.current ? containerRef.current.offsetHeight / 2 : 0})`}
+          >
+            <g transform={`translate(${position.x}, ${position.y}) scale(${scale})`}>
+              {/* 渲染已有标注 */}
+              <AnnotationLayer
+                annotations={annotations}
+                onUpdateAnnotation={handleUpdateAnnotation}
+                onDeleteAnnotation={handleDeleteAnnotation}
+                selectedTool={selectedTool}
+                scale={scale}
+                position={position}
+                selectedAnnotationId={selectedAnnotationId}
+                onSelectAnnotation={setSelectedAnnotationId}
+              />
+
+              {/* 绘制中的实时预览 */}
+              {isDrawing && drawStart && currentMousePos && (() => {
+                const previewColor = '#6366F1';
+                const previewOpacity = 0.6;
+
+                if (selectedTool === 'arrow') {
+                  const angle = Math.atan2(currentMousePos.y - drawStart.y, currentMousePos.x - drawStart.x);
+                  const arrowSize = 12;
+                  return (
+                    <g opacity={previewOpacity}>
+                      <line
+                        x1={drawStart.x}
+                        y1={drawStart.y}
+                        x2={currentMousePos.x}
+                        y2={currentMousePos.y}
+                        stroke={previewColor}
+                        strokeWidth={3}
+                        strokeLinecap="round"
+                        strokeDasharray="5,5"
+                      />
+                      <polygon
+                        points={`
+                         ${currentMousePos.x},${currentMousePos.y}
+                         ${currentMousePos.x - arrowSize * Math.cos(angle - Math.PI / 6)},${currentMousePos.y - arrowSize * Math.sin(angle - Math.PI / 6)}
+                         ${currentMousePos.x - arrowSize * Math.cos(angle + Math.PI / 6)},${currentMousePos.y - arrowSize * Math.sin(angle + Math.PI / 6)}
+                       `}
+                        fill={previewColor}
+                      />
+                    </g>
+                  );
+                } else if (selectedTool === 'line') {
+                  return (
+                    <line
+                      x1={drawStart.x}
+                      y1={drawStart.y}
+                      x2={currentMousePos.x}
+                      y2={currentMousePos.y}
+                      stroke={previewColor}
+                      strokeWidth={3}
+                      strokeLinecap="round"
+                      strokeDasharray="5,5"
+                      opacity={previewOpacity}
+                    />
+                  );
+                } else if (selectedTool === 'rect') {
+                  const x = Math.min(drawStart.x, currentMousePos.x);
+                  const y = Math.min(drawStart.y, currentMousePos.y);
+                  const width = Math.abs(currentMousePos.x - drawStart.x);
+                  const height = Math.abs(currentMousePos.y - drawStart.y);
+                  return (
+                    <rect
+                      x={x}
+                      y={y}
+                      width={width}
+                      height={height}
+                      fill="rgba(99, 102, 241, 0.1)"
+                      stroke={previewColor}
+                      strokeWidth={2}
+                      strokeDasharray="5,5"
+                      rx={4}
+                      opacity={previewOpacity}
+                    />
+                  );
+                } else if (selectedTool === 'circle') {
+                  const radius = Math.sqrt((currentMousePos.x - drawStart.x) ** 2 + (currentMousePos.y - drawStart.y) ** 2);
+                  return (
+                    <circle
+                      cx={drawStart.x}
+                      cy={drawStart.y}
+                      r={radius}
+                      fill="rgba(99, 102, 241, 0.1)"
+                      stroke={previewColor}
+                      strokeWidth={2}
+                      strokeDasharray="5,5"
+                      opacity={previewOpacity}
+                    />
+                  );
+                }
+                return null;
+              })()}
+            </g>
+          </g>
+        </svg>
        </div>
        
        {/* 颜色选择器 */}

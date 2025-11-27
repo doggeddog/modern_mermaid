@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, Palette, Image, FileImage } from 'lucide-react';
+import { Download, Palette, Image, FileImage, MousePointer, ArrowRight, Type, Square, Circle, Minus, Trash2 } from 'lucide-react';
 import { themes } from '../utils/themes';
 import type { ThemeType } from '../utils/themes';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -7,6 +7,7 @@ import BackgroundSelector from './BackgroundSelector';
 import FontSelector from './FontSelector';
 import type { BackgroundStyle } from '../utils/backgrounds';
 import type { FontOption } from '../utils/fonts';
+import type { AnnotationType } from '../types/annotation';
 
 interface ToolbarProps {
   currentTheme: ThemeType;
@@ -16,6 +17,10 @@ interface ToolbarProps {
   onBackgroundChange: (bg: BackgroundStyle) => void;
   selectedFont: string;
   onFontChange: (font: FontOption) => void;
+  selectedTool: AnnotationType | 'select' | null;
+  onSelectTool: (tool: AnnotationType | 'select') => void;
+  onClearAnnotations: () => void;
+  annotationCount: number;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({ 
@@ -25,11 +30,27 @@ const Toolbar: React.FC<ToolbarProps> = ({
   selectedBackground,
   onBackgroundChange,
   selectedFont,
-  onFontChange
+  onFontChange,
+  selectedTool,
+  onSelectTool,
+  onClearAnnotations,
+  annotationCount
 }) => {
   const [isThemeOpen, setIsThemeOpen] = React.useState(false);
   const [isDownloadOpen, setIsDownloadOpen] = React.useState(false);
+  const [isAnnotationOpen, setIsAnnotationOpen] = React.useState(false);
   const { t } = useLanguage();
+
+  const annotationTools = [
+    { id: 'select' as const, icon: MousePointer, label: t.select || '选择' },
+    { id: 'arrow' as const, icon: ArrowRight, label: t.arrow || '箭头' },
+    { id: 'text' as const, icon: Type, label: t.text || '文字' },
+    { id: 'rect' as const, icon: Square, label: t.rectangle || '矩形' },
+    { id: 'circle' as const, icon: Circle, label: t.circle || '圆形' },
+    { id: 'line' as const, icon: Minus, label: t.line || '直线' },
+  ];
+
+  const currentToolConfig = annotationTools.find(tool => tool.id === selectedTool) || annotationTools[0];
 
   return (
     <div className="flex items-center gap-2">
@@ -79,6 +100,69 @@ const Toolbar: React.FC<ToolbarProps> = ({
         selectedId={selectedFont}
         onSelectFont={onFontChange}
       />
+
+      {/* Annotation Tool Selector */}
+      <div className="relative">
+        <button
+          onClick={() => setIsAnnotationOpen(!isAnnotationOpen)}
+          className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm transition-all"
+          title={t.annotations || '标注工具'}
+        >
+          <currentToolConfig.icon className="w-4 h-4" />
+          <span className="hidden sm:inline">{currentToolConfig.label}</span>
+          {annotationCount > 0 && (
+            <span className="ml-1 px-1.5 py-0.5 text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full">
+              {annotationCount}
+            </span>
+          )}
+        </button>
+        
+        {isAnnotationOpen && (
+          <>
+            <div className="fixed inset-0 z-[60]" onClick={() => setIsAnnotationOpen(false)} />
+            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 dark:ring-gray-700 z-[70] py-1">
+              {annotationTools.map((tool) => {
+                const Icon = tool.icon;
+                const isSelected = selectedTool === tool.id;
+                
+                return (
+                  <button
+                    key={tool.id}
+                    onClick={() => {
+                      onSelectTool(tool.id);
+                      setIsAnnotationOpen(false);
+                    }}
+                    className={`flex items-center gap-2 w-full text-left px-4 py-2 text-sm ${
+                      isSelected 
+                        ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400' 
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span>{tool.label}</span>
+                  </button>
+                );
+              })}
+              
+              {annotationCount > 0 && (
+                <>
+                  <div className="border-t border-gray-200 dark:border-gray-700 my-1" />
+                  <button
+                    onClick={() => {
+                      onClearAnnotations();
+                      setIsAnnotationOpen(false);
+                    }}
+                    className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span>{t.clearAll || '清空'}</span>
+                  </button>
+                </>
+              )}
+            </div>
+          </>
+        )}
+      </div>
 
       {/* Download Button */}
       <div className="relative">

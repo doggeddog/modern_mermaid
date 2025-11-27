@@ -9,6 +9,7 @@ import { themes } from '../utils/themes';
 import type { ThemeType } from '../utils/themes';
 import { backgrounds, type BackgroundStyle } from '../utils/backgrounds';
 import { fonts, type FontOption } from '../utils/fonts';
+import type { AnnotationType } from '../types/annotation';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Trash2, RefreshCw } from 'lucide-react';
 
@@ -22,6 +23,8 @@ const Layout: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<ThemeType>('linearLight');
   const [selectedBackground, setSelectedBackground] = useState<BackgroundStyle>(backgrounds[0]);
   const [selectedFont, setSelectedFont] = useState<FontOption>(fonts[0]);
+  const [selectedTool, setSelectedTool] = useState<AnnotationType | 'select' | null>('select');
+  const [annotationCount, setAnnotationCount] = useState<number>(0);
   const previewRef = useRef<PreviewHandle>(null);
   const { t } = useLanguage();
 
@@ -49,6 +52,24 @@ const Layout: React.FC = () => {
   // 刷新编辑器（恢复到默认示例）
   const handleRefreshEditor = () => {
     setCode(defaultCode);
+  };
+
+  // 标注工具处理
+  const handleSelectTool = (tool: AnnotationType | 'select') => {
+    setSelectedTool(tool);
+  };
+
+  const handleClearAnnotations = () => {
+    if (annotationCount > 0 && confirm(t.confirmClearAnnotations || '确定要清空所有标注吗？')) {
+      // 这个会通过 Preview 的 ref 来处理
+      if (previewRef.current && 'clearAnnotations' in previewRef.current) {
+        (previewRef.current as any).clearAnnotations();
+      }
+    }
+  };
+
+  const handleAnnotationCountChange = (count: number) => {
+    setAnnotationCount(count);
   };
 
   // Reset background and font when theme changes
@@ -102,6 +123,10 @@ const Layout: React.FC = () => {
                 onBackgroundChange={handleBackgroundChange}
                 selectedFont={selectedFont.id}
                 onFontChange={handleFontChange}
+                selectedTool={selectedTool}
+                onSelectTool={handleSelectTool}
+                onClearAnnotations={handleClearAnnotations}
+                annotationCount={annotationCount}
               />
            </div>
            <Preview 
@@ -111,6 +136,9 @@ const Layout: React.FC = () => {
              customBackground={selectedBackground}
              customFont={selectedFont}
              onCodeChange={setCode}
+             selectedTool={selectedTool}
+             onSelectTool={handleSelectTool}
+             onAnnotationCountChange={handleAnnotationCountChange}
            />
         </div>
       </main>

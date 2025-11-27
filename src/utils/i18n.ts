@@ -48,6 +48,18 @@ export interface Translation {
   font: string;
   selectFont: string;
   
+  // Annotations
+  annotations: string;
+  select: string;
+  arrow: string;
+  text: string;
+  rectangle: string;
+  circle: string;
+  line: string;
+  clearAll: string;
+  clearAnnotations: string;
+  confirmClearAnnotations: string;
+  
   // Color Picker
   changeNodeColor: string;
   presetColors: string;
@@ -125,6 +137,18 @@ export const translations: Record<Language, Translation> = {
     purple: 'Purple',
     pink: 'Pink',
     gray: 'Gray',
+    
+    // Annotations
+    annotations: 'Annotations',
+    select: 'Select',
+    arrow: 'Arrow',
+    text: 'Text',
+    rectangle: 'Rectangle',
+    circle: 'Circle',
+    line: 'Line',
+    clearAll: 'Clear All',
+    clearAnnotations: 'Clear Annotations',
+    confirmClearAnnotations: 'Are you sure you want to clear all annotations?',
   },
   'zh-CN': {
     // Header
@@ -187,6 +211,18 @@ export const translations: Record<Language, Translation> = {
     purple: '紫色',
     pink: '粉色',
     gray: '灰色',
+    
+    // Annotations
+    annotations: '标注工具',
+    select: '选择',
+    arrow: '箭头',
+    text: '文字',
+    rectangle: '矩形',
+    circle: '圆形',
+    line: '直线',
+    clearAll: '清空',
+    clearAnnotations: '清空标注',
+    confirmClearAnnotations: '确定要清空所有标注吗？',
   },
   'zh-TW': {
     // Header
@@ -249,6 +285,18 @@ export const translations: Record<Language, Translation> = {
     purple: '紫色',
     pink: '粉色',
     gray: '灰色',
+    
+    // Annotations
+    annotations: '標註工具',
+    select: '選擇',
+    arrow: '箭頭',
+    text: '文字',
+    rectangle: '矩形',
+    circle: '圓形',
+    line: '直線',
+    clearAll: '清空',
+    clearAnnotations: '清空標註',
+    confirmClearAnnotations: '確定要清空所有標註嗎？',
   },
   'ja': {
     // Header
@@ -311,6 +359,18 @@ export const translations: Record<Language, Translation> = {
     purple: '紫',
     pink: 'ピンク',
     gray: 'グレー',
+    
+    // Annotations
+    annotations: '注釈ツール',
+    select: '選択',
+    arrow: '矢印',
+    text: 'テキスト',
+    rectangle: '長方形',
+    circle: '円',
+    line: '線',
+    clearAll: 'すべてクリア',
+    clearAnnotations: '注釈をクリア',
+    confirmClearAnnotations: 'すべての注釈をクリアしますか？',
   },
   'es': {
     // Header
@@ -373,6 +433,18 @@ export const translations: Record<Language, Translation> = {
     purple: 'Púrpura',
     pink: 'Rosa',
     gray: 'Gris',
+    
+    // Annotations
+    annotations: 'Herramientas de anotación',
+    select: 'Seleccionar',
+    arrow: 'Flecha',
+    text: 'Texto',
+    rectangle: 'Rectángulo',
+    circle: 'Círculo',
+    line: 'Línea',
+    clearAll: 'Limpiar todo',
+    clearAnnotations: 'Limpiar anotaciones',
+    confirmClearAnnotations: '¿Está seguro de que desea limpiar todas las anotaciones?',
   },
   'pt': {
     // Header
@@ -435,6 +507,18 @@ export const translations: Record<Language, Translation> = {
     purple: 'Roxo',
     pink: 'Rosa',
     gray: 'Cinza',
+    
+    // Annotations
+    annotations: 'Ferramentas de anotação',
+    select: 'Selecionar',
+    arrow: 'Seta',
+    text: 'Texto',
+    rectangle: 'Retângulo',
+    circle: 'Círculo',
+    line: 'Linha',
+    clearAll: 'Limpar tudo',
+    clearAnnotations: 'Limpar anotações',
+    confirmClearAnnotations: 'Tem certeza de que deseja limpar todas as anotações?',
   },
 };
 
