@@ -6,13 +6,14 @@ import Header from './Header';
 import Toolbar from './Toolbar';
 import ExampleSelector from './ExampleSelector';
 import ResizableDivider from './ResizableDivider';
+import ConfirmDialog from './ConfirmDialog';
 import { themes } from '../utils/themes';
 import type { ThemeType } from '../utils/themes';
 import { backgrounds, type BackgroundStyle } from '../utils/backgrounds';
 import { fonts, type FontOption } from '../utils/fonts';
 import type { AnnotationType } from '../types/annotation';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Trash2, RefreshCw } from 'lucide-react';
+import { X, RefreshCw } from 'lucide-react';
 
 const Layout: React.FC = () => {
   const defaultCode = `graph TD
@@ -28,6 +29,7 @@ const Layout: React.FC = () => {
   const [annotationCount, setAnnotationCount] = useState<number>(0);
   const [leftPanelWidth, setLeftPanelWidth] = useState<number>(50); // 默认 50%
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showClearDialog, setShowClearDialog] = useState(false);
   const previewRef = useRef<PreviewHandle>(null);
   const { t } = useLanguage();
 
@@ -47,9 +49,11 @@ const Layout: React.FC = () => {
 
   // 清空编辑器
   const handleClearEditor = () => {
-    if (confirm(t.confirmClear)) {
-      setCode('');
-    }
+    setShowClearDialog(true);
+  };
+
+  const confirmClearEditor = () => {
+    setCode('');
   };
 
   // 刷新编辑器（恢复到默认示例）
@@ -130,7 +134,7 @@ const Layout: React.FC = () => {
                    className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors cursor-pointer"
                    title={t.clearEditor}
                  >
-                   <Trash2 className="w-4 h-4" />
+                   <X className="w-4 h-4" />
                  </button>
                </div>
              </div>
@@ -178,6 +182,16 @@ const Layout: React.FC = () => {
            />
         </div>
       </main>
+
+      {/* 清空确认对话框 */}
+      <ConfirmDialog
+        isOpen={showClearDialog}
+        title={t.clearEditor}
+        message={t.confirmClear}
+        onConfirm={confirmClearEditor}
+        onCancel={() => setShowClearDialog(false)}
+        variant="danger"
+      />
     </div>
   );
 };

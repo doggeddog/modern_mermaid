@@ -77,6 +77,16 @@ export interface Translation {
   // Fullscreen
   enterFullscreen: string;
   exitFullscreen: string;
+  
+  // Cookie Consent
+  cookieTitle: string;
+  cookieMessage: string;
+  cookieAccept: string;
+  cookieDecline: string;
+  
+  // Dialog
+  confirm: string;
+  cancel: string;
 }
 
 export const translations: Record<Language, Translation> = {
@@ -157,6 +167,16 @@ export const translations: Record<Language, Translation> = {
     // Fullscreen
     enterFullscreen: 'Enter Fullscreen',
     exitFullscreen: 'Exit Fullscreen',
+    
+    // Cookie Consent
+    cookieTitle: 'We use cookies',
+    cookieMessage: 'We use cookies and similar technologies to improve your experience, analyze site traffic, and personalize content. By clicking "Accept", you consent to our use of cookies.',
+    cookieAccept: 'Accept',
+    cookieDecline: 'Decline',
+    
+    // Dialog
+    confirm: 'Confirm',
+    cancel: 'Cancel',
   },
   'zh-CN': {
     // Header
@@ -235,6 +255,16 @@ export const translations: Record<Language, Translation> = {
     // Fullscreen
     enterFullscreen: '进入全屏',
     exitFullscreen: '退出全屏',
+    
+    // Cookie Consent
+    cookieTitle: '我们使用 Cookie',
+    cookieMessage: '我们使用 Cookie 和类似技术来改善您的体验、分析网站流量并个性化内容。点击"接受"即表示您同意我们使用 Cookie。',
+    cookieAccept: '接受',
+    cookieDecline: '拒绝',
+    
+    // Dialog
+    confirm: '确认',
+    cancel: '取消',
   },
   'zh-TW': {
     // Header
@@ -313,6 +343,16 @@ export const translations: Record<Language, Translation> = {
     // Fullscreen
     enterFullscreen: '進入全屏',
     exitFullscreen: '退出全屏',
+    
+    // Cookie Consent
+    cookieTitle: '我們使用 Cookie',
+    cookieMessage: '我們使用 Cookie 和類似技術來改善您的體驗、分析網站流量並個性化內容。點擊"接受"即表示您同意我們使用 Cookie。',
+    cookieAccept: '接受',
+    cookieDecline: '拒絕',
+    
+    // Dialog
+    confirm: '確認',
+    cancel: '取消',
   },
   'ja': {
     // Header
@@ -461,6 +501,20 @@ export const translations: Record<Language, Translation> = {
     clearAll: 'Limpiar todo',
     clearAnnotations: 'Limpiar anotaciones',
     confirmClearAnnotations: '¿Está seguro de que desea limpiar todas las anotaciones?',
+    
+    // Fullscreen
+    enterFullscreen: 'Pantalla completa',
+    exitFullscreen: 'Salir de pantalla completa',
+    
+    // Cookie Consent
+    cookieTitle: 'Usamos cookies',
+    cookieMessage: 'Utilizamos cookies y tecnologías similares para mejorar su experiencia, analizar el tráfico del sitio y personalizar el contenido. Al hacer clic en "Aceptar", usted acepta nuestro uso de cookies.',
+    cookieAccept: 'Aceptar',
+    cookieDecline: 'Rechazar',
+    
+    // Dialog
+    confirm: 'Confirmar',
+    cancel: 'Cancelar',
   },
   'pt': {
     // Header
@@ -539,6 +593,16 @@ export const translations: Record<Language, Translation> = {
     // Fullscreen
     enterFullscreen: 'Tela cheia',
     exitFullscreen: 'Sair da tela cheia',
+    
+    // Cookie Consent
+    cookieTitle: 'Usamos cookies',
+    cookieMessage: 'Utilizamos cookies e tecnologias semelhantes para melhorar sua experiência, analisar o tráfego do site e personalizar o conteúdo. Ao clicar em "Aceitar", você concorda com o uso de cookies.',
+    cookieAccept: 'Aceitar',
+    cookieDecline: 'Recusar',
+    
+    // Dialog
+    confirm: 'Confirmar',
+    cancel: 'Cancelar',
   },
 };
 
