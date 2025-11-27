@@ -12,7 +12,7 @@ const Header = () => {
       <div className="flex items-center gap-3">
         <Logo size={40} className="flex-shrink-0" />
         <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
-          Mordern <span className="text-indigo-600 dark:text-indigo-400">Mermaid</span>
+          Modern <span className="text-indigo-600 dark:text-indigo-400">Mermaid</span>
         </h1>
       </div>
       <div className="flex items-center gap-3">

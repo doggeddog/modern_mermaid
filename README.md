@@ -2,7 +2,7 @@
 
 A modern, beautiful Mermaid.js editor and previewer built with React, Tailwind CSS, and Vite.
 
-online demo: https://mordern-mermaid.com/
+online demo: https://modern-mermaid.live/
 
 join discord: https://discord.gg/tGxevHhz
 

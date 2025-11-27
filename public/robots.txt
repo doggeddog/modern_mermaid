@@ -7,7 +7,7 @@ Allow: /
 # Disallow: /admin/
 
 # Sitemap
-Sitemap: https://mordern-mermaid.com/sitemap.xml
+Sitemap: https://modern-mermaid.live/sitemap.xml
 
 # Crawl-delay (optional, adjust as needed)
 Crawl-delay: 1
