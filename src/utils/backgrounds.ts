@@ -5,6 +5,8 @@ export interface BackgroundStyle {
     'zh-CN': string;
     'zh-TW': string;
     'ja': string;
+    'es': string;
+    'pt': string;
   };
   bgClass: string;
   bgStyle?: React.CSSProperties;
@@ -18,6 +20,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '默认（主题）',
       'zh-TW': '預設（主題）',
       'ja': 'デフォルト（テーマ）',
+      'es': 'Por defecto (Tema)',
+      'pt': 'Padrão (Tema)',
     },
     bgClass: '',
     bgStyle: undefined,
@@ -29,6 +33,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '纯白色',
       'zh-TW': '純白色',
       'ja': '純白',
+      'es': 'Blanco puro',
+      'pt': 'Branco puro',
     },
     bgClass: 'bg-white',
     bgStyle: { backgroundColor: '#ffffff' },
@@ -40,6 +46,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '纯黑色',
       'zh-TW': '純黑色',
       'ja': '純黒',
+      'es': 'Negro puro',
+      'pt': 'Preto puro',
     },
     bgClass: 'bg-black',
     bgStyle: { backgroundColor: '#000000' },
@@ -51,6 +59,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '浅灰色',
       'zh-TW': '淺灰色',
       'ja': 'ライトグレー',
+      'es': 'Gris claro',
+      'pt': 'Cinza claro',
     },
     bgClass: 'bg-gray-100',
     bgStyle: { backgroundColor: '#f3f4f6' },
@@ -62,6 +72,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '柔和蓝',
       'zh-TW': '柔和藍',
       'ja': 'ソフトブルー',
+      'es': 'Azul suave',
+      'pt': 'Azul suave',
     },
     bgClass: 'bg-blue-50',
     bgStyle: { backgroundColor: '#eff6ff' },
@@ -73,6 +85,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '柔和绿',
       'zh-TW': '柔和綠',
       'ja': 'ソフトグリーン',
+      'es': 'Verde suave',
+      'pt': 'Verde suave',
     },
     bgClass: 'bg-green-50',
     bgStyle: { backgroundColor: '#f0fdf4' },
@@ -84,6 +98,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '柔和紫',
       'zh-TW': '柔和紫',
       'ja': 'ソフトパープル',
+      'es': 'Púrpura suave',
+      'pt': 'Roxo suave',
     },
     bgClass: 'bg-purple-50',
     bgStyle: { backgroundColor: '#faf5ff' },
@@ -95,6 +111,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '蓝色渐变',
       'zh-TW': '藍色漸變',
       'ja': '青グラデーション',
+      'es': 'Degradado azul',
+      'pt': 'Gradiente azul',
     },
     bgClass: 'bg-gradient-to-br from-blue-50 to-indigo-100',
     bgStyle: {
@@ -108,6 +126,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '日落渐变',
       'zh-TW': '日落漸變',
       'ja': '夕焼けグラデーション',
+      'es': 'Degradado atardecer',
+      'pt': 'Gradiente pôr do sol',
     },
     bgClass: 'bg-gradient-to-br from-orange-50 to-pink-100',
     bgStyle: {
@@ -121,6 +141,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '圆点图案',
       'zh-TW': '圓點圖案',
       'ja': 'ドットパターン',
+      'es': 'Patrón de puntos',
+      'pt': 'Padrão de pontos',
     },
     bgClass: 'bg-white',
     bgStyle: {
@@ -136,6 +158,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '网格图案',
       'zh-TW': '網格圖案',
       'ja': 'グリッドパターン',
+      'es': 'Patrón de cuadrícula',
+      'pt': 'Padrão de grade',
     },
     bgClass: 'bg-white',
     bgStyle: {
@@ -154,6 +178,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '斜线图案',
       'zh-TW': '斜線圖案',
       'ja': '斜線パターン',
+      'es': 'Líneas diagonales',
+      'pt': 'Linhas diagonais',
     },
     bgClass: 'bg-gray-50',
     bgStyle: {
@@ -174,6 +200,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '噪点纹理',
       'zh-TW': '噪點紋理',
       'ja': 'ノイズテクスチャ',
+      'es': 'Textura de ruido',
+      'pt': 'Textura de ruído',
     },
     bgClass: 'bg-gray-50',
     bgStyle: {
@@ -188,6 +216,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '模糊蓝色',
       'zh-TW': '模糊藍色',
       'ja': 'ぼかしブルー',
+      'es': 'Azul difuminado',
+      'pt': 'Azul desfocado',
     },
     bgClass: 'bg-blue-50',
     bgStyle: {
@@ -202,6 +232,8 @@ export const backgrounds: BackgroundStyle[] = [
       'zh-CN': '模糊彩虹',
       'zh-TW': '模糊彩虹',
       'ja': 'ぼかしレインボー',
+      'es': 'Arcoíris difuminado',
+      'pt': 'Arco-íris desfocado',
     },
     bgClass: 'bg-white',
     bgStyle: {

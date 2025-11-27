@@ -33,6 +33,8 @@ export const examples: Record<ExampleCategory, Example[]> = {
         'zh-CN': '用户登录流程',
         'zh-TW': '用戶登入流程',
         'ja': 'ユーザーログインフロー',
+        'es': 'Flujo de inicio de sesión',
+        'pt': 'Fluxo de login do usuário',
       },
       code: {
         'en': `flowchart TD
@@ -83,6 +85,30 @@ export const examples: Record<ExampleCategory, Example[]> = {
     Error2 --> Input
     Success --> Dashboard[ダッシュボードへ]
     Dashboard --> End([終了])`,
+        'es': `flowchart TD
+    Start([Inicio]) --> Input[Ingresar Usuario y Contraseña]
+    Input --> Validate{Validar Información}
+    Validate -->|Válido| CheckDB[Verificar Base de Datos]
+    Validate -->|Inválido| Error1[Mostrar Error]
+    Error1 --> Input
+    CheckDB --> Match{¿Coincidencia?}
+    Match -->|Sí| Success[Inicio Exitoso]
+    Match -->|No| Error2[Credenciales Inválidas]
+    Error2 --> Input
+    Success --> Dashboard[Ir al Panel]
+    Dashboard --> End([Fin])`,
+        'pt': `flowchart TD
+    Start([Início]) --> Input[Inserir Usuário e Senha]
+    Input --> Validate{Validar Informação}
+    Validate -->|Válido| CheckDB[Verificar Banco de Dados]
+    Validate -->|Inválido| Error1[Mostrar Erro]
+    Error1 --> Input
+    CheckDB --> Match{Correspondência?}
+    Match -->|Sim| Success[Login Bem-sucedido]
+    Match -->|Não| Error2[Credenciais Inválidas]
+    Error2 --> Input
+    Success --> Dashboard[Ir para o Painel]
+    Dashboard --> End([Fim])`,
       },
     },
     {
@@ -92,6 +118,8 @@ export const examples: Record<ExampleCategory, Example[]> = {
         'zh-CN': '简单决策树',
         'zh-TW': '簡單決策樹',
         'ja': 'シンプル判断ツリー',
+        'es': 'Árbol de decisión simple',
+        'pt': 'Árvore de decisão simples',
       },
       code: {
         'en': `graph TD
@@ -122,6 +150,20 @@ export const examples: Record<ExampleCategory, Example[]> = {
     D --> E[問題を修正]
     E --> B
     C --> F[終了]`,
+        'es': `graph TD
+    A[Inicio] --> B{¿Funciona?}
+    B -->|Sí| C[¡Genial!]
+    B -->|No| D[Depurar]
+    D --> E[Solucionar problema]
+    E --> B
+    C --> F[Fin]`,
+        'pt': `graph TD
+    A[Início] --> B{Está funcionando?}
+    B -->|Sim| C[Ótimo!]
+    B -->|Não| D[Depurar]
+    D --> E[Corrigir problema]
+    E --> B
+    C --> F[Fim]`,
       },
     },
   ],
@@ -133,6 +175,8 @@ export const examples: Record<ExampleCategory, Example[]> = {
         'zh-CN': '在线支付流程',
         'zh-TW': '線上支付流程',
         'ja': 'オンライン決済プロセス',
+        'es': 'Proceso de pago en línea',
+        'pt': 'Processo de pagamento online',
       },
       code: {
         'en': `sequenceDiagram
@@ -219,6 +263,48 @@ export const examples: Record<ExampleCategory, Example[]> = {
         決済ゲートウェイ-->>ウェブサイト: 決済失敗
         ウェブサイト-->>ユーザー: エラーメッセージを表示
     end`,
+        'es': `sequenceDiagram
+    participant Usuario
+    participant Sitio Web
+    participant Pasarela de Pago
+    participant Banco
+
+    Usuario->>Sitio Web: Seleccionar artículos y pagar
+    Sitio Web->>Usuario: Mostrar página de pago
+    Usuario->>Sitio Web: Ingresar información de pago
+    Sitio Web->>Pasarela de Pago: Enviar solicitud de pago
+    Pasarela de Pago->>Banco: Verificar información de pago
+    
+    alt Pago exitoso
+        Banco-->>Pasarela de Pago: Autorización exitosa
+        Pasarela de Pago-->>Sitio Web: Pago confirmado
+        Sitio Web-->>Usuario: Mostrar mensaje de éxito
+    else Pago fallido
+        Banco-->>Pasarela de Pago: Autorización fallida
+        Pasarela de Pago-->>Sitio Web: Pago fallido
+        Sitio Web-->>Usuario: Mostrar mensaje de error
+    end`,
+        'pt': `sequenceDiagram
+    participant Usuário
+    participant Site
+    participant Gateway de Pagamento
+    participant Banco
+
+    Usuário->>Site: Selecionar itens e finalizar
+    Site->>Usuário: Mostrar página de pagamento
+    Usuário->>Site: Inserir informações de pagamento
+    Site->>Gateway de Pagamento: Enviar solicitação de pagamento
+    Gateway de Pagamento->>Banco: Verificar informações de pagamento
+    
+    alt Pagamento bem-sucedido
+        Banco-->>Gateway de Pagamento: Autorização bem-sucedida
+        Gateway de Pagamento-->>Site: Pagamento confirmado
+        Site-->>Usuário: Mostrar mensagem de sucesso
+    else Pagamento falhado
+        Banco-->>Gateway de Pagamento: Autorização falhada
+        Gateway de Pagamento-->>Site: Pagamento falhado
+        Site-->>Usuário: Mostrar mensagem de erro
+    end`,
       },
     },
     {
@@ -228,6 +314,8 @@ export const examples: Record<ExampleCategory, Example[]> = {
         'zh-CN': 'API 认证流程',
         'zh-TW': 'API 認證流程',
         'ja': 'API認証',
+        'es': 'Autenticación de API',
+        'pt': 'Autenticação de API',
       },
       code: {
         'en': `sequenceDiagram
@@ -306,6 +394,44 @@ export const examples: Record<ExampleCategory, Example[]> = {
         API-->>クライアント: 401 未認証
         クライアント-->>ユーザー: エラーを表示
     end`,
+        'es': `sequenceDiagram
+    actor Usuario
+    participant Cliente
+    participant API
+    participant Base de Datos
+
+    Usuario->>Cliente: Ingresar credenciales
+    Cliente->>API: POST /auth/login
+    API->>Base de Datos: Consultar usuario
+    Base de Datos-->>API: Datos del usuario
+    
+    alt Credenciales válidas
+        API->>API: Generar token JWT
+        API-->>Cliente: 200 OK + Token
+        Cliente-->>Usuario: Inicio exitoso
+    else Credenciales inválidas
+        API-->>Cliente: 401 No autorizado
+        Cliente-->>Usuario: Mostrar error
+    end`,
+        'pt': `sequenceDiagram
+    actor Usuário
+    participant Cliente
+    participant API
+    participant Banco de Dados
+
+    Usuário->>Cliente: Inserir credenciais
+    Cliente->>API: POST /auth/login
+    API->>Banco de Dados: Consultar usuário
+    Banco de Dados-->>API: Dados do usuário
+    
+    alt Credenciais válidas
+        API->>API: Gerar token JWT
+        API-->>Cliente: 200 OK + Token
+        Cliente-->>Usuário: Login bem-sucedido
+    else Credenciais inválidas
+        API-->>Cliente: 401 Não autorizado
+        Cliente-->>Usuário: Mostrar erro
+    end`,
       },
     },
   ],
@@ -317,6 +443,8 @@ export const examples: Record<ExampleCategory, Example[]> = {
         'zh-CN': '电商系统',
         'zh-TW': '電商系統',
         'ja': 'Eコマースシステム',
+        'es': 'Sistema de comercio electrónico',
+        'pt': 'Sistema de comércio eletrônico',
       },
       code: {
         'en': `classDiagram
@@ -479,6 +607,86 @@ export const examples: Record<ExampleCategory, Example[]> = {
     ユーザー "1" --> "1" カート : 所有
     注文 "1" --> "1..*" 商品 : 含む
     カート "1" --> "0..*" 商品 : 含む`,
+        'es': `classDiagram
+    class Usuario {
+        +int usuarioId
+        +string nombreUsuario
+        +string email
+        +iniciarSesion()
+        +registrar()
+        +actualizarPerfil()
+    }
+    
+    class Producto {
+        +int productoId
+        +string nombre
+        +decimal precio
+        +int stock
+        +actualizarStock()
+        +obtenerDetalles()
+    }
+    
+    class Pedido {
+        +int pedidoId
+        +datetime fechaCreacion
+        +decimal total
+        +string estado
+        +crearPedido()
+        +cancelarPedido()
+    }
+    
+    class Carrito {
+        +int carritoId
+        +agregarProducto()
+        +eliminarProducto()
+        +vaciar()
+        +calcularTotal()
+    }
+    
+    Usuario "1" --> "0..*" Pedido : realiza
+    Usuario "1" --> "1" Carrito : posee
+    Pedido "1" --> "1..*" Producto : contiene
+    Carrito "1" --> "0..*" Producto : contiene`,
+        'pt': `classDiagram
+    class Usuario {
+        +int usuarioId
+        +string nomeUsuario
+        +string email
+        +fazerLogin()
+        +registrar()
+        +atualizarPerfil()
+    }
+    
+    class Produto {
+        +int produtoId
+        +string nome
+        +decimal preco
+        +int estoque
+        +atualizarEstoque()
+        +obterDetalhes()
+    }
+    
+    class Pedido {
+        +int pedidoId
+        +datetime dataCriacao
+        +decimal total
+        +string status
+        +criarPedido()
+        +cancelarPedido()
+    }
+    
+    class Carrinho {
+        +int carrinhoId
+        +adicionarProduto()
+        +removerProduto()
+        +limpar()
+        +calcularTotal()
+    }
+    
+    Usuario "1" --> "0..*" Pedido : faz
+    Usuario "1" --> "1" Carrinho : possui
+    Pedido "1" --> "1..*" Produto : contém
+    Carrinho "1" --> "0..*" Produto : contém`,
       },
     },
   ],
@@ -490,6 +698,8 @@ export const examples: Record<ExampleCategory, Example[]> = {
         'zh-CN': '订单状态机',
         'zh-TW': '訂單狀態機',
         'ja': '注文ステートマシン',
+        'es': 'Máquina de estados de pedido',
+        'pt': 'Máquina de estados de pedido',
       },
       code: {
         'en': `stateDiagram-v2
@@ -544,6 +754,32 @@ export const examples: Record<ExampleCategory, Example[]> = {
     処理中 --> キャンセル: キャンセルリクエスト
     発送済み --> 返品済み: 返品リクエスト
     返品済み --> [*]`,
+        'es': `stateDiagram-v2
+    [*] --> Creado: Crear Pedido
+    Creado --> Pagado: Pago Exitoso
+    Creado --> Cancelado: Cancelar Pedido
+    Pagado --> Procesando: Iniciar Procesamiento
+    Procesando --> Enviado: Enviar Artículos
+    Enviado --> Entregado: Confirmar Entrega
+    Entregado --> [*]
+    Cancelado --> [*]
+    
+    Procesando --> Cancelado: Solicitud de Cancelación
+    Enviado --> Devuelto: Solicitud de Devolución
+    Devuelto --> [*]`,
+        'pt': `stateDiagram-v2
+    [*] --> Criado: Criar Pedido
+    Criado --> Pago: Pagamento Bem-sucedido
+    Criado --> Cancelado: Cancelar Pedido
+    Pago --> Processando: Iniciar Processamento
+    Processando --> Enviado: Enviar Itens
+    Enviado --> Entregue: Confirmar Entrega
+    Entregue --> [*]
+    Cancelado --> [*]
+    
+    Processando --> Cancelado: Solicitação de Cancelamento
+    Enviado --> Devolvido: Solicitação de Devolução
+    Devolvido --> [*]`,
       },
     },
   ],
@@ -555,6 +791,8 @@ export const examples: Record<ExampleCategory, Example[]> = {
         'zh-CN': '博客数据库架构',
         'zh-TW': '部落格資料庫架構',
         'ja': 'ブログデータベーススキーマ',
+        'es': 'Esquema de base de datos de blog',
+        'pt': 'Esquema de banco de dados de blog',
       },
       code: {
         'en': `erDiagram
@@ -717,6 +955,86 @@ export const examples: Record<ExampleCategory, Example[]> = {
         int タグID PK
         string 名前
     }`,
+        'es': `erDiagram
+    USUARIO ||--o{ PUBLICACION : escribe
+    USUARIO ||--o{ COMENTARIO : hace
+    PUBLICACION ||--o{ COMENTARIO : tiene
+    PUBLICACION }o--|| CATEGORIA : pertenece_a
+    PUBLICACION }o--o{ ETIQUETA : tiene
+    
+    USUARIO {
+        int user_id PK
+        string nombreUsuario
+        string email
+        datetime fecha_creacion
+    }
+    
+    PUBLICACION {
+        int post_id PK
+        int user_id FK
+        int category_id FK
+        string titulo
+        text contenido
+        datetime fecha_publicacion
+    }
+    
+    COMENTARIO {
+        int comment_id PK
+        int user_id FK
+        int post_id FK
+        text contenido
+        datetime fecha_creacion
+    }
+    
+    CATEGORIA {
+        int category_id PK
+        string nombre
+    }
+    
+    ETIQUETA {
+        int tag_id PK
+        string nombre
+    }`,
+        'pt': `erDiagram
+    USUARIO ||--o{ PUBLICACAO : escreve
+    USUARIO ||--o{ COMENTARIO : faz
+    PUBLICACAO ||--o{ COMENTARIO : tem
+    PUBLICACAO }o--|| CATEGORIA : pertence_a
+    PUBLICACAO }o--o{ TAG : tem
+    
+    USUARIO {
+        int user_id PK
+        string nomeUsuario
+        string email
+        datetime data_criacao
+    }
+    
+    PUBLICACAO {
+        int post_id PK
+        int user_id FK
+        int category_id FK
+        string titulo
+        text conteudo
+        datetime data_publicacao
+    }
+    
+    COMENTARIO {
+        int comment_id PK
+        int user_id FK
+        int post_id FK
+        text conteudo
+        datetime data_criacao
+    }
+    
+    CATEGORIA {
+        int category_id PK
+        string nome
+    }
+    
+    TAG {
+        int tag_id PK
+        string nome
+    }`,
       },
     },
   ],
@@ -728,6 +1046,8 @@ export const examples: Record<ExampleCategory, Example[]> = {
         'zh-CN': '项目时间线',
         'zh-TW': '專案時間線',
         'ja': 'プロジェクトタイムライン',
+        'es': 'Cronograma del proyecto',
+        'pt': 'Linha do tempo do projeto',
       },
       code: {
         'en': `gantt
@@ -790,6 +1110,36 @@ export const examples: Record<ExampleCategory, Example[]> = {
     統合テスト          :a7, after a6, 5d
     section デプロイ段階
     本番環境デプロイ    :a8, after a7, 3d`,
+        'es': `gantt
+    title Cronograma de Desarrollo del Proyecto
+    dateFormat YYYY-MM-DD
+    section Planificación
+    Análisis de Requisitos :a1, 2024-01-01, 10d
+    Diseño de Mockups      :a2, after a1, 15d
+    section Desarrollo
+    API Backend            :a3, 2024-01-26, 20d
+    UI Frontend            :a4, after a3, 15d
+    Integración            :a5, after a4, 10d
+    section Pruebas
+    Pruebas Unitarias      :a6, after a5, 7d
+    Pruebas de Integración :a7, after a6, 5d
+    section Despliegue
+    Despliegue a Producción :a8, after a7, 3d`,
+        'pt': `gantt
+    title Cronograma de Desenvolvimento do Projeto
+    dateFormat YYYY-MM-DD
+    section Planejamento
+    Análise de Requisitos :a1, 2024-01-01, 10d
+    Design de Mockups     :a2, after a1, 15d
+    section Desenvolvimento
+    API Backend           :a3, 2024-01-26, 20d
+    UI Frontend           :a4, after a3, 15d
+    Integração            :a5, after a4, 10d
+    section Testes
+    Testes Unitários      :a6, after a5, 7d
+    Testes de Integração  :a7, after a6, 5d
+    section Implantação
+    Implantação em Produção :a8, after a7, 3d`,
       },
     },
   ],
@@ -801,6 +1151,8 @@ export const examples: Record<ExampleCategory, Example[]> = {
         'zh-CN': '市场份额',
         'zh-TW': '市場份額',
         'ja': '市場シェア',
+        'es': 'Cuota de mercado',
+        'pt': 'Participação de mercado',
       },
       code: {
         'en': `pie title Market Share Distribution
@@ -827,6 +1179,18 @@ export const examples: Record<ExampleCategory, Example[]> = {
     "企業C" : 20
     "企業D" : 12
     "その他" : 8`,
+        'es': `pie title Distribución de Cuota de Mercado
+    "Empresa A" : 35
+    "Empresa B" : 25
+    "Empresa C" : 20
+    "Empresa D" : 12
+    "Otros" : 8`,
+        'pt': `pie title Distribuição de Participação de Mercado
+    "Empresa A" : 35
+    "Empresa B" : 25
+    "Empresa C" : 20
+    "Empresa D" : 12
+    "Outros" : 8`,
       },
     },
   ],
@@ -838,6 +1202,8 @@ export const examples: Record<ExampleCategory, Example[]> = {
         'zh-CN': 'Git 工作流',
         'zh-TW': 'Git 工作流程',
         'ja': 'Gitワークフロー',
+        'es': 'Flujo de trabajo Git',
+        'pt': 'Fluxo de trabalho Git',
       },
       code: {
         'en': `gitGraph

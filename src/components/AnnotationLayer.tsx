@@ -20,7 +20,6 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
   onDeleteAnnotation,
   selectedTool,
   scale,
-  position,
   selectedAnnotationId,
   onSelectAnnotation,
   onShowColorPicker

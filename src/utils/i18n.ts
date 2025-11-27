@@ -427,6 +427,20 @@ export const translations: Record<Language, Translation> = {
     clearAll: 'すべてクリア',
     clearAnnotations: '注釈をクリア',
     confirmClearAnnotations: 'すべての注釈をクリアしますか？',
+    
+    // Fullscreen
+    enterFullscreen: '全画面表示',
+    exitFullscreen: '全画面終了',
+    
+    // Cookie Consent
+    cookieTitle: 'Cookieの使用',
+    cookieMessage: 'Cookieと類似技術を使用して、エクスペリエンスの向上、サイトトラフィックの分析、コンテンツのパーソナライズを行います。「同意する」をクリックすると、Cookieの使用に同意したことになります。',
+    cookieAccept: '同意する',
+    cookieDecline: '拒否',
+    
+    // Dialog
+    confirm: '確認',
+    cancel: 'キャンセル',
   },
   'es': {
     // Header
