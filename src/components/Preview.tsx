@@ -25,6 +25,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig }, 
   const [svg, setSvg] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState(false); // 导出Loading状态
   
   // 缩放和平移状态
   const [scale, setScale] = useState(1.2); // 默认放大到120%
@@ -81,47 +82,105 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig }, 
 
   useImperativeHandle(ref, () => ({
     exportImage: async (transparent: boolean) => {
-      if (!contentRef.current) return;
+      if (!contentRef.current || !svg) return;
+      
+      setExporting(true); // 开始导出Loading
       
       try {
         const node = contentRef.current;
-        const exportScale = 2; // Better quality
+        
+        // 保存当前的 transform 和 transition 状态
+        const originalTransform = node.style.transform;
+        const originalTransition = node.style.transition;
+        
+        // 临时重置 transform 到居中状态，不应用任何缩放和位移
+        node.style.transform = 'translate(0px, 0px) scale(1)';
+        node.style.transition = 'none';
+        
+        // 等待三帧确保样式已经完全应用
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        
+        // 使用更高的导出倍率以获得更清晰的图片
+        const exportScale = 3; // 3x 分辨率，更清晰
         
         const bgColor = transparent ? undefined : getComputedStyle(containerRef.current!).backgroundColor;
         
-        // Cast style to any to bypass strict TS check on CSSProperties vs html-to-image expected types
+        // 获取SVG元素的实际尺寸
+        const svgElement = node.querySelector('svg');
+        let targetWidth = node.offsetWidth;
+        let targetHeight = node.offsetHeight;
+        
+        // 如果能获取到SVG的实际尺寸，使用它
+        if (svgElement) {
+          const svgWidth = svgElement.getAttribute('width');
+          const svgHeight = svgElement.getAttribute('height');
+          if (svgWidth && svgHeight) {
+            targetWidth = Math.max(parseFloat(svgWidth) + 96, node.offsetWidth); // 加上padding
+            targetHeight = Math.max(parseFloat(svgHeight) + 96, node.offsetHeight);
+          }
+        }
+        
+        // 设置导出样式
         const baseStyle: any = {
-             transform: `scale(${exportScale})`,
-             transformOrigin: 'top left',
-             width: `${node.offsetWidth}px`,
-             height: `${node.offsetHeight}px`,
-             ...(transparent ? {} : themeConfig.bgStyle)
+             transform: 'scale(1)',
+             transformOrigin: 'center',
+             width: `${targetWidth}px`,
+             height: `${targetHeight}px`,
         };
 
+        // 如果不是透明导出，应用背景样式
+        if (!transparent && themeConfig.bgStyle) {
+          Object.assign(baseStyle, themeConfig.bgStyle);
+        }
+
         const param = {
-             quality: 1.0,
+             quality: 0.98, // 高质量
              backgroundColor: bgColor,
-             pixelRatio: exportScale,
-             width: node.offsetWidth,
-             height: node.offsetHeight,
-             style: baseStyle
+             pixelRatio: exportScale, // 3x分辨率
+             width: targetWidth,
+             height: targetHeight,
+             style: baseStyle,
+             cacheBust: true,
+             skipAutoScale: true, // 禁用自动缩放
         };
 
         let dataUrl;
         if (transparent) {
-             const transparentStyle = { ...baseStyle, background: 'none' };
-             dataUrl = await toPng(node, { ...param, backgroundColor: undefined, style: transparentStyle });
+             dataUrl = await toPng(node, { 
+               ...param, 
+               backgroundColor: undefined,
+               style: { ...baseStyle, backgroundColor: 'transparent' }
+             });
         } else {
              dataUrl = await toJpeg(node, param);
         }
         
+        // 恢复原来的 transform 状态
+        node.style.transform = originalTransform;
+        node.style.transition = originalTransition;
+        
+        // 下载图片
         const link = document.createElement('a');
         link.download = `mermaid-diagram-${Date.now()}.${transparent ? 'png' : 'jpg'}`;
         link.href = dataUrl;
         link.click();
+        
+        // 短暂延迟后关闭Loading，让用户看到成功反馈
+        setTimeout(() => {
+          setExporting(false);
+        }, 500);
       } catch (err) {
         console.error('Export failed', err);
-        alert('Export failed. See console for details.');
+        setExporting(false);
+        alert('导出失败，请查看控制台了解详情。\n错误: ' + (err as Error).message);
+        
+        // 确保即使出错也恢复原状态
+        if (contentRef.current) {
+          contentRef.current.style.transform = `translate(${position.x}px, ${position.y}px) scale(${scale})`;
+          contentRef.current.style.transition = isDragging ? 'none' : 'transform 0.1s ease-out';
+        }
       }
     }
   }));
@@ -195,6 +254,17 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig }, 
        {loading && !svg && (
            <div className="absolute inset-0 flex items-center justify-center z-10">
                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+           </div>
+       )}
+       
+       {/* 导出Loading */}
+       {exporting && (
+           <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-30">
+               <div className="bg-white rounded-lg shadow-2xl p-6 flex flex-col items-center gap-4">
+                   <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-200 border-t-indigo-600"></div>
+                   <div className="text-gray-700 font-medium">正在导出图片...</div>
+                   <div className="text-gray-500 text-sm">生成高清图片中，请稍候</div>
+               </div>
            </div>
        )}
        

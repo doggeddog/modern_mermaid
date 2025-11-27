@@ -1,6 +1,6 @@
 import type { MermaidConfig } from 'mermaid';
 
-export type ThemeType = 'linearLight' | 'linearDark' | 'notion' | 'cyberpunk' | 'monochrome' | 'ghibli' | 'softPop' | 'darkMinimal';
+export type ThemeType = 'linearLight' | 'linearDark' | 'notion' | 'cyberpunk' | 'monochrome' | 'ghibli' | 'softPop' | 'darkMinimal' | 'wireframe';
 
 export interface ThemeConfig {
   name: string;
@@ -22,7 +22,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         lineColor: '#737373', // Neutral 500
         secondaryColor: '#fafafa',
         tertiaryColor: '#f5f5f5',
-        fontFamily: 'Inter, system-ui, sans-serif',
+        fontFamily: '"Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
         fontSize: '14px',
       },
       themeCSS: `
@@ -50,7 +50,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         lineColor: '#52525b', // Zinc 600
         secondaryColor: '#27272a',
         tertiaryColor: '#27272a',
-        fontFamily: 'Inter, system-ui, sans-serif',
+        fontFamily: '"Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
         fontSize: '14px',
       },
       themeCSS: `
@@ -76,7 +76,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         lineColor: '#94a3b8', // Slate 400
         secondaryColor: '#e2e8f0', // Slate 200
         tertiaryColor: '#cbd5e1', // Slate 300
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", Helvetica, Arial, sans-serif',
         fontSize: '15px',
       },
       themeCSS: `
@@ -89,7 +89,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
             stroke-width: 1px;
         }
         .node .label {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
         }
         /* Keep edge labels simple - don't override too much */
         .edgeLabel { 
@@ -125,7 +125,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         .noteText {
             fill: #78350f !important;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
         }
         /* Loop/Alt/Opt boxes */
         .labelBox {
@@ -137,7 +137,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         .labelText, .loopText {
             fill: #334155 !important;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
             font-weight: 500;
         }
         .loopLine {
@@ -161,7 +161,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         lineColor: '#00f2ff',
         secondaryColor: '#051423',
         tertiaryColor: '#051423',
-        fontFamily: 'Inter, system-ui, sans-serif',
+        fontFamily: '"Inter", "Noto Sans SC", system-ui, sans-serif',
         fontSize: '16px',
         mainBkg: '#051423',
         nodeBorder: '#00f2ff',
@@ -289,7 +289,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         lineColor: '#000000',
         secondaryColor: '#ffffff',
         tertiaryColor: '#ffffff',
-        fontFamily: 'Inter, sans-serif',
+        fontFamily: '"Inter", "Noto Sans SC", sans-serif',
         mainBkg: '#ffffff',
         nodeBorder: '#000000',
         clusterBkg: '#ffffff',
@@ -315,7 +315,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         lineColor: '#3A2E2C', // Matching text color for lines
         secondaryColor: '#fff3e0', 
         tertiaryColor: '#e8f5e9',
-        fontFamily: '"Open Sans", "Noto Sans SC", sans-serif',
+        fontFamily: 'Open Sans, Noto Sans SC, sans-serif',
         fontSize: '16px',
         edgeLabelBackground: '#FDF6E3',
       },
@@ -387,7 +387,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         /* Message text - softer color */
         .messageText {
             fill: #8B7355 !important;
-            font-family: "Open Sans", "Noto Sans SC", sans-serif;
+            font-family: "Noto Serif SC", "Noto Sans SC", serif;
             font-weight: 500;
         }
         /* Sequence diagram arrows - match message line color */
@@ -405,7 +405,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         .noteText {
             fill: #8B7355 !important;
-            font-family: "Open Sans", "Noto Sans SC", sans-serif;
+            font-family: "Noto Serif SC", "Noto Sans SC", serif;
             font-weight: 500;
         }
         /* Loop/Alt/Opt boxes */
@@ -418,7 +418,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         .labelText, .loopText {
             fill: #6B5B4F !important;
-            font-family: "Open Sans", "Noto Sans SC", sans-serif;
+            font-family: "Noto Serif SC", "Noto Sans SC", serif;
             font-weight: 600;
         }
         .loopLine {
@@ -454,7 +454,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         tertiaryColor: '#5D6D7E', // Grey
         tertiaryTextColor: '#ffffff',
         lineColor: '#566573', // Dark Grey Lines
-        fontFamily: '"JetBrains Mono", monospace',
+        fontFamily: '"JetBrains Mono", "Noto Sans SC", monospace',
         fontSize: '15px',
       },
       themeCSS: `
@@ -467,7 +467,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
 
         .node .label {
-            font-family: "JetBrains Mono", monospace;
+            font-family: "JetBrains Mono", "Noto Sans SC", monospace;
             font-weight: 500;
         }
 
@@ -485,7 +485,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         /* Keep edge labels simple - minimal styling */
         .edgeLabel {
             color: #566573 !important;
-            font-family: "JetBrains Mono", monospace;
+            font-family: "JetBrains Mono", "Noto Sans SC", monospace;
             font-size: 13px;
             font-weight: 500;
         }
@@ -514,7 +514,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         .actor text {
             fill: #ffffff !important;
-            font-family: "JetBrains Mono", monospace;
+            font-family: "JetBrains Mono", "Noto Sans SC", monospace;
             font-weight: 500;
         }
         .actor-line {
@@ -538,7 +538,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         /* Message text - dark grey */
         .messageText {
             fill: #566573 !important;
-            font-family: "JetBrains Mono", monospace;
+            font-family: "JetBrains Mono", "Noto Sans SC", monospace;
             font-weight: 500;
         }
         /* Sequence diagram arrows - match message line color */
@@ -556,7 +556,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         .noteText {
             fill: #4B5563 !important;
-            font-family: "JetBrains Mono", monospace;
+            font-family: "JetBrains Mono", "Noto Sans SC", monospace;
             font-weight: 500;
         }
         /* Loop/Alt/Opt boxes - Grey */
@@ -569,7 +569,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
         .labelText, .loopText {
             fill: #ffffff !important;
-            font-family: "JetBrains Mono", monospace;
+            font-family: "JetBrains Mono", "Noto Sans SC", monospace;
             font-weight: 500;
         }
         .loopLine {
@@ -595,7 +595,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         lineColor: '#ffffff', // White lines
         secondaryColor: '#1a1a1a',
         tertiaryColor: '#1a1a1a',
-        fontFamily: 'Inter, system-ui, sans-serif',
+        fontFamily: '"Inter", "Noto Sans SC", system-ui, sans-serif',
         fontSize: '15px',
       },
       themeCSS: `
@@ -609,7 +609,7 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         }
 
         .node .label {
-            font-family: Inter, system-ui, sans-serif;
+            font-family: "Inter", "Noto Sans SC", system-ui, sans-serif;
             font-weight: 400;
             fill: #e5e5e5 !important;
         }
@@ -629,12 +629,163 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         
         .edgeLabel {
             color: #e5e5e5 !important;
-            font-family: Inter, system-ui, sans-serif;
+            font-family: "Inter", "Noto Sans SC", system-ui, sans-serif;
             font-size: 13px;
             font-weight: 400;
         }
       `
     },
     bgClass: 'bg-[#1a1a1a]',
+  },
+  wireframe: {
+    name: 'Wireframe',
+    mermaidConfig: {
+      theme: 'base',
+      themeVariables: {
+        background: '#f5f5f5', // Light grey background
+        primaryColor: '#ffffff', // White for nodes
+        primaryTextColor: '#333333', // Dark grey text
+        primaryBorderColor: '#999999', // Medium grey borders
+        lineColor: '#666666', // Dark grey lines
+        secondaryColor: '#e8e8e8', // Light grey secondary
+        tertiaryColor: '#d4d4d4', // Medium grey tertiary
+        fontFamily: '"Helvetica Neue", "Noto Sans SC", Arial, sans-serif',
+        fontSize: '14px',
+      },
+      themeCSS: `
+        /* Wireframe/Blueprint style - Clean rectangular boxes */
+        .node rect, .node polygon {
+            fill: #ffffff !important;
+            stroke: #999999 !important;
+            stroke-width: 2px !important;
+            rx: 2px !important;
+            ry: 2px !important;
+        }
+        
+        .node circle {
+            fill: #ffffff !important;
+            stroke: #999999 !important;
+            stroke-width: 2px !important;
+        }
+
+        .node .label {
+            font-family: "Helvetica Neue", "Noto Sans SC", Arial, sans-serif;
+            font-weight: 400;
+            fill: #333333 !important;
+        }
+
+        /* Simple straight lines for connections */
+        .edgePath .path {
+            stroke: #666666 !important;
+            stroke-width: 2px !important;
+        }
+        
+        .arrowheadPath {
+            fill: #666666 !important;
+            stroke: #666666 !important;
+        }
+        
+        .edgeLabel {
+            background-color: #f5f5f5 !important;
+            color: #333333 !important;
+            font-family: "Helvetica Neue", "Noto Sans SC", Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+        }
+        
+        /* Sequence Diagram Styling */
+        .actor {
+            fill: #e8e8e8 !important;
+            stroke: #999999 !important;
+            stroke-width: 2px !important;
+            rx: 2px !important;
+            ry: 2px !important;
+        }
+        
+        .actor text {
+            fill: #333333 !important;
+            font-weight: 500;
+        }
+        
+        .actor-line {
+            stroke: #999999 !important;
+            stroke-width: 1.5px !important;
+            stroke-dasharray: 5 5 !important;
+        }
+        
+        .activation0, .activation1, .activation2 {
+            fill: #ffffff !important;
+            stroke: #999999 !important;
+            stroke-width: 2px !important;
+        }
+        
+        .messageLine0, .messageLine1 {
+            stroke: #666666 !important;
+            stroke-width: 2px !important;
+        }
+        
+        .messageText {
+            fill: #333333 !important;
+            font-family: "Helvetica Neue", "Noto Sans SC", Arial, sans-serif;
+        }
+        
+        #arrowhead path, .arrowheadPath {
+            fill: #666666 !important;
+            stroke: #666666 !important;
+        }
+        
+        /* Note boxes */
+        .note {
+            fill: #ffffff !important;
+            stroke: #999999 !important;
+            stroke-width: 2px !important;
+            rx: 2px !important;
+            ry: 2px !important;
+        }
+        
+        .noteText {
+            fill: #333333 !important;
+            font-family: "Helvetica Neue", "Noto Sans SC", Arial, sans-serif;
+        }
+        
+        /* Loop/Alt/Opt boxes */
+        .labelBox {
+            fill: #e8e8e8 !important;
+            stroke: #999999 !important;
+            stroke-width: 2px !important;
+            rx: 2px !important;
+            ry: 2px !important;
+        }
+        
+        .labelText, .loopText {
+            fill: #333333 !important;
+            font-family: "Helvetica Neue", "Noto Sans SC", Arial, sans-serif;
+            font-weight: 500;
+        }
+        
+        .loopLine {
+            stroke: #999999 !important;
+            stroke-width: 2px !important;
+        }
+        
+        /* Cluster styling */
+        .cluster rect {
+            fill: #fafafa !important;
+            stroke: #999999 !important;
+            stroke-width: 2px !important;
+            stroke-dasharray: 8 4 !important;
+            rx: 2px !important;
+            ry: 2px !important;
+        }
+      `
+    },
+    bgClass: 'bg-[#f5f5f5]',
+    bgStyle: {
+        backgroundImage: `
+            linear-gradient(#d4d4d4 1px, transparent 1px),
+            linear-gradient(90deg, #d4d4d4 1px, transparent 1px)
+        `,
+        backgroundSize: '20px 20px'
+    }
   },
 };
