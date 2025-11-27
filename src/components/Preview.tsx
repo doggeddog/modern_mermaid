@@ -579,7 +579,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
     >
        {/* 错误提示 */}
        {error && (
-           <div className="absolute top-4 right-4 bg-red-100 border border-red-200 text-red-700 px-4 py-2 rounded-md text-sm shadow-sm z-20">
+        <div className="absolute top-4 right-4 bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded-md text-sm shadow-sm z-20">
                {error}
            </div>
        )}
@@ -587,17 +587,17 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
        {/* 加载中 */}
        {loading && !svg && (
            <div className="absolute inset-0 flex items-center justify-center z-10">
-               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 dark:border-indigo-400"></div>
            </div>
        )}
        
        {/* 导出Loading */}
        {exporting && (
-           <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-30">
-               <div className="bg-white rounded-lg shadow-2xl p-6 flex flex-col items-center gap-4">
-                   <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-200 border-t-indigo-600"></div>
-                   <div className="text-gray-700 font-medium">{t.export}...</div>
-            <div className="text-gray-500 text-sm">{t.exportDesc}</div>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 dark:bg-black/60 backdrop-blur-sm z-30">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-6 flex flex-col items-center gap-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-200 dark:border-indigo-900 border-t-indigo-600 dark:border-t-indigo-400"></div>
+            <div className="text-gray-700 dark:text-gray-200 font-medium">{t.export}...</div>
+            <div className="text-gray-500 dark:text-gray-400 text-sm">{t.exportDesc}</div>
                </div>
            </div>
        )}
@@ -606,37 +606,37 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
        <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
          <button
            onClick={handleZoomIn}
-           className="p-2 bg-white/90 hover:bg-white rounded-lg shadow-md transition-colors"
+          className="p-2 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 rounded-lg shadow-md transition-colors"
            title={t.zoomIn}
          >
-           <ZoomIn size={20} className="text-gray-700" />
+          <ZoomIn size={20} className="text-gray-700 dark:text-gray-300" />
          </button>
          <button
            onClick={handleZoomOut}
-           className="p-2 bg-white/90 hover:bg-white rounded-lg shadow-md transition-colors"
+          className="p-2 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 rounded-lg shadow-md transition-colors"
            title={t.zoomOut}
          >
-           <ZoomOut size={20} className="text-gray-700" />
+          <ZoomOut size={20} className="text-gray-700 dark:text-gray-300" />
          </button>
          <button
            onClick={handleResetZoom}
-           className="p-2 bg-white/90 hover:bg-white rounded-lg shadow-md transition-colors"
+          className="p-2 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 rounded-lg shadow-md transition-colors"
            title={t.resetView}
          >
-           <Maximize2 size={20} className="text-gray-700" />
+          <Maximize2 size={20} className="text-gray-700 dark:text-gray-300" />
          </button>
-         <div className="p-2 bg-white/90 rounded-lg shadow-md flex items-center justify-center" title={t.dragToMove}>
-           <Move size={16} className="text-gray-500" />
+        <div className="p-2 bg-white/90 dark:bg-gray-800/90 rounded-lg shadow-md flex items-center justify-center" title={t.dragToMove}>
+          <Move size={16} className="text-gray-500 dark:text-gray-400" />
          </div>
        </div>
        
        {/* 缩放级别显示 */}
-       <div className="absolute bottom-4 left-4 px-3 py-1 bg-white/90 rounded-lg shadow-md text-sm text-gray-700 z-20">
+      <div className="absolute bottom-4 left-4 px-3 py-1 bg-white/90 dark:bg-gray-800/90 rounded-lg shadow-md text-sm text-gray-700 dark:text-gray-300 z-20">
          {Math.round(scale * 100)}%
        </div>
        
        {/* 提示信息 */}
-       <div className="absolute bottom-4 right-4 px-3 py-1 bg-white/90 rounded-lg shadow-md text-xs text-gray-600 z-20">
+      <div className="absolute bottom-4 right-4 px-3 py-1 bg-white/90 dark:bg-gray-800/90 rounded-lg shadow-md text-xs text-gray-600 dark:text-gray-400 z-20">
          {t.scrollZoom} | {t.dragMove}
        </div>
        

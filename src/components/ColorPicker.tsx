@@ -36,7 +36,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ position, onClose, onSelectCo
       
       {/* 颜色选择器 */}
       <div
-        className="fixed z-[210] bg-white rounded-lg shadow-xl border border-gray-200 p-4 min-w-[280px]"
+        className="fixed z-[210] bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-4 min-w-[280px]"
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,

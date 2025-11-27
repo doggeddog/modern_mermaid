@@ -18,7 +18,7 @@ const BackgroundSelector: React.FC<BackgroundSelectorProps> = ({ selectedId, onS
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-md shadow-sm transition-all"
+        className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm transition-all"
         title={t.selectBackground}
       >
         <Wallpaper className="w-4 h-4" />
