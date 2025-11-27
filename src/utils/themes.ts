@@ -18,9 +18,9 @@ export const themes: Record<ThemeType, ThemeConfig> = {
   linearLight: {
     name: 'Linear Light',
         annotationColors: {
-            primary: '#4F46E5', // Indigo 600
-            secondary: '#818CF8', // Indigo 400
-            text: '#312E81', // Indigo 900
+            primary: '#a0a3a6',
+            secondary: '#9e9e9e',
+            text: '#454545',
         },
     mermaidConfig: {
       theme: 'base',
@@ -62,9 +62,9 @@ export const themes: Record<ThemeType, ThemeConfig> = {
   linearDark: {
     name: 'Linear Dark',
       annotationColors: {
-          primary: '#818CF8', // Indigo 400
-          secondary: '#A5B4FC', // Indigo 300
-          text: '#E0E7FF', // Indigo 100
+          primary: '#c7c7c7', // Indigo 400
+          secondary: '#c9c9c9', // Indigo 300
+          text: '#d4d4d4', // Indigo 100
       },
     mermaidConfig: {
       theme: 'base',

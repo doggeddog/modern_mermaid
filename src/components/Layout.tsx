@@ -56,9 +56,11 @@ const Layout: React.FC = () => {
     setCode('');
   };
 
-  // 刷新编辑器（恢复到默认示例）
+  // 刷新预览（重新触发预览生成）
   const handleRefreshEditor = () => {
-    setCode(defaultCode);
+    if (previewRef.current) {
+      previewRef.current.refresh();
+    }
   };
 
   // 标注工具处理

@@ -27,6 +27,7 @@ interface PreviewProps {
 export interface PreviewHandle {
   exportImage: (transparent: boolean) => Promise<void>;
   clearAnnotations: () => void;
+  refresh: () => void;
 }
 
 // Initialize globally once
@@ -43,6 +44,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false); // 导出Loading状态
+  const [renderKey, setRenderKey] = useState(0); // 用于强制刷新渲染
   const { t } = useLanguage();
   
   // 颜色选择器状态
@@ -543,6 +545,10 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
       setAnnotations([]);
       setSelectedAnnotationId(null);
     },
+    refresh: () => {
+      // 强制重新渲染预览
+      setRenderKey(prev => prev + 1);
+    },
     exportImage: async (transparent: boolean) => {
       if (!contentRef.current || !svg) return;
       
@@ -813,10 +819,10 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
 
     const timeoutId = setTimeout(() => {
       renderDiagram();
-    }, 600); 
+    }, 300); // 降低防抖延迟从 600ms 到 300ms，提升响应速度
 
     return () => clearTimeout(timeoutId);
-  }, [code, themeConfig, actualFont, nodeColors]);
+  }, [code, themeConfig, actualFont, nodeColors, renderKey]);
 
   return (
     <div 
