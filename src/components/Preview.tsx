@@ -146,7 +146,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
         text: '双击编辑',
         fontSize: 16,
         fontWeight: 'normal',
-        color: '#4F46E5',
+        color: themeConfig.annotationColors.text,
         strokeWidth: 2
       };
       setAnnotations(prev => [...prev, newAnnotation]);
@@ -197,6 +197,15 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
 
     const newAnnotation: Annotation | null = (() => {
       const baseId = `annotation-${Date.now()}`;
+      const primaryColor = themeConfig.annotationColors.primary;
+
+      // 将颜色转换为 rgba 格式用于填充
+      const hexToRgba = (hex: string, alpha: number) => {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      };
 
       switch (selectedTool) {
         case 'arrow':
@@ -205,7 +214,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
             type: 'arrow' as const,
             start: drawStart,
             end: { x, y },
-            color: '#4F46E5',
+            color: primaryColor,
             strokeWidth: 3
           };
 
@@ -215,7 +224,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
             type: 'line' as const,
             start: drawStart,
             end: { x, y },
-            color: '#4F46E5',
+            color: primaryColor,
             strokeWidth: 3
           };
 
@@ -225,12 +234,12 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
             type: 'rect' as const,
             position: {
               x: Math.min(drawStart.x, x),
-              y: Math.min(drawStart.y, y)
+              y: Math.min(drawStart.y, y) 
             },
             width: Math.abs(x - drawStart.x),
             height: Math.abs(y - drawStart.y),
-            color: '#4F46E5',
-            fill: 'rgba(79, 70, 229, 0.1)',
+            color: primaryColor,
+            fill: hexToRgba(primaryColor, 0.1),
             opacity: 0.8,
             strokeWidth: 2
           };
@@ -242,8 +251,8 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
             type: 'circle' as const,
             center: drawStart,
             radius,
-            color: '#4F46E5',
-            fill: 'rgba(79, 70, 229, 0.1)',
+            color: primaryColor,
+            fill: hexToRgba(primaryColor, 0.1),
             opacity: 0.8,
             strokeWidth: 2
           };
@@ -277,6 +286,26 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
   useEffect(() => {
     onAnnotationCountChange(annotations.length);
   }, [annotations.length, onAnnotationCountChange]);
+
+  // 主题切换时更新所有标注的颜色
+  useEffect(() => {
+    const colors = themeConfig.annotationColors;
+    setAnnotations(prev => prev.map(annotation => {
+      // 根据标注类型选择合适的颜色
+      let newColor = colors.primary;
+      if (annotation.type === 'text') {
+        newColor = colors.text;
+      } else if (annotation.id.endsWith('1')) {
+        // 给不同的标注一些颜色变化
+        newColor = colors.secondary;
+      }
+
+      return {
+        ...annotation,
+        color: newColor,
+      } as Annotation;
+    }));
+  }, [themeConfig]);
 
   // 更新标注
   const handleUpdateAnnotation = (id: string, updates: Partial<Annotation>) => {
@@ -866,9 +895,10 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
         {/* 标注覆盖层 */}
         <svg
           ref={svgOverlayRef}
-          className="absolute inset-0 w-full h-full pointer-events-auto"
+          className="absolute inset-0 w-full h-full"
           style={{
             cursor: selectedTool && selectedTool !== 'select' ? 'crosshair' : 'inherit',
+            pointerEvents: selectedTool && selectedTool !== 'select' ? 'auto' : 'none',
           }}
           onMouseDown={handleAnnotationMouseDown}
           onMouseMove={handleAnnotationMouseMove}
@@ -892,7 +922,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
 
               {/* 绘制中的实时预览 */}
               {isDrawing && drawStart && currentMousePos && (() => {
-                const previewColor = '#6366F1';
+                const previewColor = themeConfig.annotationColors.secondary;
                 const previewOpacity = 0.6;
 
                 if (selectedTool === 'arrow') {
@@ -939,13 +969,21 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
                   const y = Math.min(drawStart.y, currentMousePos.y);
                   const width = Math.abs(currentMousePos.x - drawStart.x);
                   const height = Math.abs(currentMousePos.y - drawStart.y);
+
+                  // 转换颜色为 rgba
+                  const hex = previewColor;
+                  const r = parseInt(hex.slice(1, 3), 16);
+                  const g = parseInt(hex.slice(3, 5), 16);
+                  const b = parseInt(hex.slice(5, 7), 16);
+                  const fillColor = `rgba(${r}, ${g}, ${b}, 0.1)`;
+
                   return (
                     <rect
                       x={x}
                       y={y}
                       width={width}
                       height={height}
-                      fill="rgba(99, 102, 241, 0.1)"
+                      fill={fillColor}
                       stroke={previewColor}
                       strokeWidth={2}
                       strokeDasharray="5,5"
@@ -955,12 +993,20 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
                   );
                 } else if (selectedTool === 'circle') {
                   const radius = Math.sqrt((currentMousePos.x - drawStart.x) ** 2 + (currentMousePos.y - drawStart.y) ** 2);
+
+                  // 转换颜色为 rgba
+                  const hex = previewColor;
+                  const r = parseInt(hex.slice(1, 3), 16);
+                  const g = parseInt(hex.slice(3, 5), 16);
+                  const b = parseInt(hex.slice(5, 7), 16);
+                  const fillColor = `rgba(${r}, ${g}, ${b}, 0.1)`;
+
                   return (
                     <circle
                       cx={drawStart.x}
                       cy={drawStart.y}
                       r={radius}
-                      fill="rgba(99, 102, 241, 0.1)"
+                      fill={fillColor}
                       stroke={previewColor}
                       strokeWidth={2}
                       strokeDasharray="5,5"

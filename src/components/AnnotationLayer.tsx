@@ -138,7 +138,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
     const arrowSize = 12;
 
     return (
-      <g key={annotation.id}>
+      <g key={annotation.id} style={{ pointerEvents: 'auto' }}>
         {/* 线条 */}
         <line
           x1={annotation.start.x}
@@ -193,6 +193,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
           y={annotation.position.y - 15}
           width="200"
           height="40"
+          style={{ pointerEvents: 'auto' }}
         >
           <input
             ref={textInputRef}
@@ -212,7 +213,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
     }
 
     return (
-      <g key={annotation.id}>
+      <g key={annotation.id} style={{ pointerEvents: 'auto' }}>
         <text
           x={annotation.position.x}
           y={annotation.position.y}
@@ -244,7 +245,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
     const isSelected = selectedAnnotationId === annotation.id;
 
     return (
-      <g key={annotation.id}>
+      <g key={annotation.id} style={{ pointerEvents: 'auto' }}>
         <rect
           x={annotation.position.x}
           y={annotation.position.y}
@@ -278,7 +279,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
     const isSelected = selectedAnnotationId === annotation.id;
 
     return (
-      <g key={annotation.id}>
+      <g key={annotation.id} style={{ pointerEvents: 'auto' }}>
         <circle
           cx={annotation.center.x}
           cy={annotation.center.y}
@@ -307,7 +308,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
     const isSelected = selectedAnnotationId === annotation.id;
 
     return (
-      <g key={annotation.id}>
+      <g key={annotation.id} style={{ pointerEvents: 'auto' }}>
         <line
           x1={annotation.start.x}
           y1={annotation.start.y}
@@ -361,6 +362,7 @@ const AnnotationLayer: React.FC<AnnotationLayerProps> = ({
         y={buttonY - 15}
         width="80"
         height="30"
+        style={{ pointerEvents: 'auto' }}
       >
         <div className="flex gap-1 justify-center">
           {annotation.type === 'text' && (

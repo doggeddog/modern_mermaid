@@ -7,11 +7,21 @@ export interface ThemeConfig {
   mermaidConfig: MermaidConfig;
   bgClass: string; 
   bgStyle?: React.CSSProperties; // For custom patterns
+    annotationColors: {
+        primary: string;
+        secondary: string;
+        text: string;
+    };
 }
 
 export const themes: Record<ThemeType, ThemeConfig> = {
   linearLight: {
     name: 'Linear Light',
+        annotationColors: {
+            primary: '#4F46E5', // Indigo 600
+            secondary: '#818CF8', // Indigo 400
+            text: '#312E81', // Indigo 900
+        },
     mermaidConfig: {
       theme: 'base',
       themeVariables: {
@@ -51,6 +61,11 @@ export const themes: Record<ThemeType, ThemeConfig> = {
   },
   linearDark: {
     name: 'Linear Dark',
+      annotationColors: {
+          primary: '#818CF8', // Indigo 400
+          secondary: '#A5B4FC', // Indigo 300
+          text: '#E0E7FF', // Indigo 100
+      },
     mermaidConfig: {
       theme: 'base',
       themeVariables: {
@@ -90,6 +105,11 @@ export const themes: Record<ThemeType, ThemeConfig> = {
   },
   notion: {
     name: 'Notion',
+      annotationColors: {
+          primary: '#6B8CAE', // Notion blue
+          secondary: '#73A78D', // Notion green
+          text: '#334155', // Slate 700
+      },
     mermaidConfig: {
       theme: 'base',
       themeVariables: {
@@ -187,6 +207,11 @@ export const themes: Record<ThemeType, ThemeConfig> = {
   },
   cyberpunk: {
     name: 'Cyberpunk',
+      annotationColors: {
+          primary: '#00f2ff', // Neon Cyan
+          secondary: '#ff00ff', // Neon Magenta
+          text: '#00f2ff', // Neon Cyan
+      },
     mermaidConfig: {
       theme: 'base',
       themeVariables: {
@@ -368,6 +393,11 @@ export const themes: Record<ThemeType, ThemeConfig> = {
   },
   monochrome: {
     name: 'Monochrome',
+      annotationColors: {
+          primary: '#000000', // Black
+          secondary: '#606060', // Dark gray
+          text: '#000000', // Black
+      },
     mermaidConfig: {
       theme: 'base',
       themeVariables: {
@@ -407,6 +437,11 @@ export const themes: Record<ThemeType, ThemeConfig> = {
   },
   ghibli: {
     name: 'Ghibli',
+      annotationColors: {
+          primary: '#D4A373', // Warm brown
+          secondary: '#FFB300', // Amber yellow
+          text: '#6B5B4F', // Deep brown
+      },
     mermaidConfig: {
       theme: 'base',
       themeVariables: {
@@ -588,6 +623,11 @@ export const themes: Record<ThemeType, ThemeConfig> = {
   },
   softPop: {
     name: 'Soft Pop',
+      annotationColors: {
+          primary: '#73D1C8', // Teal
+          secondary: '#FCD34D', // Yellow
+          text: '#2D3748', // Dark grey
+      },
     mermaidConfig: {
       theme: 'base',
       themeVariables: {
@@ -814,6 +854,11 @@ export const themes: Record<ThemeType, ThemeConfig> = {
   },
   darkMinimal: {
     name: 'Dark Minimal',
+      annotationColors: {
+          primary: '#ffffff', // White
+          secondary: '#9BA5B0', // Light gray
+          text: '#e5e5e5', // Light grey
+      },
     mermaidConfig: {
       theme: 'base',
       themeVariables: {
@@ -909,6 +954,11 @@ export const themes: Record<ThemeType, ThemeConfig> = {
   },
   wireframe: {
     name: 'Wireframe',
+      annotationColors: {
+          primary: '#666666', // Dark grey
+          secondary: '#999999', // Medium grey
+          text: '#333333', // Very dark grey
+      },
     mermaidConfig: {
       theme: 'base',
       themeVariables: {
@@ -1103,6 +1153,11 @@ export const themes: Record<ThemeType, ThemeConfig> = {
   },
     handDrawn: {
         name: 'Hand Drawn',
+        annotationColors: {
+            primary: '#5D6D7E', // Ink gray-blue
+            secondary: '#7E6B5D', // Ink brown
+            text: '#1a1a1a', // Dark ink
+        },
         mermaidConfig: {
             theme: 'base',
             themeVariables: {
@@ -1400,7 +1455,12 @@ export const themes: Record<ThemeType, ThemeConfig> = {
     },
     grafana: {
         name: 'Grafana',
-        mermaidConfig: {
+      annotationColors: {
+          primary: '#5794F2', // Grafana blue
+          secondary: '#FF9830', // Grafana orange
+          text: '#D8D9DA', // Light grey
+      },
+      mermaidConfig: {
             theme: 'base',
             themeVariables: {
                 darkMode: true,
