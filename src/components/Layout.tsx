@@ -12,7 +12,7 @@ import { backgrounds, type BackgroundStyle } from '../utils/backgrounds';
 import { fonts, type FontOption } from '../utils/fonts';
 import type { AnnotationType } from '../types/annotation';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Trash2, RefreshCw, Maximize2 } from 'lucide-react';
+import { Trash2, RefreshCw } from 'lucide-react';
 
 const Layout: React.FC = () => {
   const defaultCode = `graph TD
@@ -162,15 +162,6 @@ const Layout: React.FC = () => {
                 onClearAnnotations={handleClearAnnotations}
                 annotationCount={annotationCount}
               />
-              
-              {/* 全屏按钮 */}
-              <button
-                onClick={handleToggleFullscreen}
-                className="p-3 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                title={isFullscreen ? t.exitFullscreen || '退出全屏' : t.enterFullscreen || '进入全屏'}
-              >
-                <Maximize2 className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-              </button>
            </div>
            <Preview 
              ref={previewRef} 
@@ -182,6 +173,8 @@ const Layout: React.FC = () => {
              selectedTool={selectedTool}
              onSelectTool={handleSelectTool}
              onAnnotationCountChange={handleAnnotationCountChange}
+             isFullscreen={isFullscreen}
+             onToggleFullscreen={handleToggleFullscreen}
            />
         </div>
       </main>
