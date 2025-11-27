@@ -35,6 +35,14 @@ export interface Translation {
   examples: string;
   selectExample: string;
   loadExample: string;
+  
+  // Background
+  background: string;
+  selectBackground: string;
+  
+  // Font
+  font: string;
+  selectFont: string;
 }
 
 export const translations: Record<Language, Translation> = {
@@ -73,6 +81,14 @@ export const translations: Record<Language, Translation> = {
     examples: 'Examples',
     selectExample: 'Select Example',
     loadExample: 'Load Example',
+    
+    // Background
+    background: 'Background',
+    selectBackground: 'Select Background',
+    
+    // Font
+    font: 'Font',
+    selectFont: 'Select Font',
   },
   'zh-CN': {
     // Header
@@ -109,6 +125,14 @@ export const translations: Record<Language, Translation> = {
     examples: '示例',
     selectExample: '选择示例',
     loadExample: '加载示例',
+    
+    // Background
+    background: '背景',
+    selectBackground: '选择背景',
+    
+    // Font
+    font: '字体',
+    selectFont: '选择字体',
   },
   'zh-TW': {
     // Header
@@ -145,6 +169,14 @@ export const translations: Record<Language, Translation> = {
     examples: '範例',
     selectExample: '選擇範例',
     loadExample: '載入範例',
+    
+    // Background
+    background: '背景',
+    selectBackground: '選擇背景',
+    
+    // Font
+    font: '字體',
+    selectFont: '選擇字體',
   },
   'ja': {
     // Header
@@ -181,6 +213,14 @@ export const translations: Record<Language, Translation> = {
     examples: 'サンプル',
     selectExample: 'サンプルを選択',
     loadExample: 'サンプルを読み込む',
+    
+    // Background
+    background: '背景',
+    selectBackground: '背景を選択',
+    
+    // Font
+    font: 'フォント',
+    selectFont: 'フォントを選択',
   },
 };
 

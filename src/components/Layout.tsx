@@ -7,6 +7,8 @@ import Toolbar from './Toolbar';
 import ExampleSelector from './ExampleSelector';
 import { themes } from '../utils/themes';
 import type { ThemeType } from '../utils/themes';
+import { backgrounds, type BackgroundStyle } from '../utils/backgrounds';
+import { fonts, type FontOption } from '../utils/fonts';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Layout: React.FC = () => {
@@ -16,6 +18,8 @@ const Layout: React.FC = () => {
   B -- No --> D[Debug]`);
   
   const [currentTheme, setCurrentTheme] = useState<ThemeType>('linearLight');
+  const [selectedBackground, setSelectedBackground] = useState<BackgroundStyle>(backgrounds[0]);
+  const [selectedFont, setSelectedFont] = useState<FontOption>(fonts[0]);
   const previewRef = useRef<PreviewHandle>(null);
   const { t } = useLanguage();
 
@@ -23,6 +27,14 @@ const Layout: React.FC = () => {
     if (previewRef.current) {
       previewRef.current.exportImage(transparent);
     }
+  };
+
+  const handleBackgroundChange = (bg: BackgroundStyle) => {
+    setSelectedBackground(bg);
+  };
+
+  const handleFontChange = (font: FontOption) => {
+    setSelectedFont(font);
   };
 
   return (
@@ -48,12 +60,18 @@ const Layout: React.FC = () => {
                 currentTheme={currentTheme} 
                 onThemeChange={setCurrentTheme}
                 onDownload={handleDownload}
+                selectedBackground={selectedBackground.id}
+                onBackgroundChange={handleBackgroundChange}
+                selectedFont={selectedFont.id}
+                onFontChange={handleFontChange}
               />
            </div>
            <Preview 
              ref={previewRef} 
              code={code} 
-             themeConfig={themes[currentTheme]} 
+             themeConfig={themes[currentTheme]}
+             customBackground={selectedBackground}
+             customFont={selectedFont}
            />
         </div>
       </main>

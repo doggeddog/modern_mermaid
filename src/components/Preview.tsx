@@ -3,11 +3,15 @@ import mermaid from 'mermaid';
 import { toPng, toJpeg } from 'html-to-image';
 import { ZoomIn, ZoomOut, Maximize2, Move } from 'lucide-react';
 import type { ThemeConfig } from '../utils/themes';
+import type { BackgroundStyle } from '../utils/backgrounds';
+import type { FontOption } from '../utils/fonts';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface PreviewProps {
   code: string;
   themeConfig: ThemeConfig;
+  customBackground?: BackgroundStyle;
+  customFont?: FontOption;
 }
 
 export interface PreviewHandle {
@@ -20,7 +24,7 @@ mermaid.initialize({
   securityLevel: 'loose',
 });
 
-const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig }, ref) => {
+const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, customBackground, customFont }, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>('');
@@ -28,6 +32,11 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig }, 
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false); // 导出Loading状态
   const { t } = useLanguage();
+  
+  // Determine actual background and font to use
+  const actualBg = customBackground?.id === 'default' ? themeConfig.bgClass : (customBackground?.bgClass || themeConfig.bgClass);
+  const actualBgStyle = customBackground?.id === 'default' ? themeConfig.bgStyle : (customBackground?.bgStyle || themeConfig.bgStyle);
+  const actualFont = customFont?.id === 'default' ? '' : (customFont?.fontFamily || '');
   
   // 缩放和平移状态
   const [scale, setScale] = useState(1.2); // 默认放大到120%
@@ -261,8 +270,8 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig }, 
 
   return (
     <div 
-        className={`flex-1 overflow-hidden flex relative transition-colors duration-300 ${themeConfig.bgClass}`} 
-        style={themeConfig.bgStyle}
+        className={`flex-1 overflow-hidden flex relative transition-colors duration-300 ${actualBg}`} 
+        style={actualBgStyle}
         ref={containerRef}
         onWheel={handleWheel}
         onMouseDown={handleMouseDown}
@@ -347,6 +356,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig }, 
              transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
              transformOrigin: 'center',
              transition: isDragging ? 'none' : 'transform 0.1s ease-out',
+             fontFamily: actualFont || 'inherit',
            }}
            dangerouslySetInnerHTML={{ __html: svg }} 
          />

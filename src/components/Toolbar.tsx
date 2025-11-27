@@ -3,14 +3,30 @@ import { Download, Palette, Image, FileImage } from 'lucide-react';
 import { themes } from '../utils/themes';
 import type { ThemeType } from '../utils/themes';
 import { useLanguage } from '../contexts/LanguageContext';
+import BackgroundSelector from './BackgroundSelector';
+import FontSelector from './FontSelector';
+import type { BackgroundStyle } from '../utils/backgrounds';
+import type { FontOption } from '../utils/fonts';
 
 interface ToolbarProps {
   currentTheme: ThemeType;
   onThemeChange: (theme: ThemeType) => void;
   onDownload: (transparent: boolean) => void;
+  selectedBackground: string;
+  onBackgroundChange: (bg: BackgroundStyle) => void;
+  selectedFont: string;
+  onFontChange: (font: FontOption) => void;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ currentTheme, onThemeChange, onDownload }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ 
+  currentTheme, 
+  onThemeChange, 
+  onDownload,
+  selectedBackground,
+  onBackgroundChange,
+  selectedFont,
+  onFontChange
+}) => {
   const [isThemeOpen, setIsThemeOpen] = React.useState(false);
   const [isDownloadOpen, setIsDownloadOpen] = React.useState(false);
   const { t } = useLanguage();
@@ -88,6 +104,18 @@ const Toolbar: React.FC<ToolbarProps> = ({ currentTheme, onThemeChange, onDownlo
          </>
         )}
       </div>
+
+      {/* Background Selector */}
+      <BackgroundSelector 
+        selectedId={selectedBackground} 
+        onSelectBackground={onBackgroundChange} 
+      />
+
+      {/* Font Selector */}
+      <FontSelector 
+        selectedId={selectedFont} 
+        onSelectFont={onFontChange} 
+      />
     </div>
   );
 };
