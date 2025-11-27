@@ -22,6 +22,7 @@ export interface Translation {
   // Toolbar
   theme: string;
   export: string;
+  exportDesc: string;
   withBackground: string;
   withBackgroundDesc: string;
   transparent: string;
@@ -68,6 +69,7 @@ export const translations: Record<Language, Translation> = {
     // Toolbar
     theme: 'Theme',
     export: 'Export',
+    exportDesc: 'Export the diagram as an image',
     withBackground: 'With Background',
     withBackgroundDesc: 'JPG - Includes background color',
     transparent: 'Transparent',
@@ -112,6 +114,7 @@ export const translations: Record<Language, Translation> = {
     // Toolbar
     theme: '主题',
     export: '导出',
+    exportDesc: '导出图表为图片',
     withBackground: '带背景',
     withBackgroundDesc: 'JPG - 包含背景色',
     transparent: '透明背景',
@@ -156,6 +159,7 @@ export const translations: Record<Language, Translation> = {
     // Toolbar
     theme: '主題',
     export: '匯出',
+    exportDesc: '將圖表導出為圖片',
     withBackground: '帶背景',
     withBackgroundDesc: 'JPG - 包含背景色',
     transparent: '透明背景',
@@ -200,6 +204,7 @@ export const translations: Record<Language, Translation> = {
     // Toolbar
     theme: 'テーマ',
     export: 'エクスポート',
+    exportDesc: '図表を画像としてエクスポート',
     withBackground: '背景あり',
     withBackgroundDesc: 'JPG - 背景色を含む',
     transparent: '透明背景',

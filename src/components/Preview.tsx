@@ -348,7 +348,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
                <div className="bg-white rounded-lg shadow-2xl p-6 flex flex-col items-center gap-4">
                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-200 border-t-indigo-600"></div>
                    <div className="text-gray-700 font-medium">{t.export}...</div>
-                   <div className="text-gray-500 text-sm">{t.export}</div>
+            <div className="text-gray-500 text-sm">{t.exportDesc}</div>
                </div>
            </div>
        )}
