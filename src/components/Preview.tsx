@@ -39,6 +39,10 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [colorPickerPos, setColorPickerPos] = useState({ x: 0, y: 0 });
   const [selectedNodeId, setSelectedNodeId] = useState<string>('');
+  const [selectedNodeDomId, setSelectedNodeDomId] = useState<string>(''); // 保存 DOM ID
+  
+  // 节点颜色映射 - 用于 CSS hack
+  const [nodeColors, setNodeColors] = useState<Record<string, { fill: string; stroke: string }>>({});
   
   // Determine actual background and font to use
   const actualBg = customBackground?.id === 'default' ? themeConfig.bgClass : (customBackground?.bgClass || themeConfig.bgClass);
@@ -114,23 +118,44 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     
-    if (!onCodeChange) return; // 如果没有提供 onCodeChange，不显示颜色选择器
-    
     const target = e.target as HTMLElement;
     
     // 查找被点击的节点元素
     let nodeElement: HTMLElement | null = target;
     let nodeId = '';
+    let domId = '';
     
     // 向上遍历找到包含节点 ID 的元素
     while (nodeElement && nodeElement !== contentRef.current) {
-      // 也检查 flowchart 节点 - 通常是 <g> 元素，id 类似 "flowchart-A-123"
+      // 检查 <g> 元素，可能包含各种图表类型的节点
       if (nodeElement.tagName === 'g' && nodeElement.id) {
+        const rawId = nodeElement.id;
+        domId = rawId; // 保存完整的 DOM ID
+        
         // 尝试多种模式匹配
-        let match = nodeElement.id.match(/flowchart-([A-Za-z0-9_]+)-\d+/);
+        // 1. Flowchart: "flowchart-A-123"
+        let match = rawId.match(/flowchart-([A-Za-z0-9_]+)-\d+/);
+        
+        // 2. State diagram: "state-已建立-2" 或 "state-SomeName-2" (支持Unicode)
         if (!match) {
-          match = nodeElement.id.match(/^([A-Za-z0-9_]+)-\d+$/);
+          match = rawId.match(/^state-(.+?)-\d+$/);
         }
+        
+        // 3. Sequence diagram: "actor-User-123"
+        if (!match) {
+          match = rawId.match(/^actor-(.+?)-\d+$/);
+        }
+        
+        // 4. 通用格式: "SomeName-123"
+        if (!match) {
+          match = rawId.match(/^([A-Za-z0-9_]+)-\d+$/);
+        }
+        
+        // 5. 其他图表类型的前缀格式
+        if (!match) {
+          match = rawId.match(/^[a-z]+-(.+?)-\d+$/);
+        }
+        
         if (match) {
           nodeId = match[1];
           break;
@@ -141,13 +166,18 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
       if (nodeElement.classList.contains('node') || 
           nodeElement.classList.contains('actor') ||
           nodeElement.classList.contains('task') ||
-          nodeElement.classList.contains('section')) {
+          nodeElement.classList.contains('section') ||
+          nodeElement.classList.contains('state')) {
         const rawId = nodeElement.id || nodeElement.getAttribute('data-id') || '';
         if (rawId) {
+          domId = rawId;
           // 提取真实的节点ID（去掉前缀和后缀）
           const match = rawId.match(/flowchart-([A-Za-z0-9_]+)-\d+/) || 
+                       rawId.match(/^state-(.+?)-\d+$/) ||
+                       rawId.match(/^actor-(.+?)-\d+$/) ||
                        rawId.match(/^([A-Za-z0-9_]+)-\d+$/) ||
-                       rawId.match(/^([A-Za-z0-9_]+)$/);
+                       rawId.match(/^[a-z]+-(.+?)-\d+$/) ||
+                       rawId.match(/^(.+)$/);
           nodeId = match ? match[1] : rawId;
           if (nodeId) break;
         }
@@ -156,9 +186,10 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
       nodeElement = nodeElement.parentElement;
     }
     
-    if (nodeId) {
-      console.log('Selected node ID:', nodeId); // 调试日志
+    if (nodeId && domId) {
+      console.log('Selected node - ID:', nodeId, 'DOM ID:', domId); // 调试日志
       setSelectedNodeId(nodeId);
+      setSelectedNodeDomId(domId);
       setColorPickerPos({ x: e.clientX, y: e.clientY });
       setShowColorPicker(true);
     }
@@ -183,48 +214,78 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
     return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
   };
 
-  // 应用颜色到节点
+  // 判断节点ID是否需要用引号包裹
+  const needsQuotes = (id: string): boolean => {
+    // 如果包含非ASCII字符、空格、特殊符号等，需要用引号
+    return /[^a-zA-Z0-9_]/.test(id);
+  };
+
+  // 检测图表类型
+  const detectDiagramType = (code: string): string => {
+    const firstLine = code.trim().split('\n')[0].toLowerCase();
+    if (firstLine.includes('statediagram')) return 'state';
+    if (firstLine.includes('sequencediagram')) return 'sequence';
+    if (firstLine.includes('gantt')) return 'gantt';
+    if (firstLine.includes('classdiagram')) return 'class';
+    if (firstLine.includes('erdiagram')) return 'er';
+    if (firstLine.includes('journey')) return 'journey';
+    if (firstLine.includes('pie')) return 'pie';
+    if (firstLine.includes('graph') || firstLine.includes('flowchart')) return 'flowchart';
+    return 'flowchart'; // default
+  };
+
+  // 应用颜色到节点 - 使用 CSS hack 方式
   const handleApplyColor = (color: string) => {
-    if (!onCodeChange || !selectedNodeId) return;
+    if (!selectedNodeId || !selectedNodeDomId) return;
     
-    const lines = code.split('\n');
-    let modified = false;
-    let newCode = '';
-    
-    // 查找是否已经存在该节点的 style 定义
-    const styleRegex = new RegExp(`^\\s*style\\s+${selectedNodeId}\\s+`, 'i');
-    let styleLineIndex = -1;
-    
-    for (let i = 0; i < lines.length; i++) {
-      if (styleRegex.test(lines[i])) {
-        styleLineIndex = i;
-        break;
-      }
-    }
+    // 检测图表类型
+    const diagramType = detectDiagramType(code);
     
     // 为填充色生成更深的边框色
     const strokeColor = darkenColor(color);
-    const styleDefinition = `style ${selectedNodeId} fill:${color},stroke:${strokeColor},stroke-width:2px`;
     
-    if (styleLineIndex >= 0) {
-      // 更新现有的 style 行
-      lines[styleLineIndex] = `  ${styleDefinition}`;
-      modified = true;
+    // 对于不支持原生样式的图表类型，使用 CSS hack
+    const useCssHack = ['state', 'sequence', 'gantt', 'class', 'er', 'journey', 'pie'].includes(diagramType);
+    
+    if (useCssHack) {
+      // 使用 CSS hack 方式 - 保存颜色映射，不修改代码
+      setNodeColors(prev => ({
+        ...prev,
+        [selectedNodeDomId]: { fill: color, stroke: strokeColor }
+      }));
+      console.log(`Applied CSS hack color for ${diagramType} diagram:`, selectedNodeDomId);
     } else {
-      // 在代码末尾添加新的 style 行
-      // 找到最后一个非空行
-      let lastNonEmptyIndex = lines.length - 1;
-      while (lastNonEmptyIndex >= 0 && lines[lastNonEmptyIndex].trim() === '') {
-        lastNonEmptyIndex--;
+      // 流程图使用原生 style 命令修改代码
+      if (!onCodeChange) return;
+      
+      const lines = code.split('\n');
+      const shouldQuote = needsQuotes(selectedNodeId);
+      const quotedNodeId = shouldQuote ? `"${selectedNodeId}"` : selectedNodeId;
+      const escapedNodeId = selectedNodeId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      
+      const styleRegex = new RegExp(`^\\s*style\\s+(?:"${escapedNodeId}"|${escapedNodeId})\\s+`, 'i');
+      let styleLineIndex = -1;
+      
+      for (let i = 0; i < lines.length; i++) {
+        if (styleRegex.test(lines[i])) {
+          styleLineIndex = i;
+          break;
+        }
       }
       
-      // 在最后插入 style 定义
-      lines.splice(lastNonEmptyIndex + 1, 0, `  ${styleDefinition}`);
-      modified = true;
-    }
-    
-    if (modified) {
-      newCode = lines.join('\n');
+      const styleDefinition = `    style ${quotedNodeId} fill:${color},stroke:${strokeColor},stroke-width:2px`;
+      
+      if (styleLineIndex >= 0) {
+        lines[styleLineIndex] = styleDefinition;
+      } else {
+        let lastNonEmptyIndex = lines.length - 1;
+        while (lastNonEmptyIndex >= 0 && lines[lastNonEmptyIndex].trim() === '') {
+          lastNonEmptyIndex--;
+        }
+        lines.splice(lastNonEmptyIndex + 1, 0, styleDefinition);
+      }
+      
+      const newCode = lines.join('\n');
       onCodeChange(newCode);
     }
   };
@@ -426,20 +487,41 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
         }
         
         // Apply custom font via style injection
+        let customStyles = '';
         if (actualFont) {
-          const fontStyle = `<style>
+          customStyles += `
   text, .label, .messageText, .noteText, .labelText, .loopText, .taskText, 
   .sectionTitle, .titleText, .legendText, tspan {
     font-family: ${actualFont} !important;
-  }
-</style>`;
+  }`;
+        }
+        
+        // Apply node colors via CSS hack
+        if (Object.keys(nodeColors).length > 0) {
+          for (const [domId, colors] of Object.entries(nodeColors)) {
+            customStyles += `
+  #${domId} rect,
+  #${domId} circle,
+  #${domId} polygon,
+  #${domId} path:not(.arrowhead):not(.path),
+  #${domId} .note,
+  #${domId} .actor {
+    fill: ${colors.fill} !important;
+    stroke: ${colors.stroke} !important;
+    stroke-width: 2px !important;
+  }`;
+          }
+        }
+        
+        if (customStyles) {
+          const styleTag = `<style>${customStyles}</style>`;
           // Inject style after defs or at the beginning
           if (processedSvg.includes('</defs>')) {
-            processedSvg = processedSvg.replace(/<\/defs>/, `</defs>${fontStyle}`);
+            processedSvg = processedSvg.replace(/<\/defs>/, `</defs>${styleTag}`);
           } else if (processedSvg.includes('<defs>')) {
-            processedSvg = processedSvg.replace(/<\/defs>/, `</defs>${fontStyle}`);
+            processedSvg = processedSvg.replace(/<\/defs>/, `</defs>${styleTag}`);
           } else {
-            processedSvg = processedSvg.replace(/<svg[^>]*>/, match => match + fontStyle);
+            processedSvg = processedSvg.replace(/<svg[^>]*>/, match => match + styleTag);
           }
         }
         
@@ -457,7 +539,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
     }, 600); 
 
     return () => clearTimeout(timeoutId);
-  }, [code, themeConfig, actualFont]);
+  }, [code, themeConfig, actualFont, nodeColors]);
 
   return (
     <div 
