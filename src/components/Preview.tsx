@@ -128,7 +128,11 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
         // 使用更高的导出倍率以获得更清晰的图片
         const exportScale = 3; // 3x 分辨率，更清晰
         
-        const bgColor = transparent ? undefined : getComputedStyle(containerRef.current!).backgroundColor;
+        // 获取背景色 - 优先使用 actualBgStyle 中的 backgroundColor
+        let bgColor = transparent ? undefined : getComputedStyle(containerRef.current!).backgroundColor;
+        if (!transparent && actualBgStyle?.backgroundColor) {
+          bgColor = actualBgStyle.backgroundColor;
+        }
         
         // 获取SVG元素的实际尺寸
         const svgElement = node.querySelector('svg');
@@ -145,7 +149,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
           }
         }
         
-        // 设置导出样式
+        // 设置导出样式 - 使用当前选择的背景样式
         const baseStyle: any = {
              transform: 'scale(1)',
              transformOrigin: 'center',
@@ -153,9 +157,9 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
              height: `${targetHeight}px`,
         };
 
-        // 如果不是透明导出，应用背景样式
-        if (!transparent && themeConfig.bgStyle) {
-          Object.assign(baseStyle, themeConfig.bgStyle);
+        // 如果不是透明导出，应用当前选择的背景样式
+        if (!transparent && actualBgStyle) {
+          Object.assign(baseStyle, actualBgStyle);
         }
 
         const param = {
@@ -167,6 +171,17 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
              style: baseStyle,
              cacheBust: true,
              skipAutoScale: true, // 禁用自动缩放
+             fontEmbedCSS: '', // 跳过字体嵌入以避免跨域错误
+             filter: (node: HTMLElement) => {
+               // 过滤掉外部样式表以避免 CORS 错误
+               if (node.tagName === 'LINK' && node.getAttribute('rel') === 'stylesheet') {
+                 const href = node.getAttribute('href');
+                 if (href && (href.includes('fonts.googleapis.com') || href.startsWith('http'))) {
+                   return false;
+                 }
+               }
+               return true;
+             },
         };
 
         let dataUrl;
