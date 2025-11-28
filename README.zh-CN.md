@@ -1,5 +1,3 @@
-# Modern Mermaid
-
 <div align="center">
 
 ![Modern Mermaid 横幅](docs/images/banner.svg)

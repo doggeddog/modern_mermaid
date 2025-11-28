@@ -1,4 +1,4 @@
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Github } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useDarkMode } from '../contexts/DarkModeContext';
 import Logo from './Logo';
@@ -28,6 +28,20 @@ const Header = () => {
           )}
         </button>
         <LanguageSwitcher />
+        <a
+          href="https://github.com/gotoailab/modern_mermaid"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer group"
+          aria-label="Visit our GitHub repository"
+          title="Visit our GitHub repository"
+          style={{ marginRight: '-8px' }}
+        >
+          <Github 
+            size={20} 
+            className="text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors" 
+          />
+        </a>
         <a
           href="https://discord.gg/tGxevHhz"
           target="_blank"
