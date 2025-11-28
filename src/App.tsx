@@ -2,14 +2,14 @@ import Layout from './components/Layout';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { DarkModeProvider } from './contexts/DarkModeContext';
 import GoogleAnalytics from './components/GoogleAnalytics';
-import CookieConsent from './components/CookieConsent';
+import UserNotice from './components/UserNotice';
 
 function App() {
   return (
     <DarkModeProvider>
       <LanguageProvider>
         <GoogleAnalytics />
-        <CookieConsent />
+        <UserNotice />
         <Layout />
       </LanguageProvider>
     </DarkModeProvider>

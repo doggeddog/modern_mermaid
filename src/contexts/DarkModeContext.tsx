@@ -14,8 +14,8 @@ export const DarkModeProvider: React.FC<{ children: ReactNode }> = ({ children }
     if (saved !== null) {
       return saved === 'true';
     }
-    // 默认检查系统偏好
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // 默认使用浅色模式
+    return false;
   });
 
   useEffect(() => {

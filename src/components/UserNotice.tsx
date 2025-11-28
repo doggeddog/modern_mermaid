@@ -4,7 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 const COOKIE_CONSENT_KEY = 'cookie_consent_accepted';
 
-const CookieConsent: React.FC = () => {
+const UserNotice: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const { t } = useLanguage();
 
@@ -90,5 +90,5 @@ const CookieConsent: React.FC = () => {
   );
 };
 
-export default CookieConsent;
+export default UserNotice;
 
