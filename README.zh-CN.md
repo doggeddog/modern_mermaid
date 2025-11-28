@@ -78,17 +78,23 @@
 ![主界面](docs/images/screenshot-main.png)
 <!-- 👆 请添加主界面截图 -->
 
-### 主题展示
-![主题](docs/images/screenshot-themes.png)
+### 部分主题展示
+
+<br/>
+
+<table>
+  <tr>
+    <td width="33%"><img src="docs/images/screenshot-brutalis.png" alt="brutalis"/><br/><b>Brutalis</b></td>
+    <td width="33%"><img src="docs/images/screenshot-cyberpunk.png" alt="cyberpunk"/><br/><b>Cyberpunk</b></td>
+    <td width="33%"><img src="docs/images/screenshot-ghibli.png" alt="ghibli"/><br/><b>Ghibli</b></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/screenshot-merphis.png" alt="merphis"/><br/><b>Merphis</b></td>
+    <td><img src="docs/images/screenshot-spotless.png" alt="spotless"/><br/><b>Spotless</b></td>
+    <td><img src="docs/images/screenshot-handdrawn.png" alt="handdrawn"/><br/><b>Handdrawn</b></td>
+  </tr>
+</table>
 <!-- 👆 请添加主题展示截图 -->
-
-### 标注工具
-![标注](docs/images/screenshot-annotations.png)
-<!-- 👆 请添加标注工具截图 -->
-
-### 导出选项
-![导出](docs/images/screenshot-export.png)
-<!-- 👆 请添加导出选项截图 -->
 
 </details>
 

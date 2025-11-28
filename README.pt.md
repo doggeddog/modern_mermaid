@@ -1,5 +1,3 @@
-# Modern Mermaid
-
 <div align="center">
 
 ![Banner do Modern Mermaid](docs/images/banner.svg)
@@ -81,16 +79,21 @@
 <!-- 👆 Adicione captura de tela da interface principal -->
 
 ### Galeria de Temas
-![Temas](docs/images/screenshot-themes.png)
-<!-- 👆 Adicione captura de tela da galeria de temas -->
 
-### Ferramentas de Anotação
-![Anotações](docs/images/screenshot-annotations.png)
-<!-- 👆 Adicione captura de tela das ferramentas de anotação -->
+<br/>
 
-### Opções de Exportação
-![Exportação](docs/images/screenshot-export.png)
-<!-- 👆 Adicione captura de tela das opções de exportação -->
+<table>
+  <tr>
+    <td width="33%"><img src="docs/images/screenshot-brutalis.png" alt="brutalis"/><br/><b>Brutalis</b></td>
+    <td width="33%"><img src="docs/images/screenshot-cyberpunk.png" alt="cyberpunk"/><br/><b>Cyberpunk</b></td>
+    <td width="33%"><img src="docs/images/screenshot-ghibli.png" alt="ghibli"/><br/><b>Ghibli</b></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/screenshot-merphis.png" alt="merphis"/><br/><b>Merphis</b></td>
+    <td><img src="docs/images/screenshot-spotless.png" alt="spotless"/><br/><b>Spotless</b></td>
+    <td><img src="docs/images/screenshot-handdrawn.png" alt="handdrawn"/><br/><b>Handdrawn</b></td>
+  </tr>
+</table>
 
 </details>
 
