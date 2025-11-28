@@ -1,6 +1,6 @@
 import type { MermaidConfig } from 'mermaid';
 
-export type ThemeType = 'linearLight' | 'linearDark' | 'notion' | 'ghibli' | 'spotless' | 'brutalist' | 'glassmorphism' | 'memphis' | 'softPop' | 'cyberpunk' | 'monochrome' | 'darkMinimal' | 'wireframe' | 'handDrawn' | 'grafana' | 'noir' | 'material';
+export type ThemeType = 'linearLight' | 'linearDark' | 'notion' | 'ghibli' | 'spotless' | 'brutalist' | 'glassmorphism' | 'memphis' | 'softPop' | 'cyberpunk' | 'monochrome' | 'darkMinimal' | 'wireframe' | 'handDrawn' | 'grafana' | 'noir' | 'material' | 'aurora';
 
 export interface ThemeConfig {
   name: string;
@@ -4283,6 +4283,548 @@ export const themes: Record<ThemeType, ThemeConfig> = {
     bgClass: 'bg-white',
     bgStyle: {
       backgroundColor: '#ffffff',
+    }
+  },
+  aurora: {
+    name: 'Aurora',
+    annotationColors: {
+      primary: '#f093fb', // Soft pink
+      secondary: '#667eea', // Soft purple
+      text: '#ffffff', // White
+    },
+    mermaidConfig: {
+      theme: 'base',
+      themeVariables: {
+        darkMode: true,
+        background: '#667eea',
+        primaryColor: 'rgba(255, 255, 255, 0.15)', // Glass-like
+        primaryTextColor: '#ffffff',
+        primaryBorderColor: 'rgba(255, 255, 255, 0.3)',
+        lineColor: 'rgba(255, 255, 255, 0.6)',
+        secondaryColor: 'rgba(255, 255, 255, 0.15)',
+        tertiaryColor: 'rgba(255, 255, 255, 0.15)',
+        fontFamily: '"Inter", "Noto Sans SC", -apple-system, sans-serif',
+        fontSize: '15px',
+      },
+      themeCSS: `
+        /* Aurora - Dreamy gradient style with glowing effects */
+        
+        /* Flowchart nodes - Glass morphism with glow */
+        .node rect, .node circle, .node polygon {
+          fill: rgba(255, 255, 255, 0.15) !important;
+          stroke: rgba(255, 255, 255, 0.4) !important;
+          stroke-width: 2px !important;
+          rx: 16px !important;
+          ry: 16px !important;
+          backdrop-filter: blur(10px);
+          filter: 
+            drop-shadow(0 0 20px rgba(246, 147, 251, 0.4))
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+        
+        .node .label {
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          fill: #ffffff !important;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Connection lines - Soft glow */
+        .edgePath .path {
+          stroke: rgba(255, 255, 255, 0.7) !important;
+          stroke-width: 2px !important;
+          stroke-linecap: round;
+          filter: drop-shadow(0 0 8px rgba(246, 147, 251, 0.5));
+        }
+        
+        .arrowheadPath {
+          fill: rgba(255, 255, 255, 0.7) !important;
+          stroke: rgba(255, 255, 255, 0.7) !important;
+          filter: drop-shadow(0 0 8px rgba(246, 147, 251, 0.5));
+        }
+        
+        .edgeLabel {
+          background-color: rgba(102, 126, 234, 0.8) !important;
+          color: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Sequence Diagram - Glass cards */
+        .actor rect,
+        g.actor rect,
+        rect.actor {
+          fill: rgba(255, 255, 255, 0.15) !important;
+          stroke: rgba(255, 255, 255, 0.4) !important;
+          stroke-width: 2px !important;
+          rx: 16px !important;
+          ry: 16px !important;
+          filter: 
+            drop-shadow(0 0 20px rgba(246, 147, 251, 0.4))
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1)) !important;
+        }
+        
+        .actor {
+          fill: rgba(255, 255, 255, 0.15) !important;
+          stroke: rgba(255, 255, 255, 0.4) !important;
+        }
+        
+        g.actor {
+          filter: 
+            drop-shadow(0 0 20px rgba(246, 147, 251, 0.4))
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+        
+        .actor text {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .actor-line {
+          stroke: rgba(255, 255, 255, 0.5) !important;
+          stroke-width: 2px !important;
+          stroke-dasharray: 6 4 !important;
+          filter: drop-shadow(0 0 5px rgba(246, 147, 251, 0.3));
+        }
+        
+        .activation0, .activation1, .activation2,
+        rect.activation0, rect.activation1, rect.activation2 {
+          fill: rgba(246, 147, 251, 0.2) !important;
+          stroke: rgba(255, 255, 255, 0.5) !important;
+          stroke-width: 2px !important;
+          filter: 
+            drop-shadow(0 0 15px rgba(246, 147, 251, 0.5))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) !important;
+        }
+        
+        .messageLine0, .messageLine1 {
+          stroke: rgba(255, 255, 255, 0.7) !important;
+          stroke-width: 2px !important;
+          filter: drop-shadow(0 0 8px rgba(246, 147, 251, 0.5));
+        }
+        
+        .messageText {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        #arrowhead path, .arrowheadPath {
+          fill: rgba(255, 255, 255, 0.7) !important;
+          stroke: rgba(255, 255, 255, 0.7) !important;
+          filter: drop-shadow(0 0 8px rgba(246, 147, 251, 0.5));
+        }
+        
+        /* Note boxes - Dreamy glow */
+        .note,
+        rect.note,
+        g.note rect {
+          fill: rgba(246, 147, 251, 0.2) !important;
+          stroke: rgba(255, 255, 255, 0.5) !important;
+          stroke-width: 2px !important;
+          rx: 16px !important;
+          ry: 16px !important;
+          filter: 
+            drop-shadow(0 0 25px rgba(246, 147, 251, 0.6))
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1)) !important;
+        }
+        
+        .noteText,
+        text.noteText {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Loop/Alt/Opt boxes */
+        .labelBox,
+        rect.labelBox {
+          fill: rgba(255, 255, 255, 0.15) !important;
+          stroke: rgba(255, 255, 255, 0.4) !important;
+          stroke-width: 2px !important;
+          rx: 16px !important;
+          ry: 16px !important;
+          filter: 
+            drop-shadow(0 0 20px rgba(102, 126, 234, 0.4))
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1)) !important;
+        }
+        
+        .labelText, .loopText,
+        text.labelText, text.loopText {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .loopLine,
+        path.loopLine {
+          stroke: rgba(255, 255, 255, 0.5) !important;
+          stroke-width: 2px !important;
+        }
+        
+        /* Cluster/Subgraph styling */
+        .cluster rect {
+          fill: rgba(255, 255, 255, 0.1) !important;
+          stroke: rgba(255, 255, 255, 0.3) !important;
+          stroke-width: 2px !important;
+          stroke-dasharray: 8 4 !important;
+          rx: 20px !important;
+          ry: 20px !important;
+          filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.3));
+        }
+        
+        .cluster text {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 700;
+          text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Class Diagram - Glass cards */
+        .classGroup rect,
+        g.classGroup rect,
+        g[id*="classid"] rect,
+        g[id^="classid"] rect,
+        svg[aria-roledescription="classDiagram"] g.classGroup rect {
+          fill: rgba(255, 255, 255, 0.15) !important;
+          stroke: rgba(255, 255, 255, 0.4) !important;
+          stroke-width: 2px !important;
+          rx: 16px !important;
+          ry: 16px !important;
+          filter: 
+            drop-shadow(0 0 20px rgba(246, 147, 251, 0.4))
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1)) !important;
+        }
+        
+        .classLabel .label,
+        .classLabel text,
+        .class-label text {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .relationshipLine,
+        .relation {
+          stroke: rgba(255, 255, 255, 0.6) !important;
+          stroke-width: 2px !important;
+          filter: drop-shadow(0 0 8px rgba(246, 147, 251, 0.4));
+        }
+        
+        .divider {
+          stroke: rgba(255, 255, 255, 0.3) !important;
+          stroke-width: 1px !important;
+        }
+        
+        /* State diagram - Dreamy states */
+        g[id*="state-"] rect,
+        g[id^="state-"] rect,
+        g.stateGroup rect,
+        .statediagram-state rect,
+        .statediagram-state .state-inner,
+        g[class*="state"] rect,
+        svg[aria-roledescription="statediagram"] g rect:not(circle):not([id*="start"]):not([id*="end"]) {
+          fill: rgba(255, 255, 255, 0.15) !important;
+          stroke: rgba(255, 255, 255, 0.4) !important;
+          stroke-width: 2px !important;
+          rx: 16px !important;
+          ry: 16px !important;
+          filter: 
+            drop-shadow(0 0 20px rgba(246, 147, 251, 0.4))
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1)) !important;
+        }
+        
+        .start-state circle,
+        .end-state circle,
+        circle[id*="start"],
+        circle[id*="end"] {
+          fill: rgba(246, 147, 251, 0.8) !important;
+          stroke: rgba(255, 255, 255, 0.6) !important;
+          stroke-width: 2px !important;
+          filter: 
+            drop-shadow(0 0 30px rgba(246, 147, 251, 0.9))
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+        
+        .statediagram-state circle {
+          stroke: rgba(255, 255, 255, 0.4) !important;
+          stroke-width: 2px !important;
+        }
+        
+        .stateLabel text,
+        .statediagram-state text,
+        .state-note text {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .transition,
+        path.transition {
+          stroke: rgba(255, 255, 255, 0.6) !important;
+          stroke-width: 2px !important;
+          filter: drop-shadow(0 0 8px rgba(246, 147, 251, 0.4));
+        }
+        
+        g.stateGroup.statediagram-cluster rect {
+          fill: rgba(255, 255, 255, 0.1) !important;
+          rx: 20px !important;
+          ry: 20px !important;
+        }
+        
+        /* ER Diagram - Glass entities */
+        .er.entityBox,
+        .entityBox,
+        g[id*="entity-"] rect,
+        g[id^="entity"] rect,
+        svg[aria-roledescription="er"] .entityBox,
+        svg[aria-roledescription="er"] g rect {
+          fill: rgba(255, 255, 255, 0.15) !important;
+          stroke: rgba(255, 255, 255, 0.4) !important;
+          stroke-width: 2px !important;
+          rx: 16px !important;
+          ry: 16px !important;
+          filter: 
+            drop-shadow(0 0 20px rgba(246, 147, 251, 0.4))
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1)) !important;
+        }
+        
+        .er.relationshipLabelBox,
+        .relationshipLabelBox {
+          fill: rgba(255, 255, 255, 0.15) !important;
+          stroke: rgba(255, 255, 255, 0.4) !important;
+          stroke-width: 2px !important;
+          rx: 12px !important;
+          ry: 12px !important;
+          filter: 
+            drop-shadow(0 0 15px rgba(102, 126, 234, 0.4))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        
+        .er.entityLabel,
+        .er.relationshipLabel,
+        .entityLabel text,
+        .relationshipLabel {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .er .relationshipLine,
+        .relationshipLine {
+          stroke: rgba(255, 255, 255, 0.6) !important;
+          stroke-width: 2px !important;
+          filter: drop-shadow(0 0 8px rgba(246, 147, 251, 0.4));
+        }
+        
+        .er .attributeBoxEven,
+        .er .attributeBoxOdd {
+          fill: rgba(255, 255, 255, 0.1) !important;
+          stroke: none !important;
+        }
+        
+        /* Gantt chart - Dreamy timeline */
+        .titleText,
+        text.titleText {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 700;
+          text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+        }
+        
+        .sectionTitle,
+        text.sectionTitle {
+          fill: rgba(255, 255, 255, 0.9) !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .taskText, 
+        .taskTextOutsideRight, 
+        .taskTextOutsideLeft,
+        text.taskText {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+        
+        .task0, .task1, .task2, .task3,
+        rect.task,
+        rect[class*="task"],
+        svg[aria-roledescription="gantt"] rect.task,
+        g.task rect {
+          stroke: rgba(255, 255, 255, 0.4) !important;
+          stroke-width: 2px !important;
+          rx: 8px !important;
+          filter: 
+            drop-shadow(0 0 15px rgba(246, 147, 251, 0.4))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) !important;
+        }
+        
+        .taskText0, .taskText1, .taskText2, .taskText3 {
+          fill: #ffffff !important;
+        }
+        
+        .grid .tick line {
+          stroke: rgba(255, 255, 255, 0.2) !important;
+        }
+        
+        .grid path {
+          stroke: none !important;
+        }
+        
+        /* Pie chart - Aurora slices */
+        .pieCircle,
+        circle.pieCircle {
+          stroke: rgba(255, 255, 255, 0.4) !important;
+          stroke-width: 2px !important;
+        }
+        
+        .pieTitleText,
+        text.pieTitleText {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 700;
+          text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+        
+        .legendText,
+        text.legendText,
+        text.legend {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+        
+        .slice,
+        path.slice,
+        svg[aria-roledescription="pie"] path {
+          stroke: rgba(255, 255, 255, 0.3) !important;
+          stroke-width: 2px !important;
+          filter: 
+            drop-shadow(0 0 15px rgba(246, 147, 251, 0.4))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) !important;
+        }
+        
+        /* Journey diagram */
+        .section0, .section1, .section2 {
+          fill: rgba(255, 255, 255, 0.15) !important;
+          stroke: rgba(255, 255, 255, 0.4) !important;
+          stroke-width: 2px !important;
+          rx: 16px !important;
+          filter: 
+            drop-shadow(0 0 20px rgba(246, 147, 251, 0.4))
+            drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+        
+        .journey-section rect {
+          rx: 16px !important;
+        }
+        
+        /* Global text styling */
+        text {
+          fill: #ffffff !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+        
+        /* XYChart styles - Gradient data visualization */
+        .line-plot-0 path {
+          stroke: rgba(246, 147, 251, 0.9) !important;
+          stroke-width: 3px !important;
+          stroke-linecap: round;
+          filter: drop-shadow(0 0 10px rgba(246, 147, 251, 0.6));
+        }
+        .line-plot-1 path {
+          stroke: rgba(255, 255, 255, 0.8) !important;
+          stroke-width: 3px !important;
+          stroke-linecap: round;
+          filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+        }
+        .line-plot-2 path {
+          stroke: rgba(102, 126, 234, 0.9) !important;
+          stroke-width: 3px !important;
+          stroke-linecap: round;
+          filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.6));
+        }
+        .bar-plot-0 rect {
+          fill: rgba(246, 147, 251, 0.3) !important;
+          stroke: rgba(246, 147, 251, 0.6) !important;
+          stroke-width: 2px !important;
+          rx: 8px !important;
+          filter: 
+            drop-shadow(0 0 15px rgba(246, 147, 251, 0.5))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        .bar-plot-1 rect {
+          fill: rgba(255, 255, 255, 0.2) !important;
+          stroke: rgba(255, 255, 255, 0.5) !important;
+          stroke-width: 2px !important;
+          rx: 8px !important;
+          filter: 
+            drop-shadow(0 0 15px rgba(255, 255, 255, 0.4))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        .bar-plot-2 rect {
+          fill: rgba(102, 126, 234, 0.3) !important;
+          stroke: rgba(102, 126, 234, 0.6) !important;
+          stroke-width: 2px !important;
+          rx: 8px !important;
+          filter: 
+            drop-shadow(0 0 15px rgba(102, 126, 234, 0.5))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        .ticks path {
+          stroke: rgba(255, 255, 255, 0.3) !important;
+        }
+        .chart-title text {
+          fill: #ffffff !important;
+          font-weight: 700 !important;
+          font-size: 18px !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+        .left-axis .label text, .bottom-axis .label text {
+          fill: rgba(255, 255, 255, 0.8) !important;
+          font-size: 13px !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+        .left-axis .title text, .bottom-axis .title text {
+          fill: #ffffff !important;
+          font-size: 14px !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+        }
+        .legend text {
+          fill: #ffffff !important;
+          font-size: 13px !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+      `
+    },
+    bgClass: 'bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f093fb]',
+    bgStyle: {
+      backgroundColor: '#667eea',
+      backgroundImage: `
+        linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%),
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(246, 147, 251, 0.15) 0%, transparent 50%)
+      `,
     }
   },
 };
