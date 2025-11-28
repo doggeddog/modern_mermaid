@@ -1,6 +1,6 @@
 import type { MermaidConfig } from 'mermaid';
 
-export type ThemeType = 'linearLight' | 'linearDark' | 'notion' | 'ghibli' | 'spotless' | 'brutalist' | 'glassmorphism' | 'memphis' | 'softPop' | 'cyberpunk' | 'monochrome' | 'darkMinimal' | 'wireframe' | 'handDrawn' | 'grafana' | 'noir';
+export type ThemeType = 'linearLight' | 'linearDark' | 'notion' | 'ghibli' | 'spotless' | 'brutalist' | 'glassmorphism' | 'memphis' | 'softPop' | 'cyberpunk' | 'monochrome' | 'darkMinimal' | 'wireframe' | 'handDrawn' | 'grafana' | 'noir' | 'material';
 
 export interface ThemeConfig {
   name: string;
@@ -3768,6 +3768,521 @@ export const themes: Record<ThemeType, ThemeConfig> = {
         radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
         radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 50%)
       `,
+    }
+  },
+  material: {
+    name: 'Material',
+    annotationColors: {
+      primary: '#6200ee', // Material Purple
+      secondary: '#03dac6', // Material Teal
+      text: '#333333', // Dark gray
+    },
+    mermaidConfig: {
+      theme: 'base',
+      themeVariables: {
+        background: '#ffffff',
+        primaryColor: '#ffffff', // White for nodes
+        primaryTextColor: 'rgba(0, 0, 0, 0.87)', // Material Design primary text
+        primaryBorderColor: '#e0e0e0', // Light gray border
+        lineColor: '#757575', // Medium gray lines
+        secondaryColor: '#ffffff',
+        tertiaryColor: '#ffffff',
+        fontFamily: '"Roboto", "Noto Sans SC", -apple-system, sans-serif',
+        fontSize: '14px',
+      },
+      themeCSS: `
+        /* Material Design - Elevation and shadows */
+        
+        /* Flowchart nodes - Material elevation 2 */
+        .node rect, .node circle, .node polygon {
+          fill: #ffffff !important;
+          stroke: none !important;
+          rx: 4px !important;
+          ry: 4px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.24));
+        }
+        
+        .node .label {
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-size: 14px;
+        }
+        
+        /* Connection lines - Material style */
+        .edgePath .path {
+          stroke: #757575 !important;
+          stroke-width: 2px !important;
+          stroke-linecap: round;
+        }
+        
+        .arrowheadPath {
+          fill: #757575 !important;
+          stroke: #757575 !important;
+        }
+        
+        .edgeLabel {
+          background-color: #ffffff !important;
+          color: rgba(0, 0, 0, 0.87) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+          font-size: 13px;
+        }
+        
+        /* All nodes use white surface - Material Design spec */
+        
+        /* Sequence Diagram - Material cards */
+        .actor rect,
+        g.actor rect,
+        rect.actor {
+          fill: #ffffff !important;
+          stroke: none !important;
+          rx: 4px !important;
+          ry: 4px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.24)) !important;
+        }
+        
+        .actor {
+          fill: #ffffff !important;
+          stroke: none !important;
+        }
+        
+        g.actor {
+          filter: 
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.24));
+        }
+        
+        .actor text {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+        }
+        
+        .actor-line {
+          stroke: #bdbdbd !important;
+          stroke-width: 2px !important;
+          stroke-dasharray: 4 4 !important;
+        }
+        
+        .activation0, .activation1, .activation2,
+        rect.activation0, rect.activation1, rect.activation2 {
+          fill: #ffffff !important;
+          stroke: none !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.24)) !important;
+        }
+        
+        .messageLine0, .messageLine1 {
+          stroke: #757575 !important;
+          stroke-width: 2px !important;
+        }
+        
+        .messageText {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+          font-size: 13px;
+        }
+        
+        #arrowhead path, .arrowheadPath {
+          fill: #757575 !important;
+          stroke: #757575 !important;
+        }
+        
+        /* Note boxes - Material elevation 4 */
+        .note,
+        rect.note,
+        g.note rect {
+          fill: #ffffff !important;
+          stroke: none !important;
+          rx: 4px !important;
+          ry: 4px !important;
+          filter: 
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.14))
+            drop-shadow(0 4px 5px rgba(0, 0, 0, 0.12)) !important;
+        }
+        
+        .noteText,
+        text.noteText {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+        }
+        
+        /* Loop/Alt/Opt boxes - Elevated */
+        .labelBox,
+        rect.labelBox {
+          fill: #ffffff !important;
+          stroke: none !important;
+          rx: 4px !important;
+          ry: 4px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.24)) !important;
+        }
+        
+        .labelText, .loopText,
+        text.labelText, text.loopText {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          font-size: 12px;
+        }
+        
+        .loopLine,
+        path.loopLine {
+          stroke: #bdbdbd !important;
+          stroke-width: 2px !important;
+        }
+        
+        /* Cluster/Subgraph styling - Material surface */
+        .cluster rect {
+          fill: #ffffff !important;
+          stroke: #e0e0e0 !important;
+          stroke-width: 1px !important;
+          rx: 8px !important;
+          ry: 8px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.08))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.16));
+        }
+        
+        .cluster text {
+          fill: rgba(0, 0, 0, 0.60) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-size: 12px;
+        }
+        
+        /* Class Diagram - Material cards */
+        .classGroup rect,
+        g.classGroup rect,
+        g[id*="classid"] rect,
+        g[id^="classid"] rect,
+        svg[aria-roledescription="classDiagram"] g.classGroup rect {
+          fill: #ffffff !important;
+          stroke: none !important;
+          rx: 4px !important;
+          ry: 4px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.24)) !important;
+        }
+        
+        .classLabel .label,
+        .classLabel text,
+        .class-label text {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+        }
+        
+        .relationshipLine,
+        .relation {
+          stroke: #757575 !important;
+          stroke-width: 2px !important;
+        }
+        
+        .divider {
+          stroke: #e0e0e0 !important;
+          stroke-width: 1px !important;
+        }
+        
+        /* State diagram - Material surfaces */
+        g[id*="state-"] rect,
+        g[id^="state-"] rect,
+        g.stateGroup rect,
+        .statediagram-state rect,
+        .statediagram-state .state-inner,
+        g[class*="state"] rect,
+        svg[aria-roledescription="statediagram"] g rect:not(circle):not([id*="start"]):not([id*="end"]) {
+          fill: #ffffff !important;
+          stroke: none !important;
+          rx: 4px !important;
+          ry: 4px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.24)) !important;
+        }
+        
+        .start-state circle,
+        .end-state circle,
+        circle[id*="start"],
+        circle[id*="end"] {
+          fill: #6200ee !important;
+          stroke: none !important;
+          filter: 
+            drop-shadow(0 2px 4px rgba(98, 0, 238, 0.3))
+            drop-shadow(0 4px 8px rgba(98, 0, 238, 0.2));
+        }
+        
+        .statediagram-state circle {
+          stroke: none !important;
+        }
+        
+        .stateLabel text,
+        .statediagram-state text,
+        .state-note text {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+        }
+        
+        .transition,
+        path.transition {
+          stroke: #757575 !important;
+          stroke-width: 2px !important;
+        }
+        
+        g.stateGroup.statediagram-cluster rect {
+          fill: #ffffff !important;
+          stroke: #e0e0e0 !important;
+          stroke-width: 1px !important;
+          rx: 8px !important;
+          ry: 8px !important;
+        }
+        
+        /* ER Diagram - Material entities */
+        .er.entityBox,
+        .entityBox,
+        g[id*="entity-"] rect,
+        g[id^="entity"] rect,
+        svg[aria-roledescription="er"] .entityBox,
+        svg[aria-roledescription="er"] g rect {
+          fill: #ffffff !important;
+          stroke: none !important;
+          rx: 4px !important;
+          ry: 4px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.24)) !important;
+        }
+        
+        .er.relationshipLabelBox,
+        .relationshipLabelBox {
+          fill: #ffffff !important;
+          stroke: none !important;
+          rx: 4px !important;
+          ry: 4px !important;
+          filter: 
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.10))
+            drop-shadow(0 1px 1px rgba(0, 0, 0, 0.16));
+        }
+        
+        .er.entityLabel,
+        .er.relationshipLabel,
+        .entityLabel text,
+        .relationshipLabel {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+        }
+        
+        .er .relationshipLine,
+        .relationshipLine {
+          stroke: #757575 !important;
+          stroke-width: 2px !important;
+        }
+        
+        .er .attributeBoxEven,
+        .er .attributeBoxOdd {
+          fill: #ffffff !important;
+          stroke: none !important;
+        }
+        
+        /* Gantt chart - Material timeline */
+        .titleText,
+        text.titleText {
+          fill: #212121 !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 1.25px;
+        }
+        
+        .sectionTitle,
+        text.sectionTitle {
+          fill: rgba(0, 0, 0, 0.60) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+        }
+        
+        .taskText, 
+        .taskTextOutsideRight, 
+        .taskTextOutsideLeft,
+        text.taskText {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 400;
+        }
+        
+        .task0, .task1, .task2, .task3,
+        rect.task,
+        rect[class*="task"],
+        svg[aria-roledescription="gantt"] rect.task,
+        g.task rect {
+          stroke: none !important;
+          rx: 4px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.24)) !important;
+        }
+        
+        .taskText0, .taskText1, .taskText2, .taskText3 {
+          fill: rgba(0, 0, 0, 0.87) !important;
+        }
+        
+        .grid .tick line {
+          stroke: #e0e0e0 !important;
+        }
+        
+        .grid path {
+          stroke: none !important;
+        }
+        
+        /* Pie chart - Material slices */
+        .pieCircle,
+        circle.pieCircle {
+          stroke: none !important;
+        }
+        
+        .pieTitleText,
+        text.pieTitleText {
+          fill: #212121 !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 1.25px;
+        }
+        
+        .legendText,
+        text.legendText,
+        text.legend {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 400;
+        }
+        
+        .slice,
+        path.slice,
+        svg[aria-roledescription="pie"] path {
+          stroke: #ffffff !important;
+          stroke-width: 2px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.24)) !important;
+        }
+        
+        /* Pie slices with Material palette */
+        .pieChart .slice0 { fill: #6200ee !important; }
+        .pieChart .slice1 { fill: #03dac6 !important; }
+        .pieChart .slice2 { fill: #b00020 !important; }
+        .pieChart .slice3 { fill: #018786 !important; }
+        .pieChart .slice4 { fill: #3700b3 !important; }
+        .pieChart .slice5 { fill: #cf6679 !important; }
+        
+        /* Journey diagram */
+        .section0, .section1, .section2 {
+          fill: #ffffff !important;
+          stroke: none !important;
+          rx: 4px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(0, 0, 0, 0.12))
+            drop-shadow(0 1px 2px rgba(0, 0, 0, 0.24));
+        }
+        
+        .journey-section rect {
+          rx: 4px !important;
+        }
+        
+        /* Global text styling */
+        text {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+        }
+        
+        /* XYChart styles - Material data visualization */
+        .line-plot-0 path {
+          stroke: #6200ee !important;
+          stroke-width: 3px !important;
+          stroke-linecap: round;
+        }
+        .line-plot-1 path {
+          stroke: #03dac6 !important;
+          stroke-width: 3px !important;
+          stroke-linecap: round;
+        }
+        .line-plot-2 path {
+          stroke: #b00020 !important;
+          stroke-width: 3px !important;
+          stroke-linecap: round;
+        }
+        .bar-plot-0 rect {
+          fill: #6200ee !important;
+          stroke: none !important;
+          rx: 4px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(98, 0, 238, 0.15))
+            drop-shadow(0 1px 2px rgba(98, 0, 238, 0.25));
+        }
+        .bar-plot-1 rect {
+          fill: #03dac6 !important;
+          stroke: none !important;
+          rx: 4px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(3, 218, 198, 0.15))
+            drop-shadow(0 1px 2px rgba(3, 218, 198, 0.25));
+        }
+        .bar-plot-2 rect {
+          fill: #b00020 !important;
+          stroke: none !important;
+          rx: 4px !important;
+          filter: 
+            drop-shadow(0 1px 3px rgba(176, 0, 32, 0.15))
+            drop-shadow(0 1px 2px rgba(176, 0, 32, 0.25));
+        }
+        .ticks path {
+          stroke: #e0e0e0 !important;
+        }
+        .chart-title text {
+          fill: #212121 !important;
+          font-weight: 500 !important;
+          font-size: 18px !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          text-transform: uppercase;
+          letter-spacing: 1.25px;
+        }
+        .left-axis .label text, .bottom-axis .label text {
+          fill: rgba(0, 0, 0, 0.60) !important;
+          font-size: 13px !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+        }
+        .left-axis .title text, .bottom-axis .title text {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-size: 14px !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+        }
+        .legend text {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-size: 13px !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+        }
+      `
+    },
+    bgClass: 'bg-white',
+    bgStyle: {
+      backgroundColor: '#ffffff',
     }
   },
 };
