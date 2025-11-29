@@ -104,8 +104,84 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
     trackEvent(AnalyticsEvents.ZOOM_RESET, {
       previous_scale: scale
     });
-    setScale(1);
-    setPosition({ x: 0, y: 0 });
+    
+    // 计算合适的缩放比例和位置
+    if (!containerRef.current || !contentRef.current) {
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+      return;
+    }
+
+    const container = containerRef.current;
+    const content = contentRef.current;
+    const svgElement = content.querySelector('svg');
+    
+    if (!svgElement) {
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+      return;
+    }
+
+    try {
+      // 获取 SVG 的原始尺寸
+      let svgWidth = 0;
+      let svgHeight = 0;
+
+      // 从 width/height 属性获取（Mermaid 生成的原始尺寸）
+      const widthAttr = svgElement.getAttribute('width');
+      const heightAttr = svgElement.getAttribute('height');
+
+      if (widthAttr && heightAttr) {
+        svgWidth = parseFloat(widthAttr);
+        svgHeight = parseFloat(heightAttr);
+      }
+
+      // 如果没有 width/height，从 viewBox 获取
+      if ((!svgWidth || !svgHeight) && svgElement.getAttribute('viewBox')) {
+        const viewBox = svgElement.getAttribute('viewBox');
+        const parts = viewBox!.split(/\s+/).map(Number);
+        if (parts.length === 4) {
+          svgWidth = parts[2];
+          svgHeight = parts[3];
+        }
+      }
+
+      // 获取容器尺寸
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+
+      if (svgWidth > 0 && svgHeight > 0 && containerWidth > 0 && containerHeight > 0) {
+        // 目标：让图表占据容器的 75-80% 空间
+        const targetWidthRatio = 0.75;
+        const targetHeightRatio = 0.75;
+
+        // 计算需要的缩放比例
+        const scaleX = (containerWidth * targetWidthRatio) / svgWidth;
+        const scaleY = (containerHeight * targetHeightRatio) / svgHeight;
+
+        // 取较小的比例，确保图表不会超出容器
+        let autoScale = Math.min(scaleX, scaleY);
+
+        // 限制缩放范围：0.5x 到 3x
+        autoScale = Math.max(0.5, Math.min(3, autoScale));
+
+        // 对于非常小的图表，确保至少放大到 1.2x
+        if (svgWidth < containerWidth * 0.3 && svgHeight < containerHeight * 0.3) {
+          autoScale = Math.max(1.2, autoScale);
+        }
+
+        // 设置缩放和重置位置到中心
+        setScale(autoScale);
+        setPosition({ x: 0, y: 0 });
+      } else {
+        setScale(1);
+        setPosition({ x: 0, y: 0 });
+      }
+    } catch (err) {
+      console.error('Reset zoom calculation error:', err);
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+    }
   };
 
   // 滚轮缩放 - 使用 useEffect 添加原生事件监听器
