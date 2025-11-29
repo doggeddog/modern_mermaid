@@ -1,6 +1,6 @@
 import type { MermaidConfig } from 'mermaid';
 
-export type ThemeType = 'linearLight' | 'linearDark' | 'notion' | 'ghibli' | 'spotless' | 'brutalist' | 'glassmorphism' | 'memphis' | 'softPop' | 'cyberpunk' | 'monochrome' | 'darkMinimal' | 'wireframe' | 'handDrawn' | 'grafana' | 'noir' | 'material' | 'aurora' | 'win95' | 'doodle' | 'organic' | 'hightech';
+export type ThemeType = 'linearLight' | 'linearDark' | 'notion' | 'ghibli' | 'spotless' | 'brutalist' | 'glassmorphism' | 'memphis' | 'softPop' | 'cyberpunk' | 'monochrome' | 'darkMinimal' | 'wireframe' | 'handDrawn' | 'grafana' | 'noir' | 'material' | 'aurora' | 'win95' | 'doodle' | 'organic' | 'hightech' | 'kawaii';
 
 export interface ThemeConfig {
   name: string;
@@ -7301,6 +7301,549 @@ export const themes: Record<ThemeType, ThemeConfig> = {
     bgStyle: {
       background: 'radial-gradient(circle at center, #0a0f1a, #000000)',
       boxShadow: '0 0 20px rgba(0,255,65,0.3), inset 0 0 20px rgba(0,255,65,0.1)',
+    }
+  },
+  kawaii: {
+    name: 'Kawaii Cute',
+    annotationColors: {
+      primary: '#ff9ec7',
+      secondary: '#ffb3d1',
+      text: '#a8197d',
+    },
+    mermaidConfig: {
+      theme: 'base',
+      themeVariables: {
+        background: '#fff5f8',
+        primaryColor: '#ffe9f5',
+        primaryTextColor: '#a8197d',
+        primaryBorderColor: '#ff9ec7',
+        lineColor: '#ff6b9d',
+        secondaryColor: '#ffd4e5',
+        tertiaryColor: '#ffe4f1',
+        fontFamily: '"Comic Sans MS", "Noto Sans SC", "Segoe UI", cursive, sans-serif',
+        fontSize: '14px',
+        mainBkg: '#ffe9f5',
+        nodeBorder: '#ff9ec7',
+        clusterBkg: '#ffd4e5',
+        clusterBorder: '#ff9ec7',
+        edgeLabelBackground: '#fff5f8',
+      },
+      themeCSS: `
+        /* 全局样式 - 可爱粉色主题 */
+        .node rect, .node circle, .node polygon, .node path {
+          stroke: #ff9ec7 !important;
+          stroke-width: 3px !important;
+          fill: #ffe9f5 !important;
+          rx: 20px !important;
+          ry: 20px !important;
+          filter: drop-shadow(0 6px 12px rgba(255, 107, 157, 0.25));
+        }
+        
+        .edgePath .path {
+          stroke: #ff6b9d !important;
+          stroke-width: 2.5px !important;
+          stroke-linecap: round !important;
+          filter: drop-shadow(0 2px 4px rgba(255, 107, 157, 0.2));
+        }
+        
+        .arrowheadPath {
+          fill: #ff6b9d !important;
+          stroke: #ff6b9d !important;
+        }
+        
+        .edgeLabel {
+          color: #a8197d !important;
+          font-weight: 600;
+        }
+        
+        .edgeLabel rect {
+          fill: #fff5f8 !important;
+          stroke: #ffb3d1 !important;
+          stroke-width: 2px !important;
+          rx: 15px !important;
+          filter: drop-shadow(0 2px 6px rgba(255, 107, 157, 0.2));
+        }
+        
+        .edgeLabel .label,
+        .edgeLabel text {
+          fill: #a8197d !important;
+          font-weight: 600;
+        }
+        
+        .label, .nodeLabel {
+          color: #a8197d !important;
+          font-weight: 600;
+        }
+        
+        /* 流程图节点样式 */
+        .flowchart-link {
+          stroke: #ff6b9d !important;
+          stroke-width: 2.5px !important;
+        }
+        
+        /* 序列图样式 */
+        .actor {
+          fill: #ffe9f5 !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 3px !important;
+          rx: 20px !important;
+          ry: 20px !important;
+          filter: drop-shadow(0 6px 12px rgba(255, 107, 157, 0.25));
+        }
+        
+        .actor text {
+          fill: #a8197d !important;
+          font-weight: 600;
+        }
+        
+        .actor-line {
+          stroke: #ffb3d1 !important;
+          stroke-width: 2px !important;
+          stroke-dasharray: 6 6;
+        }
+        
+        .activation0, .activation1, .activation2 {
+          fill: rgba(255, 180, 209, 0.3) !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 2.5px !important;
+          rx: 15px !important;
+        }
+        
+        .messageLine0, .messageLine1 {
+          stroke: #ff6b9d !important;
+          stroke-width: 2.5px !important;
+          stroke-linecap: round !important;
+        }
+        
+        .note {
+          fill: #fff0f6 !important;
+          stroke: #ffc4e1 !important;
+          stroke-width: 3px !important;
+          rx: 18px !important;
+          ry: 18px !important;
+          filter: drop-shadow(0 4px 8px rgba(255, 196, 225, 0.3));
+        }
+        
+        .noteText {
+          fill: #c7267d !important;
+          font-weight: 600;
+        }
+        
+        .labelBox {
+          fill: #ffe9f5 !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 2.5px !important;
+          rx: 15px !important;
+          ry: 15px !important;
+        }
+        
+        .labelText, .loopText {
+          fill: #a8197d !important;
+          font-weight: 600;
+        }
+        
+        /* 类图样式 */
+        .classGroup rect {
+          fill: #ffe9f5 !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 3px !important;
+          rx: 18px !important;
+          filter: drop-shadow(0 6px 12px rgba(255, 107, 157, 0.25));
+        }
+        
+        .classGroup line {
+          stroke: #ffb3d1 !important;
+          stroke-width: 2px !important;
+        }
+        
+        .classGroup text {
+          fill: #a8197d !important;
+          font-weight: 600;
+        }
+        
+        .classLabel .box {
+          fill: #fff0f6 !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 2.5px !important;
+          rx: 15px !important;
+        }
+        
+        .classLabel .label {
+          fill: #a8197d !important;
+          font-weight: 700;
+        }
+        
+        .relation {
+          stroke: #ff6b9d !important;
+          stroke-width: 2.5px !important;
+        }
+        
+        /* 状态图样式 */
+        .stateGroup rect {
+          fill: #ffe9f5 !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 3px !important;
+          rx: 20px !important;
+          ry: 20px !important;
+          filter: drop-shadow(0 6px 12px rgba(255, 107, 157, 0.25));
+        }
+        
+        .stateGroup text {
+          fill: #a8197d !important;
+          font-weight: 600;
+        }
+        
+        .transition {
+          stroke: #ff6b9d !important;
+          stroke-width: 2.5px !important;
+        }
+        
+        .stateLabel .box {
+          fill: #fff0f6 !important;
+          stroke: #ff9ec7 !important;
+          rx: 15px !important;
+        }
+        
+        .state-start circle, .state-end circle {
+          fill: #ff9ec7 !important;
+          stroke: #ff6b9d !important;
+          stroke-width: 3px !important;
+          filter: drop-shadow(0 4px 8px rgba(255, 158, 199, 0.4));
+        }
+        
+        /* 甘特图样式 */
+        .grid .tick line {
+          stroke: rgba(255, 158, 199, 0.3) !important;
+          stroke-width: 1px !important;
+        }
+        
+        .grid .tick text {
+          fill: #a8197d !important;
+          font-size: 12px !important;
+          font-weight: 600;
+        }
+        
+        .taskText {
+          fill: #a8197d !important;
+          font-weight: 700;
+        }
+        
+        .taskTextOutsideRight, .taskTextOutsideLeft {
+          fill: #a8197d !important;
+          font-weight: 700;
+        }
+        
+        .task {
+          fill: #ffe9f5 !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 2.5px !important;
+          rx: 12px !important;
+          filter: drop-shadow(0 4px 8px rgba(255, 107, 157, 0.2));
+        }
+        
+        .task0, .task1, .task2, .task3 {
+          fill: #ffe9f5 !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 2.5px !important;
+        }
+        
+        .taskDone0, .taskDone1, .taskDone2, .taskDone3 {
+          fill: #ffc4e1 !important;
+          stroke: #ff6b9d !important;
+          stroke-width: 2.5px !important;
+        }
+        
+        .activeTask0, .activeTask1, .activeTask2, .activeTask3 {
+          fill: #ffb3d1 !important;
+          stroke: #ff5892 !important;
+          stroke-width: 3px !important;
+        }
+        
+        .section0, .section1, .section2, .section3 {
+          fill: rgba(255, 228, 241, 0.5) !important;
+        }
+        
+        .sectionTitle {
+          fill: #c7267d !important;
+          font-weight: 700;
+          font-size: 16px !important;
+        }
+        
+        .today {
+          stroke: #ff5892 !important;
+          stroke-width: 3px !important;
+          stroke-dasharray: 6 6;
+          fill: rgba(255, 88, 146, 0.15) !important;
+        }
+        
+        /* 饼图样式 */
+        .pieCircle {
+          stroke: #ff9ec7 !important;
+          stroke-width: 3px !important;
+        }
+        
+        .pieTitleText {
+          fill: #a8197d !important;
+          font-weight: 700;
+          font-size: 20px !important;
+        }
+        
+        .slice {
+          stroke: #ff9ec7 !important;
+          stroke-width: 2.5px !important;
+          filter: drop-shadow(0 4px 8px rgba(255, 107, 157, 0.2));
+        }
+        
+        .pieOuterCircle {
+          stroke: #ff9ec7 !important;
+          stroke-width: 3px !important;
+          fill: none !important;
+        }
+        
+        .legend text {
+          fill: #a8197d !important;
+          font-size: 13px !important;
+          font-weight: 600;
+        }
+        
+        .legend rect {
+          stroke: #ff9ec7 !important;
+          stroke-width: 2px !important;
+          rx: 8px !important;
+        }
+        
+        /* XY图表样式 - 可爱配色 */
+        .line-plot-0 path {
+          stroke: #ff6b9d !important;
+          stroke-width: 3.5px !important;
+          stroke-linecap: round !important;
+          stroke-linejoin: round !important;
+          filter: drop-shadow(0 3px 6px rgba(255, 107, 157, 0.3));
+        }
+        
+        .line-plot-1 path {
+          stroke: #ff9ec7 !important;
+          stroke-width: 3.5px !important;
+          stroke-linecap: round !important;
+          stroke-linejoin: round !important;
+          filter: drop-shadow(0 3px 6px rgba(255, 158, 199, 0.3));
+        }
+        
+        .line-plot-2 path {
+          stroke: #ffc4e1 !important;
+          stroke-width: 3.5px !important;
+          stroke-linecap: round !important;
+          stroke-linejoin: round !important;
+          filter: drop-shadow(0 3px 6px rgba(255, 196, 225, 0.3));
+        }
+        
+        .bar-plot-0 rect {
+          fill: rgba(255, 107, 157, 0.5) !important;
+          stroke: #ff6b9d !important;
+          stroke-width: 2.5px !important;
+          rx: 12px !important;
+          filter: drop-shadow(0 4px 8px rgba(255, 107, 157, 0.2));
+        }
+        
+        .bar-plot-1 rect {
+          fill: rgba(255, 158, 199, 0.5) !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 2.5px !important;
+          rx: 12px !important;
+          filter: drop-shadow(0 4px 8px rgba(255, 158, 199, 0.2));
+        }
+        
+        .bar-plot-2 rect {
+          fill: rgba(255, 196, 225, 0.5) !important;
+          stroke: #ffc4e1 !important;
+          stroke-width: 2.5px !important;
+          rx: 12px !important;
+          filter: drop-shadow(0 4px 8px rgba(255, 196, 225, 0.2));
+        }
+        
+        .chart-title text {
+          fill: #a8197d !important;
+          font-weight: 700 !important;
+          font-size: 20px !important;
+        }
+        
+        .left-axis .label text, .bottom-axis .label text {
+          fill: #a8197d !important;
+          font-size: 13px !important;
+          font-weight: 600;
+        }
+        
+        .left-axis .title text {
+          fill: #c7267d !important;
+          font-size: 16px !important;
+          font-weight: 700;
+        }
+        
+        .bottom-axis .title text {
+          fill: #c7267d !important;
+          font-size: 16px !important;
+          font-weight: 700;
+        }
+        
+        .left-axis line, .bottom-axis line {
+          stroke: #ffb3d1 !important;
+          stroke-width: 1.5px !important;
+        }
+        
+        .grid line {
+          stroke: rgba(255, 179, 209, 0.3) !important;
+        }
+        
+        /* ER图样式 */
+        .er.entityBox {
+          fill: #ffe9f5 !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 3px !important;
+          rx: 18px !important;
+          filter: drop-shadow(0 6px 12px rgba(255, 107, 157, 0.25));
+        }
+        
+        .er.entityLabel {
+          fill: #a8197d !important;
+          font-weight: 700;
+        }
+        
+        .er.relationshipLine {
+          stroke: #ff6b9d !important;
+          stroke-width: 2.5px !important;
+        }
+        
+        .er.relationshipLabelBox {
+          fill: #fff0f6 !important;
+          stroke: #ffc4e1 !important;
+          rx: 12px !important;
+        }
+        
+        .er.relationshipLabel {
+          fill: #c7267d !important;
+          font-weight: 600;
+        }
+        
+        .er.attributeBoxOdd {
+          fill: rgba(255, 233, 245, 0.6) !important;
+        }
+        
+        .er.attributeBoxEven {
+          fill: rgba(255, 212, 229, 0.6) !important;
+        }
+        
+        /* Journey图样式 */
+        .journey-section {
+          fill: rgba(255, 228, 241, 0.5) !important;
+        }
+        
+        .journey-task {
+          fill: #ffe9f5 !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 3px !important;
+          rx: 15px !important;
+          filter: drop-shadow(0 4px 8px rgba(255, 107, 157, 0.25));
+        }
+        
+        .journey-actor {
+          fill: #ff9ec7 !important;
+          stroke: #ff6b9d !important;
+          stroke-width: 2px !important;
+        }
+        
+        .journey-label {
+          fill: #a8197d !important;
+          font-weight: 600;
+        }
+        
+        /* Mindmap样式 */
+        .mindmap-node {
+          fill: #ffe9f5 !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 3px !important;
+          rx: 20px !important;
+          filter: drop-shadow(0 6px 12px rgba(255, 107, 157, 0.25));
+        }
+        
+        .mindmap-node-text {
+          fill: #a8197d !important;
+          font-weight: 600;
+        }
+        
+        .mindmap-edge {
+          stroke: #ff6b9d !important;
+          stroke-width: 2.5px !important;
+          stroke-linecap: round !important;
+        }
+        
+        /* 通用文本样式 */
+        text {
+          fill: #a8197d !important;
+        }
+        
+        tspan {
+          fill: #a8197d !important;
+        }
+        
+        /* Cluster/子图样式 */
+        .cluster rect {
+          fill: rgba(255, 212, 229, 0.4) !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 3px !important;
+          stroke-dasharray: 8 8;
+          rx: 25px !important;
+          ry: 25px !important;
+          filter: drop-shadow(0 4px 8px rgba(255, 107, 157, 0.15));
+        }
+        
+        .cluster text {
+          fill: #c7267d !important;
+          font-weight: 700;
+        }
+        
+        .cluster-label {
+          fill: #c7267d !important;
+          font-weight: 700;
+        }
+        
+        /* Git图样式 */
+        .commit-id, .commit-msg, .branch-label {
+          fill: #a8197d !important;
+          font-weight: 600;
+        }
+        
+        .commit {
+          fill: #ff9ec7 !important;
+          stroke: #ff6b9d !important;
+          stroke-width: 3px !important;
+          r: 8px !important;
+        }
+        
+        .branch {
+          stroke: #ff6b9d !important;
+          stroke-width: 2.5px !important;
+          stroke-linecap: round !important;
+        }
+        
+        /* 时间线样式 */
+        .timeline-event {
+          fill: #ffe9f5 !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 3px !important;
+          rx: 18px !important;
+        }
+        
+        .timeline-marker {
+          fill: #ff9ec7 !important;
+          stroke: #ff6b9d !important;
+          stroke-width: 3px !important;
+        }
+      `
+    },
+    bgClass: 'bg-gradient-to-br from-[#ffe4f1] via-[#ffd4e5] to-[#ffe9f5]',
+    bgStyle: {
+      background: 'linear-gradient(135deg, #ffe4f1 0%, #ffd4e5 50%, #ffe9f5 100%)',
+      position: 'relative' as const,
     }
   },  
 };
