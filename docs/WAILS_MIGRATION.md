@@ -145,3 +145,9 @@ sequenceDiagram
   - 在系统菜单中添加了 "File -> Import from Clipboard" 功能，支持从剪贴板 Markdown 文本中提取多个 Mermaid 代码块。
   - 添加了动态的图表状态菜单（直接在菜单栏显示如 "Diagram: 1/5"），点击可展开 "Previous/Next" 导航选项。
   - 支持直接打开 `.md` 文件并自动提取其中的 Mermaid 图表。
+  - **编辑同步**: 在编辑器中修改代码时，会自动同步更新内存中的图表列表。切换到其他图表再切换回来时，修改内容会保留。
+- **缩放功能**:
+  - 添加了 `View` 菜单，支持 "Zoom In" (Cmd++), "Zoom Out" (Cmd+-), "Reset Zoom" (Cmd+0)。
+  - 通过 CSS `document.body.style.zoom` 实现全局界面缩放。
+- **配置持久化**:
+  - 缩放比例现在会保存到 `config.json`，下次启动自动应用。

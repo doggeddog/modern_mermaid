@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -17,15 +18,24 @@ import (
 type App struct {
 	ctx          context.Context
 	autoSavePath string
+	configPath   string
 
 	// Navigation State
 	diagrams     []string
 	currentIndex int
 
+	// Zoom State
+	zoomLevel float64
+
 	// Menu References
 	statusItem *menu.MenuItem
 	prevItem   *menu.MenuItem
 	nextItem   *menu.MenuItem
+}
+
+// AppConfig stores persistent configuration
+type AppConfig struct {
+	ZoomLevel float64 `json:"zoomLevel"`
 }
 
 // NewApp creates a new App application struct
@@ -38,11 +48,18 @@ func NewApp() *App {
 	appDir := filepath.Join(configDir, "modern-mermaid")
 	_ = os.MkdirAll(appDir, 0755)
 
-	return &App{
+	a := &App{
 		autoSavePath: filepath.Join(appDir, "autosave.mmd"),
+		configPath:   filepath.Join(appDir, "config.json"),
 		diagrams:     []string{},
 		currentIndex: 0,
+		zoomLevel:    1.0,
 	}
+
+	// Load config on init
+	a.loadConfig()
+
+	return a
 }
 
 // startup is called when the app starts. The context is saved
@@ -56,6 +73,10 @@ func (a *App) startup(ctx context.Context) {
 			content, ok := optionalData[0].(string)
 			if ok {
 				a.saveToDisk(content)
+				// 同步更新当前列表中的图表代码
+				if len(a.diagrams) > 0 && a.currentIndex >= 0 && a.currentIndex < len(a.diagrams) {
+					a.diagrams[a.currentIndex] = content
+				}
 			}
 		}
 	})
@@ -67,6 +88,9 @@ func (a *App) startup(ctx context.Context) {
 	
 	// 初始化菜单状态
 	a.updateMenuState()
+
+	// Apply saved zoom level
+	a.applyZoom()
 }
 
 // domReady is called after the front-end dom has been loaded
@@ -149,6 +173,24 @@ func (a *App) loadFromDisk() {
 	if err == nil {
 		runtime.EventsEmit(a.ctx, "loadFileContent", string(content))
 	}
+}
+
+func (a *App) loadConfig() {
+	data, err := os.ReadFile(a.configPath)
+	if err == nil {
+		var cfg AppConfig
+		if json.Unmarshal(data, &cfg) == nil {
+			if cfg.ZoomLevel > 0 {
+				a.zoomLevel = cfg.ZoomLevel
+			}
+		}
+	}
+}
+
+func (a *App) saveConfig() {
+	cfg := AppConfig{ZoomLevel: a.zoomLevel}
+	data, _ := json.MarshalIndent(cfg, "", "  ")
+	os.WriteFile(a.configPath, data, 0644)
 }
 
 // SetMenuRefs stores menu item references
@@ -339,6 +381,36 @@ func (a *App) PasteFromClipboard() {
 	if err == nil && text != "" {
 		runtime.EventsEmit(a.ctx, "pasteContent", text)
 	}
+}
+
+// ZoomIn increases zoom level
+func (a *App) ZoomIn() {
+	a.zoomLevel += 0.1
+	a.applyZoom()
+	a.saveConfig()
+}
+
+// ZoomOut decreases zoom level
+func (a *App) ZoomOut() {
+	if a.zoomLevel > 0.2 {
+		a.zoomLevel -= 0.1
+	}
+	a.applyZoom()
+	a.saveConfig()
+}
+
+// ZoomReset resets zoom level
+func (a *App) ZoomReset() {
+	a.zoomLevel = 1.0
+	a.applyZoom()
+	a.saveConfig()
+}
+
+func (a *App) applyZoom() {
+	// Apply zoom to document body
+	// Note: We use %f to format float, effectively creating "1.100000" string
+	js := fmt.Sprintf("document.body.style.zoom = '%f'", a.zoomLevel)
+	runtime.WindowExecJS(a.ctx, js)
 }
 
 // Quit the application

@@ -59,6 +59,18 @@ func main() {
 		})
 	}
 
+	// View Menu
+	ViewMenu := appMenu.AddSubmenu("View")
+	ViewMenu.AddText("Zoom In", keys.CmdOrCtrl("+"), func(_ *menu.CallbackData) {
+		app.ZoomIn()
+	})
+	ViewMenu.AddText("Zoom Out", keys.CmdOrCtrl("-"), func(_ *menu.CallbackData) {
+		app.ZoomOut()
+	})
+	ViewMenu.AddText("Reset Zoom", keys.CmdOrCtrl("0"), func(_ *menu.CallbackData) {
+		app.ZoomReset()
+	})
+
 	// Navigation Menu (Top Level Item showing Status)
 	// We manually construct the item so we can reference it to change the label
 	NavSubMenu := menu.NewMenu()
