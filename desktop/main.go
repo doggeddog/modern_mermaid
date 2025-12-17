@@ -27,35 +27,56 @@ func main() {
 	FileMenu.AddText("Open...", keys.CmdOrCtrl("o"), func(_ *menu.CallbackData) {
 		app.OpenFileDialog()
 	})
+	FileMenu.AddText("Import from Clipboard", keys.CmdOrCtrl("i"), func(_ *menu.CallbackData) {
+		app.ImportFromClipboard()
+	})
 	FileMenu.AddSeparator()
 	FileMenu.AddText("Quit", keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
 		app.Quit()
 	})
 
 	// Edit Menu
-	EditMenu := appMenu.AddSubmenu("Edit")
-	EditMenu.AddText("Undo", keys.CmdOrCtrl("z"), func(_ *menu.CallbackData) {
-		// Native webview undo
-	})
-	EditMenu.AddText("Redo", keys.CmdOrCtrl("y"), func(_ *menu.CallbackData) {
-		// Native webview redo
-	})
-	EditMenu.AddSeparator()
-	EditMenu.AddText("Cut", keys.CmdOrCtrl("x"), func(_ *menu.CallbackData) {
-		// Native webview cut
-	})
-	EditMenu.AddText("Copy", keys.CmdOrCtrl("c"), func(_ *menu.CallbackData) {
-		// Native webview copy
-	})
-
-	// Custom Paste to handle bridge
-	EditMenu.AddText("Paste", keys.CmdOrCtrl("v"), func(_ *menu.CallbackData) {
-		app.PasteFromClipboard()
-	})
-
+	// On macOS, use the standard Edit menu. On others, build it manually.
 	if runtime.GOOS == "darwin" {
-		appMenu.Append(menu.EditMenu()) // Standard Mac Edit Menu
+		appMenu.Append(menu.EditMenu())
+	} else {
+		EditMenu := appMenu.AddSubmenu("Edit")
+		EditMenu.AddText("Undo", keys.CmdOrCtrl("z"), func(_ *menu.CallbackData) {
+			// Native webview undo
+		})
+		EditMenu.AddText("Redo", keys.CmdOrCtrl("y"), func(_ *menu.CallbackData) {
+			// Native webview redo
+		})
+		EditMenu.AddSeparator()
+		EditMenu.AddText("Cut", keys.CmdOrCtrl("x"), func(_ *menu.CallbackData) {
+			// Native webview cut
+		})
+		EditMenu.AddText("Copy", keys.CmdOrCtrl("c"), func(_ *menu.CallbackData) {
+			// Native webview copy
+		})
+		EditMenu.AddText("Paste", keys.CmdOrCtrl("v"), func(_ *menu.CallbackData) {
+			app.PasteFromClipboard()
+		})
 	}
+
+	// Navigation Menu (Top Level Item showing Status)
+	// We manually construct the item so we can reference it to change the label
+	NavSubMenu := menu.NewMenu()
+	NavTopLevelItem := appMenu.AddText("No Diagrams", nil, nil)
+	NavTopLevelItem.SubMenu = NavSubMenu
+	// Initially hidden until we have diagrams
+	NavTopLevelItem.Hidden = true
+
+	PrevItem := NavSubMenu.AddText("Previous Diagram", keys.CmdOrCtrl("["), func(_ *menu.CallbackData) {
+		app.PrevPreview()
+	})
+
+	NextItem := NavSubMenu.AddText("Next Diagram", keys.CmdOrCtrl("]"), func(_ *menu.CallbackData) {
+		app.NextPreview()
+	})
+
+	// Pass menu references to App
+	app.SetMenuRefs(NavTopLevelItem, PrevItem, NextItem)
 
 	// Create application with options
 	err := wails.Run(&options.App{

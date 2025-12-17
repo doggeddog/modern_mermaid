@@ -141,3 +141,7 @@ sequenceDiagram
 - **文件导出**: 
   - 实现了 `App.SaveImage` Go 方法，支持调用系统原生的保存文件对话框。
   - 修改了 `Preview.tsx`，在桌面环境下自动切换为系统保存对话框，在 Web 环境下保持浏览器下载行为。
+- **多图浏览支持**:
+  - 在系统菜单中添加了 "File -> Import from Clipboard" 功能，支持从剪贴板 Markdown 文本中提取多个 Mermaid 代码块。
+  - 添加了动态的图表状态菜单（直接在菜单栏显示如 "Diagram: 1/5"），点击可展开 "Previous/Next" 导航选项。
+  - 支持直接打开 `.md` 文件并自动提取其中的 Mermaid 图表。

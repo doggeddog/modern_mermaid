@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
+	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -15,6 +17,15 @@ import (
 type App struct {
 	ctx          context.Context
 	autoSavePath string
+
+	// Navigation State
+	diagrams     []string
+	currentIndex int
+
+	// Menu References
+	statusItem *menu.MenuItem
+	prevItem   *menu.MenuItem
+	nextItem   *menu.MenuItem
 }
 
 // NewApp creates a new App application struct
@@ -29,6 +40,8 @@ func NewApp() *App {
 
 	return &App{
 		autoSavePath: filepath.Join(appDir, "autosave.mmd"),
+		diagrams:     []string{},
+		currentIndex: 0,
 	}
 }
 
@@ -51,6 +64,9 @@ func (a *App) startup(ctx context.Context) {
 	runtime.EventsOn(ctx, "onAppReady", func(optionalData ...interface{}) {
 		a.loadFromDisk()
 	})
+	
+	// 初始化菜单状态
+	a.updateMenuState()
 }
 
 // domReady is called after the front-end dom has been loaded
@@ -135,21 +151,155 @@ func (a *App) loadFromDisk() {
 	}
 }
 
+// SetMenuRefs stores menu item references
+func (a *App) SetMenuRefs(status, prev, next *menu.MenuItem) {
+	a.statusItem = status
+	a.prevItem = prev
+	a.nextItem = next
+	// 初始化时隐藏
+	if a.statusItem != nil { a.statusItem.Hidden = true }
+	if a.prevItem != nil { a.prevItem.Hidden = true }
+	if a.nextItem != nil { a.nextItem.Hidden = true }
+}
+
+func (a *App) updateMenuState() {
+	if a.ctx == nil {
+		return
+	}
+
+	count := len(a.diagrams)
+	if count <= 1 {
+		// Hide nav items if only 0 or 1 diagram
+		if a.statusItem != nil {
+			a.statusItem.Hidden = true
+		}
+		if a.prevItem != nil {
+			a.prevItem.Hidden = true
+		}
+		if a.nextItem != nil {
+			a.nextItem.Hidden = true
+		}
+	} else {
+		// Show items
+		if a.statusItem != nil {
+			a.statusItem.Hidden = false
+			a.statusItem.Label = fmt.Sprintf("Diagram: %d / %d", a.currentIndex+1, count)
+		}
+		if a.prevItem != nil {
+			a.prevItem.Hidden = false
+			a.prevItem.Disabled = a.currentIndex <= 0
+		}
+		if a.nextItem != nil {
+			a.nextItem.Hidden = false
+			a.nextItem.Disabled = a.currentIndex >= count-1
+		}
+	}
+	runtime.MenuUpdateApplicationMenu(a.ctx)
+}
+
+func (a *App) loadCurrentDiagram() {
+	if len(a.diagrams) > 0 && a.currentIndex >= 0 && a.currentIndex < len(a.diagrams) {
+		code := a.diagrams[a.currentIndex]
+		runtime.EventsEmit(a.ctx, "loadFileContent", code)
+	}
+}
+
+// ImportFromClipboard reads clipboard, extracts mermaid blocks, and loads first one
+func (a *App) ImportFromClipboard() {
+	text, err := runtime.ClipboardGetText(a.ctx)
+	if err != nil || text == "" {
+		return
+	}
+
+	// Regex extract ```mermaid ... ```
+	// (?s) allows . to match newlines
+	re := regexp.MustCompile("(?s)```mermaid\\s*(.*?)```")
+	matches := re.FindAllStringSubmatch(text, -1)
+
+	var blocks []string
+	for _, m := range matches {
+		if len(m) > 1 {
+			code := strings.TrimSpace(m[1])
+			if code != "" {
+				blocks = append(blocks, code)
+			}
+		}
+	}
+
+	// If no blocks found, treat the whole text as content?
+	// The requirement is to extract. If none, maybe just paste as is or do nothing?
+	// Let's default to: if no blocks found, assume it is NOT markdown with blocks,
+	// but just code.
+	if len(blocks) == 0 {
+		blocks = []string{text}
+	}
+
+	a.diagrams = blocks
+	a.currentIndex = 0
+	a.loadCurrentDiagram()
+	a.updateMenuState()
+}
+
+// NextPreview shows the next diagram
+func (a *App) NextPreview() {
+	if a.currentIndex < len(a.diagrams)-1 {
+		a.currentIndex++
+		a.loadCurrentDiagram()
+		a.updateMenuState()
+	}
+}
+
+// PrevPreview shows the previous diagram
+func (a *App) PrevPreview() {
+	if a.currentIndex > 0 {
+		a.currentIndex--
+		a.loadCurrentDiagram()
+		a.updateMenuState()
+	}
+}
+
 // OpenFileDialog prompts user to select a file and loads it
 func (a *App) OpenFileDialog() {
 	selection, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
 		Title: "Open Mermaid File",
 		Filters: []runtime.FileFilter{
-			{DisplayName: "Mermaid Files (*.mmd;*.mermaid;*.txt)", Pattern: "*.mmd;*.mermaid;*.txt"},
+			{DisplayName: "Mermaid Files (*.mmd;*.mermaid;*.txt;*.md)", Pattern: "*.mmd;*.mermaid;*.txt;*.md"},
 		},
 	})
 
 	if err == nil && selection != "" {
 		content, err := os.ReadFile(selection)
 		if err == nil {
-			runtime.EventsEmit(a.ctx, "loadFileContent", string(content))
-			// 更新自动保存状态
-			a.saveToDisk(string(content))
+			// Also support extraction from file
+			text := string(content)
+			// Check if file extension is .md
+			if strings.HasSuffix(strings.ToLower(selection), ".md") {
+				// Parse blocks
+				re := regexp.MustCompile("(?s)```mermaid\\s*(.*?)```")
+				matches := re.FindAllStringSubmatch(text, -1)
+				var blocks []string
+				for _, m := range matches {
+					if len(m) > 1 {
+						code := strings.TrimSpace(m[1])
+						if code != "" {
+							blocks = append(blocks, code)
+						}
+					}
+				}
+				if len(blocks) > 0 {
+					a.diagrams = blocks
+					a.currentIndex = 0
+					a.loadCurrentDiagram()
+					a.updateMenuState()
+					return
+				}
+			}
+			
+			// Fallback normal load
+			a.diagrams = []string{} // Reset multi-view
+			a.updateMenuState()
+			runtime.EventsEmit(a.ctx, "loadFileContent", text)
+			a.saveToDisk(text)
 		}
 	}
 }
