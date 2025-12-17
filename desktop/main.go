@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"os"
 	"runtime"
 
 	"github.com/wailsapp/wails/v2"
@@ -16,6 +17,12 @@ import (
 var assets embed.FS
 
 func main() {
+	// macOS Fix: When launched from Finder, LANG is often empty, causing CGO/Clipboard encoding issues.
+	// Force set it to en_US.UTF-8 to ensure UTF-8 support.
+	if runtime.GOOS == "darwin" && os.Getenv("LANG") == "" {
+		os.Setenv("LANG", "en_US.UTF-8")
+	}
+
 	// Create an instance of the app structure
 	app := NewApp()
 
