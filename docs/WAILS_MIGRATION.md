@@ -127,3 +127,17 @@ sequenceDiagram
 
 - **自动保存**：自动保存到用户的配置目录 (`AppUserData`)，防止数据丢失。
 - **文件操作**：使用标准的文件打开/保存对话框来管理 `.mmd` 文件。
+
+## 6. 已实现功能与变更记录 (Implemented Features & Changes)
+
+### 2025-12-17
+- **构建系统优化**: 引入 `Makefile` 统一管理构建命令，解决了命令行参数解析错误和路径问题。
+- **窗口管理**: 
+  - 启用了 macOS 风格的隐藏标题栏 (`TitleBarHiddenInset`)。
+  - 在 `src/components/Header.tsx` 中实现了 `--wails-draggable` 区域，支持窗口拖动。
+  - 设置应用启动时自动最大化窗口 (`WindowStartState: options.Maximised`)。
+- **剪贴板集成**: 
+  - 修复了 macOS 下复制图片失败的问题，采用 `Promise` + `ClipboardItem` 模式以满足 WebKit 安全上下文要求。
+- **文件导出**: 
+  - 实现了 `App.SaveImage` Go 方法，支持调用系统原生的保存文件对话框。
+  - 修改了 `Preview.tsx`，在桌面环境下自动切换为系统保存对话框，在 Web 环境下保持浏览器下载行为。

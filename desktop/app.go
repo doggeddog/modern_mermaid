@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -150,6 +152,35 @@ func (a *App) OpenFileDialog() {
 			a.saveToDisk(string(content))
 		}
 	}
+}
+
+// SaveImage prompts user to save an image
+func (a *App) SaveImage(base64Data string, filename string) error {
+	// Remove header if present
+	if idx := strings.Index(base64Data, ","); idx != -1 {
+		base64Data = base64Data[idx+1:]
+	}
+
+	// Decode
+	data, err := base64.StdEncoding.DecodeString(base64Data)
+	if err != nil {
+		return err
+	}
+
+	// Save Dialog
+	selection, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
+		Title:           "Save Image",
+		DefaultFilename: filename,
+		Filters: []runtime.FileFilter{
+			{DisplayName: "Image Files", Pattern: "*.png;*.jpg"},
+		},
+	})
+
+	if err != nil || selection == "" {
+		return nil
+	}
+
+	return os.WriteFile(selection, data, 0644)
 }
 
 // PasteFromClipboard reads clipboard and sends to frontend

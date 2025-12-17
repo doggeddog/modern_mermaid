@@ -747,166 +747,188 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
       setCopying(true); // 开始复制Loading
       setCopySuccess(false);
 
-      try {
-        const node = contentRef.current;
+      // 定义生成 Blob 的 Promise
+      const blobPromise = new Promise<Blob>(async (resolve, reject) => {
+        let node: HTMLElement | null = null;
+        let originalTransform = '';
+        let originalTransition = '';
 
-        // 保存当前的 transform 和 transition 状态
-        const originalTransform = node.style.transform;
-        const originalTransition = node.style.transition;
+        try {
+          node = contentRef.current;
+          if (!node) {
+            reject(new Error('Content node not found'));
+            return;
+          }
 
-        // 临时重置 transform 到居中状态
-        node.style.transform = 'translate(0px, 0px) scale(1)';
-        node.style.transition = 'none';
+          // 保存当前的 transform 和 transition 状态
+          originalTransform = node.style.transform;
+          originalTransition = node.style.transition;
 
-        // 等待三帧确保样式已经完全应用
-        await new Promise(resolve => requestAnimationFrame(resolve));
-        await new Promise(resolve => requestAnimationFrame(resolve));
-        await new Promise(resolve => requestAnimationFrame(resolve));
+          // 临时重置 transform 到居中状态
+          node.style.transform = 'translate(0px, 0px) scale(1)';
+          node.style.transition = 'none';
 
-        // 强制应用文字样式到 SVG 内联属性，确保复制时正确显示
-        const svgElement = node.querySelector('svg');
-        if (svgElement) {
-          // 获取所有可能的文本元素（更全面的选择器）
-          const textSelectors = [
-            'text',
-            'tspan',
-            '.label',
-            '.nodeLabel',
-            '.edgeLabel',
-            '.labelText',
-            'foreignObject div',
-            'foreignObject span',
-            'foreignObject p'
-          ];
-          
-          textSelectors.forEach(selector => {
-            const elements = svgElement.querySelectorAll(selector);
+          // 等待三帧确保样式已经完全应用
+          await new Promise(resolve => requestAnimationFrame(resolve));
+          await new Promise(resolve => requestAnimationFrame(resolve));
+          await new Promise(resolve => requestAnimationFrame(resolve));
+
+          // 强制应用文字样式到 SVG 内联属性，确保复制时正确显示
+          const svgElement = node.querySelector('svg');
+          if (svgElement) {
+            // 获取所有可能的文本元素（更全面的选择器）
+            const textSelectors = [
+              'text',
+              'tspan',
+              '.label',
+              '.nodeLabel',
+              '.edgeLabel',
+              '.labelText',
+              'foreignObject div',
+              'foreignObject span',
+              'foreignObject p'
+            ];
             
-            elements.forEach((textEl: any) => {
-              const computedStyle = window.getComputedStyle(textEl);
-              const fillColor = computedStyle.fill;
-              const color = computedStyle.color;
+            textSelectors.forEach(selector => {
+              const elements = svgElement.querySelectorAll(selector);
               
-              // 应用样式
-              if (textEl.tagName === 'text' || textEl.tagName === 'tspan') {
-                const colorToUse = fillColor !== 'none' ? fillColor : color;
-                if (colorToUse && colorToUse !== 'none') {
-                  textEl.setAttribute('fill', colorToUse);
-                }
-              } else if (textEl.tagName === 'DIV' || textEl.tagName === 'SPAN' || textEl.tagName === 'P') {
-                // HTML 元素使用 style.color，并添加 !important
-                if (color && color !== 'none') {
-                  textEl.style.setProperty('color', color, 'important');
-                  textEl.style.setProperty('-webkit-text-fill-color', color, 'important');
-                }
-              }
-              
-              // 也设置到所有子文本元素
-              const childTexts = textEl.querySelectorAll('text, tspan');
-              if (childTexts.length > 0) {
-                childTexts.forEach((child: any) => {
-                  const childColor = fillColor !== 'none' ? fillColor : color;
-                  if (childColor && childColor !== 'none') {
-                    child.setAttribute('fill', childColor);
+              elements.forEach((textEl: any) => {
+                const computedStyle = window.getComputedStyle(textEl);
+                const fillColor = computedStyle.fill;
+                const color = computedStyle.color;
+                
+                // 应用样式
+                if (textEl.tagName === 'text' || textEl.tagName === 'tspan') {
+                  const colorToUse = fillColor !== 'none' ? fillColor : color;
+                  if (colorToUse && colorToUse !== 'none') {
+                    textEl.setAttribute('fill', colorToUse);
                   }
-                });
+                } else if (textEl.tagName === 'DIV' || textEl.tagName === 'SPAN' || textEl.tagName === 'P') {
+                  // HTML 元素使用 style.color，并添加 !important
+                  if (color && color !== 'none') {
+                    textEl.style.setProperty('color', color, 'important');
+                    textEl.style.setProperty('-webkit-text-fill-color', color, 'important');
+                  }
+                }
+                
+                // 也设置到所有子文本元素
+                const childTexts = textEl.querySelectorAll('text, tspan');
+                if (childTexts.length > 0) {
+                  childTexts.forEach((child: any) => {
+                    const childColor = fillColor !== 'none' ? fillColor : color;
+                    if (childColor && childColor !== 'none') {
+                      child.setAttribute('fill', childColor);
+                    }
+                  });
+                }
+              });
+            });
+            
+            // 额外处理：对所有 foreignObject 设置默认文字颜色
+            const foreignObjects = svgElement.querySelectorAll('foreignObject');
+            foreignObjects.forEach((fo: any) => {
+              const foComputedStyle = window.getComputedStyle(fo);
+              const foColor = foComputedStyle.color;
+              if (foColor && foColor !== 'none') {
+                fo.style.setProperty('color', foColor, 'important');
               }
             });
-          });
-          
-          // 额外处理：对所有 foreignObject 设置默认文字颜色
-          const foreignObjects = svgElement.querySelectorAll('foreignObject');
-          foreignObjects.forEach((fo: any) => {
-            const foComputedStyle = window.getComputedStyle(fo);
-            const foColor = foComputedStyle.color;
-            if (foColor && foColor !== 'none') {
-              fo.style.setProperty('color', foColor, 'important');
-            }
-          });
-        }
-
-        // 使用更高的导出倍率以获得更清晰的图片
-        const exportScale = 3; // 3x 分辨率
-
-        // 获取背景色
-        let bgColor = transparent ? undefined : getComputedStyle(containerRef.current!).backgroundColor;
-        if (!transparent && actualBgStyle?.backgroundColor) {
-          bgColor = actualBgStyle.backgroundColor;
-        }
-
-        // 获取SVG元素的实际尺寸（已在上面获取）
-        let targetWidth = node.offsetWidth;
-        let targetHeight = node.offsetHeight;
-
-        if (svgElement) {
-          const svgWidth = svgElement.getAttribute('width');
-          const svgHeight = svgElement.getAttribute('height');
-          if (svgWidth && svgHeight) {
-            targetWidth = Math.max(parseFloat(svgWidth) + 96, node.offsetWidth);
-            targetHeight = Math.max(parseFloat(svgHeight) + 96, node.offsetHeight);
           }
-        }
 
-        // 设置导出样式
-        const baseStyle: any = {
-          transform: 'scale(1)',
-          transformOrigin: 'center',
-          width: `${targetWidth}px`,
-          height: `${targetHeight}px`,
-        };
+          // 使用更高的导出倍率以获得更清晰的图片
+          const exportScale = 3; // 3x 分辨率
 
-        if (!transparent && actualBgStyle) {
-          Object.assign(baseStyle, actualBgStyle);
-        }
+          // 获取背景色
+          let bgColor = transparent ? undefined : getComputedStyle(containerRef.current!).backgroundColor;
+          if (!transparent && actualBgStyle?.backgroundColor) {
+            bgColor = actualBgStyle.backgroundColor;
+          }
 
-        const param = {
-          quality: 0.98,
-          backgroundColor: bgColor,
-          pixelRatio: exportScale,
-          width: targetWidth,
-          height: targetHeight,
-          style: baseStyle,
-          cacheBust: true,
-          skipAutoScale: true,
-          fontEmbedCSS: '',
-          filter: (node: HTMLElement) => {
-            if (node.tagName === 'LINK' && node.getAttribute('rel') === 'stylesheet') {
-              const href = node.getAttribute('href');
-              if (href && (href.includes('fonts.googleapis.com') || href.startsWith('http'))) {
-                return false;
-              }
+          // 获取SVG元素的实际尺寸（已在上面获取）
+          let targetWidth = node.offsetWidth;
+          let targetHeight = node.offsetHeight;
+
+          if (svgElement) {
+            const svgWidth = svgElement.getAttribute('width');
+            const svgHeight = svgElement.getAttribute('height');
+            if (svgWidth && svgHeight) {
+              targetWidth = Math.max(parseFloat(svgWidth) + 96, node.offsetWidth);
+              targetHeight = Math.max(parseFloat(svgHeight) + 96, node.offsetHeight);
             }
-            return true;
-          },
-        };
+          }
 
-        // 生成 PNG 图片
-        const dataUrl = await toPng(node, {
-          ...param,
-          backgroundColor: transparent ? undefined : bgColor,
-          style: transparent ? { ...baseStyle, backgroundColor: 'transparent' } : baseStyle
-        });
+          // 设置导出样式
+          const baseStyle: any = {
+            transform: 'scale(1)',
+            transformOrigin: 'center',
+            width: `${targetWidth}px`,
+            height: `${targetHeight}px`,
+          };
 
-        // 恢复原来的 transform 状态
-        node.style.transform = originalTransform;
-        node.style.transition = originalTransition;
+          if (!transparent && actualBgStyle) {
+            Object.assign(baseStyle, actualBgStyle);
+          }
 
-        // 将 dataUrl 转换为 Blob
-        const response = await fetch(dataUrl);
-        const blob = await response.blob();
+          const param = {
+            quality: 0.98,
+            backgroundColor: bgColor,
+            pixelRatio: exportScale,
+            width: targetWidth,
+            height: targetHeight,
+            style: baseStyle,
+            cacheBust: true,
+            skipAutoScale: true,
+            fontEmbedCSS: '',
+            filter: (node: HTMLElement) => {
+              if (node.tagName === 'LINK' && node.getAttribute('rel') === 'stylesheet') {
+                const href = node.getAttribute('href');
+                if (href && (href.includes('fonts.googleapis.com') || href.startsWith('http'))) {
+                  return false;
+                }
+              }
+              return true;
+            },
+          };
 
-        // 复制到剪贴板
+          // 生成 PNG 图片
+          const dataUrl = await toPng(node, {
+            ...param,
+            backgroundColor: transparent ? undefined : bgColor,
+            style: transparent ? { ...baseStyle, backgroundColor: 'transparent' } : baseStyle
+          });
+
+          // 恢复原来的 transform 状态
+          node.style.transform = originalTransform;
+          node.style.transition = originalTransition;
+
+          // 将 dataUrl 转换为 Blob
+          const response = await fetch(dataUrl);
+          const blob = await response.blob();
+          resolve(blob);
+        } catch (e) {
+          // 确保出错时也恢复状态
+          if (node) {
+            node.style.transform = originalTransform;
+            node.style.transition = originalTransition;
+          }
+          reject(e);
+        }
+      });
+
+      try {
+        // 复制到剪贴板 - 传入 Promise
+        // 使用 as any 绕过可能的类型检查问题
         await navigator.clipboard.write([
           new ClipboardItem({
-            'image/png': blob
+            'image/png': blobPromise as any
           })
         ]);
 
         // 追踪复制成功
         trackEvent('copy_image_success', {
           transparent: transparent,
-          width: targetWidth,
-          height: targetHeight,
+          width: contentRef.current?.offsetWidth || 0,
+          height: contentRef.current?.offsetHeight || 0,
           has_annotations: annotations.length > 0
         });
 
@@ -933,11 +955,6 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
         setTimeout(() => {
           setError(null);
         }, 3000);
-
-        if (contentRef.current) {
-          contentRef.current.style.transform = `translate(${position.x}px, ${position.y}px) scale(${scale})`;
-          contentRef.current.style.transition = isDragging ? 'none' : 'transform 0.1s ease-out';
-        }
       }
     },
     exportImage: async (transparent: boolean) => {
@@ -1024,7 +1041,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
         }
         
         // 使用更高的导出倍率以获得更清晰的图片
-        const exportScale = 3; // 3x 分辨率，更清晰
+        const exportScale = 3; // 3x 分辨率
         
         // 获取背景色 - 优先使用 actualBgStyle 中的 backgroundColor
         let bgColor = transparent ? undefined : getComputedStyle(containerRef.current!).backgroundColor;
@@ -1096,11 +1113,23 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
         node.style.transform = originalTransform;
         node.style.transition = originalTransition;
         
-        // 下载图片
-        const link = document.createElement('a');
-        link.download = `mermaid-diagram-${Date.now()}.${transparent ? 'png' : 'jpg'}`;
-        link.href = dataUrl;
-        link.click();
+        const filename = `mermaid-diagram-${Date.now()}.${transparent ? 'png' : 'jpg'}`;
+
+        // Check if running in Wails desktop app
+        if ((window as any).go?.main?.App?.SaveImage) {
+          try {
+            await (window as any).go.main.App.SaveImage(dataUrl, filename);
+          } catch (wailsErr) {
+             console.error('Wails save failed:', wailsErr);
+             throw wailsErr;
+          }
+        } else {
+          // Browser download
+          const link = document.createElement('a');
+          link.download = filename;
+          link.href = dataUrl;
+          link.click();
+        }
         
         // 追踪导出成功
         trackEvent(AnalyticsEvents.EXPORT_SUCCESS, {
@@ -1163,7 +1192,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
               font-family: ${actualFont} !important; 
             }
             .node .label, .edgeLabel, .messageText, .noteText, .labelText, .loopText, 
-            .actor text, .taskText, .sectionTitle, .titleText, text {
+            .actor text, .taskText, .sectionTitle, .titleText, .legendText, tspan {
               font-family: ${actualFont} !important;
             }
           `

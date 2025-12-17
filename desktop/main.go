@@ -59,9 +59,10 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "Modern Mermaid",
-		Width:  1200,
-		Height: 800,
+		Title:            "Modern Mermaid",
+		Width:            1200,
+		Height:           800,
+		WindowStartState: options.Maximised,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
