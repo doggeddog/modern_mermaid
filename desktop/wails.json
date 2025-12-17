@@ -1,0 +1,15 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "Modern Mermaid Desktop",
+  "outputfilename": "modern-mermaid",
+  "frontend:install": "pnpm install",
+  "frontend:build": "make build-frontend",
+  "frontend:dir": "../",
+  "version": "1.0.0",
+  "author": {
+    "name": "Modern Mermaid Team",
+    "email": "support@modern-mermaid.live"
+  },
+  "wailsjsdir": "./frontend",
+  "assetdir": "./assets"
+}
