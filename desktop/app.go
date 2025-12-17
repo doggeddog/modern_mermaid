@@ -58,7 +58,7 @@ func NewApp() *App {
 		diagrams:      []string{},
 		currentIndex:  0,
 		zoomLevel:     1.0,
-		headerVisible: true,
+		headerVisible: false,
 	}
 
 	// Load config on init
@@ -89,14 +89,13 @@ func (a *App) startup(ctx context.Context) {
 	// 监听前端就绪事件
 	runtime.EventsOn(ctx, "onAppReady", func(optionalData ...interface{}) {
 		a.loadFromDisk()
+		// Apply saved state
+		a.applyZoom()
+		a.applyHeaderVisibility()
 	})
 	
 	// 初始化菜单状态
 	a.updateMenuState()
-
-	// Apply saved state
-	a.applyZoom()
-	a.applyHeaderVisibility()
 }
 
 // domReady is called after the front-end dom has been loaded
@@ -428,16 +427,23 @@ func (a *App) applyZoom() {
 // ToggleHeader toggles the visibility of the header
 func (a *App) ToggleHeader() {
 	a.headerVisible = !a.headerVisible
+	fmt.Printf("ToggleHeader: %v\n", a.headerVisible)
 	a.applyHeaderVisibility()
 	a.saveConfig()
 }
 
 func (a *App) applyHeaderVisibility() {
-	display := ""
+	display := "flex"
 	if !a.headerVisible {
 		display = "none"
 	}
-	js := fmt.Sprintf("const h = document.querySelector('header'); if(h) h.style.display = '%s';", display)
+	// Use setProperty with !important to override any other styles
+	// Wrap in IIFE to avoid "duplicate variable" errors
+	js := fmt.Sprintf(`(function(){
+		const h = document.querySelector('header');
+		console.log("Wails ToggleHeader: Setting display to", '%s'); 
+		if(h) h.style.setProperty('display', '%s', 'important');
+	})()`, display, display)
 	runtime.WindowExecJS(a.ctx, js)
 }
 
