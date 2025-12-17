@@ -27,6 +27,9 @@ type App struct {
 	// Zoom State
 	zoomLevel float64
 
+	// UI State
+	headerVisible bool
+
 	// Menu References
 	statusItem *menu.MenuItem
 	prevItem   *menu.MenuItem
@@ -35,7 +38,8 @@ type App struct {
 
 // AppConfig stores persistent configuration
 type AppConfig struct {
-	ZoomLevel float64 `json:"zoomLevel"`
+	ZoomLevel     float64 `json:"zoomLevel"`
+	HeaderVisible *bool   `json:"headerVisible"`
 }
 
 // NewApp creates a new App application struct
@@ -49,11 +53,12 @@ func NewApp() *App {
 	_ = os.MkdirAll(appDir, 0755)
 
 	a := &App{
-		autoSavePath: filepath.Join(appDir, "autosave.mmd"),
-		configPath:   filepath.Join(appDir, "config.json"),
-		diagrams:     []string{},
-		currentIndex: 0,
-		zoomLevel:    1.0,
+		autoSavePath:  filepath.Join(appDir, "autosave.mmd"),
+		configPath:    filepath.Join(appDir, "config.json"),
+		diagrams:      []string{},
+		currentIndex:  0,
+		zoomLevel:     1.0,
+		headerVisible: true,
 	}
 
 	// Load config on init
@@ -89,8 +94,9 @@ func (a *App) startup(ctx context.Context) {
 	// 初始化菜单状态
 	a.updateMenuState()
 
-	// Apply saved zoom level
+	// Apply saved state
 	a.applyZoom()
+	a.applyHeaderVisibility()
 }
 
 // domReady is called after the front-end dom has been loaded
@@ -183,12 +189,18 @@ func (a *App) loadConfig() {
 			if cfg.ZoomLevel > 0 {
 				a.zoomLevel = cfg.ZoomLevel
 			}
+			if cfg.HeaderVisible != nil {
+				a.headerVisible = *cfg.HeaderVisible
+			}
 		}
 	}
 }
 
 func (a *App) saveConfig() {
-	cfg := AppConfig{ZoomLevel: a.zoomLevel}
+	cfg := AppConfig{
+		ZoomLevel:     a.zoomLevel,
+		HeaderVisible: &a.headerVisible,
+	}
 	data, _ := json.MarshalIndent(cfg, "", "  ")
 	os.WriteFile(a.configPath, data, 0644)
 }
@@ -410,6 +422,22 @@ func (a *App) applyZoom() {
 	// Apply zoom to document body
 	// Note: We use %f to format float, effectively creating "1.100000" string
 	js := fmt.Sprintf("document.body.style.zoom = '%f'", a.zoomLevel)
+	runtime.WindowExecJS(a.ctx, js)
+}
+
+// ToggleHeader toggles the visibility of the header
+func (a *App) ToggleHeader() {
+	a.headerVisible = !a.headerVisible
+	a.applyHeaderVisibility()
+	a.saveConfig()
+}
+
+func (a *App) applyHeaderVisibility() {
+	display := ""
+	if !a.headerVisible {
+		display = "none"
+	}
+	js := fmt.Sprintf("const h = document.querySelector('header'); if(h) h.style.display = '%s';", display)
 	runtime.WindowExecJS(a.ctx, js)
 }
 

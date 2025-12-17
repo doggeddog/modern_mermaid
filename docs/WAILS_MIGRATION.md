@@ -151,3 +151,5 @@ sequenceDiagram
   - 通过 CSS `document.body.style.zoom` 实现全局界面缩放。
 - **配置持久化**:
   - 缩放比例现在会保存到 `config.json`，下次启动自动应用。
+- **Header 控制**:
+  - 在 `View` 菜单中添加了 "Toggle Header"，可显示/隐藏网页顶部的 Header 区域。状态会持久化保存。

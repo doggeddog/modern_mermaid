@@ -36,7 +36,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
     
     const saved = localStorage.getItem('mermaid-language');
-    return (saved as Language) || 'en';
+    return (saved as Language) || 'zh-CN';
   });
 
   // 监听 URL 变化（例如浏览器前进/后退）

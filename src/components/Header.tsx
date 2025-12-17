@@ -8,20 +8,14 @@ const Header = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   return (
-    <header 
-      className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between relative z-50 transition-colors duration-200"
-      style={{ '--wails-draggable': 'drag' } as React.CSSProperties}
-    >
+    <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 flex items-center justify-between relative z-50 transition-colors duration-200">
       <div className="flex items-center gap-3">
         <Logo size={40} className="flex-shrink-0" />
         <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
           Modern <span className="text-indigo-600 dark:text-indigo-400">Mermaid</span>
         </h1>
       </div>
-      <div 
-        className="flex items-center gap-3"
-        style={{ '--wails-draggable': 'no-drag' } as React.CSSProperties}
-      >
+      <div className="flex items-center gap-3">
         <button
           onClick={toggleDarkMode}
           className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"

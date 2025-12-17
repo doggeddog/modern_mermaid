@@ -70,6 +70,10 @@ func main() {
 	ViewMenu.AddText("Reset Zoom", keys.CmdOrCtrl("0"), func(_ *menu.CallbackData) {
 		app.ZoomReset()
 	})
+	ViewMenu.AddSeparator()
+	ViewMenu.AddText("Toggle Header", nil, func(_ *menu.CallbackData) {
+		app.ToggleHeader()
+	})
 
 	// Navigation Menu (Top Level Item showing Status)
 	// We manually construct the item so we can reference it to change the label
@@ -107,7 +111,7 @@ func main() {
 			app,
 		},
 		Mac: &mac.Options{
-			TitleBar:             mac.TitleBarHiddenInset(), // Modern look
+			// TitleBar: mac.TitleBarHiddenInset(), // Removed to use standard title bar
 			WebviewIsTransparent: true,
 			WindowIsTranslucent:  true,
 		},
