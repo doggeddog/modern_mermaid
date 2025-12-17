@@ -1316,7 +1316,22 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
         setSvg(processedSvg);
       } catch (err) {
         console.error('Mermaid render error:', err);
-        setError('Syntax Error: Please check your Mermaid syntax.');
+        let errorMessage = 'Syntax Error: Please check your Mermaid syntax.';
+        
+        if (err instanceof Error) {
+          errorMessage = err.message;
+        } else if (typeof err === 'string') {
+          errorMessage = err;
+        } else if (typeof err === 'object' && err !== null) {
+          if ('str' in err) {
+            errorMessage = (err as any).str;
+          } else if ('message' in err) {
+            errorMessage = (err as any).message;
+          }
+        }
+        
+        // Clean up common prefixes if needed, but usually detailed message is better
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -1415,7 +1430,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
     >
        {/* 错误提示 */}
        {error && (
-        <div className="absolute top-20 right-4 bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded-md text-sm shadow-sm z-20">
+        <div className="absolute top-20 right-4 bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded-md text-sm shadow-sm z-20 whitespace-pre-wrap max-w-md break-words font-mono">
                {error}
            </div>
        )}
