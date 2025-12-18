@@ -30,6 +30,13 @@ type App struct {
 	// UI State
 	headerVisible bool
 
+	// Persistent Frontend State
+	theme      string
+	background string
+	font       string
+	language   string
+	darkMode   bool
+
 	// Menu References
 	statusItem *menu.MenuItem
 	prevItem   *menu.MenuItem
@@ -40,6 +47,11 @@ type App struct {
 type AppConfig struct {
 	ZoomLevel     float64 `json:"zoomLevel"`
 	HeaderVisible *bool   `json:"headerVisible"`
+	Theme         string  `json:"theme"`
+	Background    string  `json:"background"`
+	Font          string  `json:"font"`
+	Language      string  `json:"language"`
+	DarkMode      *bool   `json:"darkMode"`
 }
 
 // NewApp creates a new App application struct
@@ -58,7 +70,12 @@ func NewApp() *App {
 		diagrams:      []string{},
 		currentIndex:  0,
 		zoomLevel:     1.0,
-		headerVisible: false,
+		headerVisible: false,         // Default hidden
+		theme:         "linearLight", // Default theme
+		background:    "dots",
+		font:          "inter",
+		language:      "zh-CN", // Default language (changed from en)
+		darkMode:      false,
 	}
 
 	// Load config on init
@@ -86,6 +103,22 @@ func (a *App) startup(ctx context.Context) {
 		}
 	})
 
+	// Listen for config changes from Frontend
+	runtime.EventsOn(ctx, "configChanged", func(data ...interface{}) {
+		if len(data) > 0 {
+			// Log for debugging
+			fmt.Printf("[Wails] ConfigChanged Event: %+v\n", data[0])
+
+			// Expecting a JSON string or map
+			// Wails usually passes map[string]interface{} for JSON objects
+			if configMap, ok := data[0].(map[string]interface{}); ok {
+				a.updateConfigFromMap(configMap)
+			} else {
+				fmt.Println("[Wails] Error: Config data is not a map")
+			}
+		}
+	})
+
 	// 监听前端就绪事件
 	runtime.EventsOn(ctx, "onAppReady", func(optionalData ...interface{}) {
 		a.loadFromDisk()
@@ -93,37 +126,150 @@ func (a *App) startup(ctx context.Context) {
 		a.applyZoom()
 		a.applyHeaderVisibility()
 	})
-	
+
 	// 初始化菜单状态
 	a.updateMenuState()
 }
 
+// GetStartupInjectionScript returns the script to be injected into index.html head
+// This ensures URL params and localStorage are set BEFORE React loads.
+func (a *App) GetStartupInjectionScript() string {
+	queryParams := []string{}
+	if a.theme != "" {
+		queryParams = append(queryParams, fmt.Sprintf("theme=%s", a.theme))
+	}
+	if a.background != "" {
+		queryParams = append(queryParams, fmt.Sprintf("bg=%s", a.background))
+	}
+	if a.font != "" {
+		queryParams = append(queryParams, fmt.Sprintf("font=%s", a.font))
+	}
+	if a.language != "" {
+		queryParams = append(queryParams, fmt.Sprintf("lang=%s", a.language))
+	}
+	
+	queryString := strings.Join(queryParams, "&")
+	
+	// Note: We use window.history.replaceState immediately.
+	// We also set localStorage for darkMode.
+	
+	script := fmt.Sprintf(`
+    <script>
+    (function() {
+        try {
+            // 1. Restore Dark Mode
+            const savedDark = '%v';
+            if (savedDark === 'true') {
+                localStorage.setItem('darkMode', 'true');
+                document.documentElement.classList.add('dark');
+            } else {
+                localStorage.setItem('darkMode', 'false');
+                document.documentElement.classList.remove('dark');
+            }
+
+            // 2. Restore URL Params
+            // Only if current URL has no params (fresh start)
+            if (!window.location.search && '%s' !== "") {
+                 const newUrl = window.location.pathname + '?' + '%s';
+                 window.history.replaceState({}, '', newUrl);
+            }
+        } catch(e) { console.error("Wails Init Error:", e); }
+    })();
+    </script>
+    `, a.darkMode, queryString, queryString)
+    
+    return script
+}
+
 // domReady is called after the front-end dom has been loaded
 func (a *App) domReady(ctx context.Context) {
-	// 注入桥接脚本
+	// Only inject the bridge and watchers here.
+	// The state restoration is now handled by Index Injection in main.go
+	
 	script := `
     (function() {
         console.log("Wails Bridge Injected");
+
+        // --- Watchers for Persistence ---
+
+        // Watch URL changes (Theme, Bg, Font, Lang)
+        // Method 1: Monkey Patch History API
+        const originalPushState = history.pushState;
+        history.pushState = function() {
+            console.log("[Wails] history.pushState called. Args:", arguments);
+            try {
+                originalPushState.apply(this, arguments);
+            } catch (e) {
+                console.error("[Wails] pushState failed:", e);
+            }
+            notifyConfigChangeFromURL();
+        };
+
+        const originalReplaceState = history.replaceState;
+        history.replaceState = function() {
+            console.log("[Wails] history.replaceState called. Args:", arguments);
+            try {
+                originalReplaceState.apply(this, arguments);
+            } catch (e) {
+                console.error("[Wails] replaceState failed:", e);
+            }
+            notifyConfigChangeFromURL();
+        };
+
+        // Method 2: Polling (Fallback for reliability)
+        let lastSearch = window.location.search;
+        console.log("Polling started. Initial search:", lastSearch);
+        console.log("Middleware Injected Check:", window.isMiddlewareInjected);
         
-        // 1. 监听 textarea 输入
+        setInterval(() => {
+            // Check both search and href to be sure
+            if (window.location.search !== lastSearch) {
+                console.log("URL Changed (polling). New Search:", window.location.search);
+                lastSearch = window.location.search;
+                notifyConfigChangeFromURL();
+            }
+        }, 1000);
+
+        function notifyConfigChangeFromURL() {
+            console.log("Notifying Config Change... Current URL:", window.location.href);
+            // Debounce or immediate? Immediate is fine for now.
+            setTimeout(() => {
+                const params = new URLSearchParams(window.location.search);
+                const config = {
+                    theme: params.get('theme') || '',
+                    background: params.get('bg') || '',
+                    font: params.get('font') || '',
+                    language: params.get('lang') || ''
+                };
+                console.log("Sending Config Update:", config);
+                window.runtime.EventsEmit("configChanged", config);
+            }, 100);
+        }
+        
+        // Watch LocalStorage (DarkMode)
+        const originalSetItem = localStorage.setItem;
+        localStorage.setItem = function(key, value) {
+            originalSetItem.apply(this, arguments);
+            if (key === 'darkMode') {
+                window.runtime.EventsEmit("configChanged", { darkMode: value === 'true' });
+            }
+        };
+
+
+        // --- Editor Interaction ---
+        
         function attachListener() {
             const textarea = document.querySelector('textarea');
             if (textarea) {
-                console.log("Textarea found, attaching listener");
-                
-                // 监听输入并发送给后端
                 textarea.addEventListener('input', (e) => {
                     window.runtime.EventsEmit("codeChanged", e.target.value);
                 });
-
-                // 告诉后端我们准备好了
                 window.runtime.EventsEmit("onAppReady");
                 return true;
             }
             return false;
         }
 
-        // 使用 MutationObserver 等待 textarea 出现
         const observer = new MutationObserver((mutations) => {
             if (attachListener()) {
                 observer.disconnect();
@@ -132,12 +278,9 @@ func (a *App) domReady(ctx context.Context) {
         
         observer.observe(document.body, { childList: true, subtree: true });
         
-        // 尝试立即绑定
         attachListener();
 
-        // 2. 监听来自后端的加载事件
         window.runtime.EventsOn("loadFileContent", (content) => {
-            console.log("Received file content");
             const textarea = document.querySelector('textarea');
             if (textarea) {
                 const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
@@ -146,7 +289,6 @@ func (a *App) domReady(ctx context.Context) {
             }
         });
 
-        // 3. 监听粘贴内容事件
         window.runtime.EventsOn("pasteContent", (content) => {
             const textarea = document.querySelector('textarea');
             if (textarea) {
@@ -163,6 +305,45 @@ func (a *App) domReady(ctx context.Context) {
     })();
     `
 	runtime.WindowExecJS(ctx, script)
+}
+
+func (a *App) updateConfigFromMap(data map[string]interface{}) {
+	changed := false
+
+	if val, ok := data["theme"].(string); ok && val != "" {
+		if a.theme != val {
+			a.theme = val
+			changed = true
+		}
+	}
+	if val, ok := data["background"].(string); ok && val != "" {
+		if a.background != val {
+			a.background = val
+			changed = true
+		}
+	}
+	if val, ok := data["font"].(string); ok && val != "" {
+		if a.font != val {
+			a.font = val
+			changed = true
+		}
+	}
+	if val, ok := data["language"].(string); ok && val != "" {
+		if a.language != val {
+			a.language = val
+			changed = true
+		}
+	}
+	if val, ok := data["darkMode"].(bool); ok {
+		if a.darkMode != val {
+			a.darkMode = val
+			changed = true
+		}
+	}
+
+	if changed {
+		a.saveConfig()
+	}
 }
 
 func (a *App) saveToDisk(content string) {
@@ -191,6 +372,21 @@ func (a *App) loadConfig() {
 			if cfg.HeaderVisible != nil {
 				a.headerVisible = *cfg.HeaderVisible
 			}
+			if cfg.Theme != "" {
+				a.theme = cfg.Theme
+			}
+			if cfg.Background != "" {
+				a.background = cfg.Background
+			}
+			if cfg.Font != "" {
+				a.font = cfg.Font
+			}
+			if cfg.Language != "" {
+				a.language = cfg.Language
+			}
+			if cfg.DarkMode != nil {
+				a.darkMode = *cfg.DarkMode
+			}
 		}
 	}
 }
@@ -199,9 +395,18 @@ func (a *App) saveConfig() {
 	cfg := AppConfig{
 		ZoomLevel:     a.zoomLevel,
 		HeaderVisible: &a.headerVisible,
+		Theme:         a.theme,
+		Background:    a.background,
+		Font:          a.font,
+		Language:      a.language,
+		DarkMode:      &a.darkMode,
 	}
+	fmt.Printf("[Wails] Saving Config: %+v\n", cfg)
 	data, _ := json.MarshalIndent(cfg, "", "  ")
-	os.WriteFile(a.configPath, data, 0644)
+	err := os.WriteFile(a.configPath, data, 0644)
+	if err != nil {
+		fmt.Printf("[Wails] Error saving config: %v\n", err)
+	}
 }
 
 // SetMenuRefs stores menu item references
@@ -210,9 +415,15 @@ func (a *App) SetMenuRefs(status, prev, next *menu.MenuItem) {
 	a.prevItem = prev
 	a.nextItem = next
 	// 初始化时隐藏
-	if a.statusItem != nil { a.statusItem.Hidden = true }
-	if a.prevItem != nil { a.prevItem.Hidden = true }
-	if a.nextItem != nil { a.nextItem.Hidden = true }
+	if a.statusItem != nil {
+		a.statusItem.Hidden = true
+	}
+	if a.prevItem != nil {
+		a.prevItem.Hidden = true
+	}
+	if a.nextItem != nil {
+		a.nextItem.Hidden = true
+	}
 }
 
 func (a *App) updateMenuState() {
@@ -347,7 +558,7 @@ func (a *App) OpenFileDialog() {
 					return
 				}
 			}
-			
+
 			// Fallback normal load
 			a.diagrams = []string{} // Reset multi-view
 			a.updateMenuState()

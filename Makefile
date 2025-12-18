@@ -8,7 +8,7 @@ dev:
 
 # Build the desktop application for production
 build:
-	cd desktop && wails build
+	cd desktop && wails build -debug
 
 # Build the frontend (called by Wails)
 # This command:
@@ -18,7 +18,7 @@ build:
 # 4. Copies new assets to desktop/assets
 build-frontend:
 	pnpm tsc -b
-	pnpm vite build
+	VITE_IS_DESKTOP=true pnpm vite build
 	rm -rf desktop/assets
 	cp -r dist desktop/assets
 

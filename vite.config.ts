@@ -7,7 +7,8 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    VitePWA({
+    // Only enable PWA if NOT in desktop mode
+    !process.env.VITE_IS_DESKTOP && VitePWA({
       registerType: 'autoUpdate',  // 自动更新 Service Worker
       manifest: {
         name: "Modern Mermaid",
@@ -51,7 +52,7 @@ export default defineConfig({
         ],
       },
     }),
-  ],
+  ].filter(Boolean),
   server: {
     host: '0.0.0.0',
     port: 5173,

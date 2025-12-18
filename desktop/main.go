@@ -2,8 +2,11 @@ package main
 
 import (
 	"embed"
+	"io/fs"
+	"net/http"
 	"os"
 	"runtime"
+	"strings"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/menu"
@@ -13,8 +16,85 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 )
 
-//go:embed assets
+//go:embed all:assets
 var assets embed.FS
+
+// IndexInjectionHandler intercepts index.html to inject startup configuration
+type IndexInjectionHandler struct {
+	assets fs.FS
+	app    *App
+	next   http.Handler
+}
+
+func (h *IndexInjectionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// Debug log to confirm handler is called
+	println("[Wails Handler] Request:", r.URL.Path)
+
+	// Intercept root or index.html requests
+	if r.URL.Path == "/" || r.URL.Path == "/index.html" {
+		// Read original file from embed fs
+		// Note: "assets" dir is the root of our embed.FS because of //go:embed all:assets
+		// Wails assetserver normally expects the files to be at root of provided FS if configured so.
+		// Let's try to read "assets/index.html" first.
+
+		content, err := fs.ReadFile(h.assets, "assets/index.html")
+		if err != nil {
+			// Try without "assets/" prefix just in case structure differs
+			content, err = fs.ReadFile(h.assets, "index.html")
+			if err != nil {
+				println("[Wails Handler] Error reading index.html:", err.Error())
+				if h.next != nil {
+					h.next.ServeHTTP(w, r)
+				} else {
+					w.WriteHeader(http.StatusNotFound)
+				}
+				return
+			}
+		}
+
+		// Inject script into <head>
+		html := string(content)
+
+		// Disable Service Worker in Wails to prevent "protocol not supported" errors
+		// And set flag for debugging
+		swDisable := `<script>
+		window.isMiddlewareInjected = true;
+		if(window.navigator) {
+			window.navigator.serviceWorker = { 
+				register: function() { return Promise.resolve({}); }, 
+				getRegistrations: function() { return Promise.resolve([]); },
+				ready: Promise.resolve({})
+			};
+		}
+		</script>`
+
+		injection := swDisable + h.app.GetStartupInjectionScript()
+
+		// Look for <head> tag
+		if strings.Contains(html, "<head>") {
+			html = strings.Replace(html, "<head>", "<head>"+injection, 1)
+		} else {
+			// Fallback: prepend to body or just valid HTML
+			html = injection + html
+		}
+
+		w.Header().Set("Content-Type", "text/html")
+		// Disable caching for index.html to ensure injection script is always fresh
+		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+		w.Header().Set("Pragma", "no-cache")
+		w.Header().Set("Expires", "0")
+		w.Write([]byte(html))
+		println("[Wails Handler] Injected startup script into index.html")
+		return
+	}
+
+	// For all other files, return 404 to let Wails internal asset server handle it
+	if h.next != nil {
+		h.next.ServeHTTP(w, r)
+	} else {
+		w.WriteHeader(http.StatusNotFound)
+	}
+}
 
 func main() {
 	// macOS Fix: When launched from Finder, LANG is often empty, causing CGO/Clipboard encoding issues.
@@ -109,6 +189,13 @@ func main() {
 		WindowStartState: options.Maximised,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
+			Middleware: func(next http.Handler) http.Handler {
+				return &IndexInjectionHandler{
+					assets: assets,
+					app:    app,
+					next:   next,
+				}
+			},
 		},
 		BackgroundColour: &options.RGBA{R: 255, G: 255, B: 255, A: 1},
 		OnStartup:        app.startup,

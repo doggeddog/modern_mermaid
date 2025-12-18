@@ -113,6 +113,11 @@ const Layout: React.FC = () => {
     setSelectedBackground(bg);
     // 用户手动更改了背景，允许后续主题切换时重置
     setCustomStylesLoaded(false);
+
+    // 更新 URL 参数
+    const url = new URL(window.location.href);
+    url.searchParams.set('bg', bg.id);
+    window.history.pushState({}, '', url.toString());
   };
 
   const handleFontChange = (font: FontOption) => {
@@ -126,6 +131,11 @@ const Layout: React.FC = () => {
     setSelectedFont(font);
     // 用户手动更改了字体，允许后续主题切换时重置
     setCustomStylesLoaded(false);
+
+    // 更新 URL 参数
+    const url = new URL(window.location.href);
+    url.searchParams.set('font', font.id);
+    window.history.pushState({}, '', url.toString());
   };
 
   // 清空编辑器
