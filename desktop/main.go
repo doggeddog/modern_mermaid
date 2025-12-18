@@ -162,6 +162,10 @@ func main() {
 		app.ToggleHeader()
 	})
 
+	// History Menu
+	HistoryMenu := appMenu.AddSubmenu("History")
+	app.SetHistoryMenuRef(HistoryMenu)
+
 	// Navigation Menu (Top Level Item showing Status)
 	// We manually construct the item so we can reference it to change the label
 	NavSubMenu := menu.NewMenu()

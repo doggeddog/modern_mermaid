@@ -43,6 +43,7 @@ type App struct {
 	statusItem *menu.MenuItem
 	prevItem   *menu.MenuItem
 	nextItem   *menu.MenuItem
+	historyMenu *menu.Menu
 }
 
 // AppConfig stores persistent configuration
@@ -137,7 +138,9 @@ func (a *App) startup(ctx context.Context) {
 	// 监听前端就绪事件
 	runtime.EventsOn(ctx, "onAppReady", func(optionalData ...interface{}) {
 		a.loadLatestFromDB()
-		a.ImportFromClipboard()
+		a.ImportFromClipboard() // This calls rebuildHistoryMenu inside if it imports something, but maybe not if it doesn't.
+        // To be safe, call it always.
+        a.rebuildHistoryMenu()
 		// Apply saved state
 		a.applyZoom()
 		a.applyHeaderVisibility()
@@ -511,7 +514,7 @@ func (a *App) ImportFromClipboard() {
 	// Fallback logic:
 	// If no markdown blocks found, check if the text itself looks like mermaid code.
 	if len(newDiagrams) == 0 {
-		if isMermaidCode(text) {
+		if a.isMermaidCode(text) {
 			id, err := a.dbInsertDiagram(text, "clipboard")
 			if err == nil {
 				newDiagrams = append(newDiagrams, Diagram{
@@ -531,6 +534,7 @@ func (a *App) ImportFromClipboard() {
 	a.currentIndex = 0
 	a.loadCurrentDiagram()
 	a.updateMenuState()
+	a.rebuildHistoryMenu()
 }
 
 // NextPreview shows the next diagram
@@ -592,6 +596,7 @@ func (a *App) OpenFileDialog() {
 					a.currentIndex = 0
 					a.loadCurrentDiagram()
 					a.updateMenuState()
+					a.rebuildHistoryMenu()
 					return
 				}
 			}
@@ -608,6 +613,7 @@ func (a *App) OpenFileDialog() {
 				a.currentIndex = 0
 				a.loadCurrentDiagram()
 				a.updateMenuState()
+				a.rebuildHistoryMenu()
 			}
 		}
 	}
@@ -717,7 +723,7 @@ var mermaidKeywords = []string{
 	"kanban", "architecture",
 }
 
-func isMermaidCode(text string) bool {
+func (a *App) isMermaidCode(text string) bool {
 	lines := strings.Split(text, "\n")
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
@@ -734,4 +740,57 @@ func isMermaidCode(text string) bool {
 		return false
 	}
 	return false
+}
+
+func (a *App) SetHistoryMenuRef(m *menu.Menu) {
+	a.historyMenu = m
+}
+
+func (a *App) rebuildHistoryMenu() {
+	if a.historyMenu == nil {
+		return
+	}
+
+	diagrams, err := a.dbListDiagrams(50)
+	// Clear items
+	a.historyMenu.Items = nil
+
+	if err != nil || len(diagrams) == 0 {
+		a.historyMenu.AddText("(No History)", nil, nil).Disabled = true
+	} else {
+		for _, d := range diagrams {
+			// Copy ID for closure
+			id := d.ID
+			// Format: YYYY-MM-DD HH:MM Title
+			timeStr := d.UpdatedAt.Format("2006-01-02 15:04")
+			title := d.Title
+			
+			// Truncate title if too long
+			if len(title) > 50 {
+				title = title[:47] + "..."
+			}
+			
+			label := fmt.Sprintf("%s %s", timeStr, title)
+			
+			a.historyMenu.AddText(label, nil, func(_ *menu.CallbackData) {
+				a.loadDiagramFromHistory(id)
+			})
+		}
+	}
+
+	if a.ctx != nil {
+		runtime.MenuUpdateApplicationMenu(a.ctx)
+	}
+}
+
+func (a *App) loadDiagramFromHistory(id int64) {
+	d, err := a.dbGetDiagram(id)
+	if err == nil {
+		a.diagrams = []Diagram{*d}
+		a.currentIndex = 0
+		a.loadCurrentDiagram()
+		a.updateMenuState()
+		// Update history menu order immediately? 
+		// Since we just loaded it, its updated_at hasn't changed unless we edit.
+	}
 }
