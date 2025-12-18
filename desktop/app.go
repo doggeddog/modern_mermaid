@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -19,9 +20,10 @@ type App struct {
 	ctx          context.Context
 	autoSavePath string
 	configPath   string
+	db           *sql.DB
 
 	// Navigation State
-	diagrams     []string
+	diagrams     []Diagram
 	currentIndex int
 
 	// Zoom State
@@ -64,10 +66,17 @@ func NewApp() *App {
 	appDir := filepath.Join(configDir, "modern-mermaid")
 	_ = os.MkdirAll(appDir, 0755)
 
+	dbPath := filepath.Join(appDir, "modern-mermaid.db")
+	db, err := initDB(dbPath)
+	if err != nil {
+		fmt.Printf("Failed to init DB: %v\n", err)
+	}
+
 	a := &App{
 		autoSavePath:  filepath.Join(appDir, "autosave.mmd"),
 		configPath:    filepath.Join(appDir, "config.json"),
-		diagrams:      []string{},
+		db:            db,
+		diagrams:      []Diagram{},
 		currentIndex:  0,
 		zoomLevel:     1.0,
 		headerVisible: false,         // Default hidden
@@ -94,10 +103,16 @@ func (a *App) startup(ctx context.Context) {
 		if len(optionalData) > 0 {
 			content, ok := optionalData[0].(string)
 			if ok {
-				a.saveToDisk(content)
 				// 同步更新当前列表中的图表代码
 				if len(a.diagrams) > 0 && a.currentIndex >= 0 && a.currentIndex < len(a.diagrams) {
-					a.diagrams[a.currentIndex] = content
+					currentID := a.diagrams[a.currentIndex].ID
+					a.dbUpdateDiagram(currentID, content)
+					a.diagrams[a.currentIndex].Content = content
+				} else {
+					// Fallback: If no diagram loaded (weird state), insert one
+					id, _ := a.dbInsertDiagram(content, "edit")
+					a.diagrams = []Diagram{{ID: id, Content: content}}
+					a.currentIndex = 0
 				}
 			}
 		}
@@ -121,7 +136,7 @@ func (a *App) startup(ctx context.Context) {
 
 	// 监听前端就绪事件
 	runtime.EventsOn(ctx, "onAppReady", func(optionalData ...interface{}) {
-		a.loadFromDisk()
+		a.loadLatestFromDB()
 		a.ImportFromClipboard()
 		// Apply saved state
 		a.applyZoom()
@@ -347,18 +362,12 @@ func (a *App) updateConfigFromMap(data map[string]interface{}) {
 	}
 }
 
-func (a *App) saveToDisk(content string) {
-	// 简单的直接写入（操作系统通常处理得很快）
-	err := os.WriteFile(a.autoSavePath, []byte(content), 0644)
-	if err != nil {
-		fmt.Printf("Error saving file: %v\n", err)
-	}
-}
-
-func (a *App) loadFromDisk() {
-	content, err := os.ReadFile(a.autoSavePath)
-	if err == nil {
-		runtime.EventsEmit(a.ctx, "loadFileContent", string(content))
+func (a *App) loadLatestFromDB() {
+	d, err := a.dbGetLatestDiagram()
+	if err == nil && d != nil {
+		a.diagrams = []Diagram{*d}
+		a.currentIndex = 0
+		runtime.EventsEmit(a.ctx, "loadFileContent", d.Content)
 	}
 }
 
@@ -464,7 +473,7 @@ func (a *App) updateMenuState() {
 
 func (a *App) loadCurrentDiagram() {
 	if len(a.diagrams) > 0 && a.currentIndex >= 0 && a.currentIndex < len(a.diagrams) {
-		code := a.diagrams[a.currentIndex]
+		code := a.diagrams[a.currentIndex].Content
 		runtime.EventsEmit(a.ctx, "loadFileContent", code)
 	}
 }
@@ -481,28 +490,44 @@ func (a *App) ImportFromClipboard() {
 	re := regexp.MustCompile("(?s)```mermaid\\s*(.*?)```")
 	matches := re.FindAllStringSubmatch(text, -1)
 
-	var blocks []string
+	var newDiagrams []Diagram
 	for _, m := range matches {
 		if len(m) > 1 {
 			code := strings.TrimSpace(m[1])
 			if code != "" {
-				blocks = append(blocks, code)
+				id, err := a.dbInsertDiagram(code, "clipboard")
+				if err == nil {
+					newDiagrams = append(newDiagrams, Diagram{
+						ID:      id,
+						Content: code,
+						Source:  "clipboard",
+						Title:   extractTitle(code),
+					})
+				}
 			}
 		}
 	}
 
 	// Fallback logic:
 	// If no markdown blocks found, check if the text itself looks like mermaid code.
-	if len(blocks) == 0 {
+	if len(newDiagrams) == 0 {
 		if isMermaidCode(text) {
-			blocks = []string{text}
+			id, err := a.dbInsertDiagram(text, "clipboard")
+			if err == nil {
+				newDiagrams = append(newDiagrams, Diagram{
+					ID:      id,
+					Content: text,
+					Source:  "clipboard",
+					Title:   extractTitle(text),
+				})
+			}
 		} else {
 			// Not a valid mermaid code, ignore.
 			return
 		}
 	}
 
-	a.diagrams = blocks
+	a.diagrams = newDiagrams
 	a.currentIndex = 0
 	a.loadCurrentDiagram()
 	a.updateMenuState()
@@ -545,17 +570,25 @@ func (a *App) OpenFileDialog() {
 				// Parse blocks
 				re := regexp.MustCompile("(?s)```mermaid\\s*(.*?)```")
 				matches := re.FindAllStringSubmatch(text, -1)
-				var blocks []string
+				var newDiagrams []Diagram
 				for _, m := range matches {
 					if len(m) > 1 {
 						code := strings.TrimSpace(m[1])
 						if code != "" {
-							blocks = append(blocks, code)
+							id, err := a.dbInsertDiagram(code, "file")
+							if err == nil {
+								newDiagrams = append(newDiagrams, Diagram{
+									ID:      id,
+									Content: code,
+									Source:  "file",
+									Title:   extractTitle(code),
+								})
+							}
 						}
 					}
 				}
-				if len(blocks) > 0 {
-					a.diagrams = blocks
+				if len(newDiagrams) > 0 {
+					a.diagrams = newDiagrams
 					a.currentIndex = 0
 					a.loadCurrentDiagram()
 					a.updateMenuState()
@@ -564,10 +597,18 @@ func (a *App) OpenFileDialog() {
 			}
 
 			// Fallback normal load
-			a.diagrams = []string{} // Reset multi-view
-			a.updateMenuState()
-			runtime.EventsEmit(a.ctx, "loadFileContent", text)
-			a.saveToDisk(text)
+			id, err := a.dbInsertDiagram(text, "file")
+			if err == nil {
+				a.diagrams = []Diagram{{
+					ID:      id,
+					Content: text,
+					Source:  "file",
+					Title:   extractTitle(text),
+				}}
+				a.currentIndex = 0
+				a.loadCurrentDiagram()
+				a.updateMenuState()
+			}
 		}
 	}
 }

@@ -4,7 +4,10 @@ go 1.22.0
 
 toolchain go1.24.1
 
-require github.com/wailsapp/wails/v2 v2.10.2
+require (
+	github.com/mattn/go-sqlite3 v1.14.32
+	github.com/wailsapp/wails/v2 v2.10.2
+)
 
 require (
 	github.com/bep/debounce v1.2.1 // indirect
