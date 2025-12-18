@@ -72,7 +72,6 @@ graph TB
 ### 3.2 交互流程详解
 
 #### A. 启动与注入
-
 1.  Wails 应用启动。
 2.  WebView 加载页面。
 3.  Go 后端通过 `OnDomReady` 钩子，向页面注入一段 JavaScript 桥接脚本。
@@ -80,7 +79,6 @@ graph TB
 5.  一旦找到，脚本立即绑定 `input` 事件监听器。
 
 #### B. 数据同步 (Web -> Go)
-
 当用户在编辑器中输入时：
 1.  用户输入触发 DOM 的 `input` 事件。
 2.  注入的桥接脚本捕获该事件，提取 `target.value`。
@@ -88,7 +86,6 @@ graph TB
 4.  Go 后端的 `app.go` 收到事件，将内容写入本地文件 (`autosave.mmd`)。
 
 #### C. 数据加载 (Go -> Web)
-
 当用户打开文件或从剪贴板粘贴时：
 1.  Go 读取文件内容或剪贴板文本。
 2.  Go 调用 `runtime.EventsEmit(ctx, "loadFileContent", content)`。
@@ -144,6 +141,29 @@ sequenceDiagram
 *   **写入**：通过上述的“数据加载”流程，将文本插入到光标位置（如果支持）或替换内容。
 *   **菜单**：在系统菜单栏添加 "Edit -> Paste" 项，绑定到 Go 的 `PasteFromClipboard` 方法。
 
+### 4.3 配置持久化 (Configuration Persistence)
+
+为了解决 React 前端依赖 URL 参数存储状态（如主题、背景、字体）在桌面端应用重启后丢失的问题，我们实现了 **配置同步与恢复机制**。
+
+#### A. 状态监听 (Frontend -> Go)
+*   **Polling (轮询)**: 注入的 JS 脚本每秒检查一次 `window.location.search`。
+*   **Monkey Patch**: 同时也拦截了 `history.pushState` 和 `history.replaceState` 以实现即时响应。
+*   当 URL 参数变化时，JS 提取 `theme`, `bg`, `font`, `lang` 参数，并通过 `window.runtime.EventsEmit("configChanged", config)` 发送给 Go 后端。
+*   Go 后端将配置序列化保存到 `config.json`。
+
+#### B. 状态注入 (Go -> Frontend)
+*   **Asset Middleware**: 在 `desktop/main.go` 中，我们使用 Wails 的 `AssetServer.Middleware` 拦截对 `index.html` 的请求。
+*   **Startup Injection**: 
+    1.  Go 端在内存中维护最新的配置（从 `config.json` 读取）。
+    2.  在服务 `index.html` 前，Go 动态生成一段 `<script>` 代码。
+    3.  该脚本包含 `localStorage.setItem('darkMode', ...)` 和 `window.history.replaceState(..., '/?theme=...')`。
+    4.  脚本被注入到 `<head>` 的最前面。
+*   **结果**: 当 React 应用加载并初始化时，它能立即从 URL 和 LocalStorage 中读取到正确的配置，从而恢复用户上次的状态，无需任何刷新或闪烁。
+
+#### C. Service Worker 兼容性
+*   由于 Wails 使用自定义协议 (`wails://`)，Service Worker 无法正常工作并会报错。
+*   我们通过环境变量 `VITE_IS_DESKTOP=true` 在构建阶段（`vite.config.ts`）完全禁用了 PWA 插件，确保桌面版生成的 `index.html` 不包含任何 SW 注册代码。
+
 ## 5. 开发与构建
 
 ### 开发模式
@@ -162,4 +182,3 @@ Wails 将：
 1.  调用 `pnpm build` 构建 React 项目到 `dist/`。
 2.  将 `dist/` 复制到 `desktop/assets/`。
 3.  编译 Go 代码并将资源嵌入二进制文件。
-

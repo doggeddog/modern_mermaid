@@ -161,3 +161,18 @@ sequenceDiagram
     - 修复了 macOS 发布版（非终端启动）从剪贴板读取中文时出现乱码的问题。
     - 原因：GUI 启动的应用未继承 shell 的 `LANG` 环境变量，导致 CGO 字符集转换异常。
     - 解决：在 `main.go` 启动时检测并强制设置 `LANG="en_US.UTF-8"`。
+
+### 2025-12-18 (New)
+- **配置持久化增强 (Configuration Persistence)**:
+  - **问题**: 重启应用后，主题、背景、字体等配置会重置为默认值（因为 Web 版依赖 URL 状态，而桌面版启动时 URL 重置）。
+  - **解决 (后端)**: 
+    - 引入 `config.json` 存储完整的 UI 状态。
+    - 实现 `Asset Middleware` 拦截 `index.html` 请求，在 React 加载前动态注入当前配置到 `window.location` 和 `localStorage`。
+  - **解决 (前端)**: 
+    - 修复了 `Layout.tsx`，确保在切换背景和字体时同步更新 URL 参数（此前仅主题切换更新了 URL）。
+- **Service Worker 修复**:
+  - **问题**: Wails 使用自定义协议 (`wails://`) 导致 Service Worker 注册失败报错。
+  - **解决**: 在 `vite.config.ts` 中根据环境变量 `VITE_IS_DESKTOP` 有条件地禁用 PWA 插件，从源头移除 SW 相关代码。
+- **资源打包修复**:
+  - **问题**: 以 `_` 开头的 chunk 文件（如 `_basePickBy...js`）被 `//go:embed` 忽略导致应用白屏。
+  - **解决**: 修改 `main.go` 为 `//go:embed all:assets`。

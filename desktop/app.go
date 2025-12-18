@@ -147,12 +147,12 @@ func (a *App) GetStartupInjectionScript() string {
 	if a.language != "" {
 		queryParams = append(queryParams, fmt.Sprintf("lang=%s", a.language))
 	}
-	
+
 	queryString := strings.Join(queryParams, "&")
-	
+
 	// Note: We use window.history.replaceState immediately.
 	// We also set localStorage for darkMode.
-	
+
 	script := fmt.Sprintf(`
     <script>
     (function() {
@@ -177,15 +177,15 @@ func (a *App) GetStartupInjectionScript() string {
     })();
     </script>
     `, a.darkMode, queryString, queryString)
-    
-    return script
+
+	return script
 }
 
 // domReady is called after the front-end dom has been loaded
 func (a *App) domReady(ctx context.Context) {
 	// Only inject the bridge and watchers here.
 	// The state restoration is now handled by Index Injection in main.go
-	
+
 	script := `
     (function() {
         console.log("Wails Bridge Injected");
