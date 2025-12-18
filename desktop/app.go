@@ -122,6 +122,7 @@ func (a *App) startup(ctx context.Context) {
 	// 监听前端就绪事件
 	runtime.EventsOn(ctx, "onAppReady", func(optionalData ...interface{}) {
 		a.loadFromDisk()
+		a.ImportFromClipboard()
 		// Apply saved state
 		a.applyZoom()
 		a.applyHeaderVisibility()
@@ -490,12 +491,15 @@ func (a *App) ImportFromClipboard() {
 		}
 	}
 
-	// If no blocks found, treat the whole text as content?
-	// The requirement is to extract. If none, maybe just paste as is or do nothing?
-	// Let's default to: if no blocks found, assume it is NOT markdown with blocks,
-	// but just code.
+	// Fallback logic:
+	// If no markdown blocks found, check if the text itself looks like mermaid code.
 	if len(blocks) == 0 {
-		blocks = []string{text}
+		if isMermaidCode(text) {
+			blocks = []string{text}
+		} else {
+			// Not a valid mermaid code, ignore.
+			return
+		}
 	}
 
 	a.diagrams = blocks
@@ -661,4 +665,32 @@ func (a *App) applyHeaderVisibility() {
 // Quit the application
 func (a *App) Quit() {
 	runtime.Quit(a.ctx)
+}
+
+var mermaidKeywords = []string{
+	"flowchart", "graph", "sequenceDiagram", "classDiagram",
+	"stateDiagram", "stateDiagram-v2", "erDiagram", "journey",
+	"gantt", "pie", "requirementDiagram", "gitGraph",
+	"C4Context", "mindmap", "timeline", "sankey-beta",
+	"quadrantChart", "xychart-beta", "block-beta", "packet-beta",
+	"kanban", "architecture",
+}
+
+func isMermaidCode(text string) bool {
+	lines := strings.Split(text, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "%%") {
+			continue
+		}
+		// Check if line starts with any keyword
+		for _, keyword := range mermaidKeywords {
+			if strings.HasPrefix(line, keyword) {
+				return true
+			}
+		}
+		// Found a non-comment line that doesn't start with a keyword
+		return false
+	}
+	return false
 }

@@ -42,7 +42,7 @@ graph TB
     GoRuntime -- "宿主" --> WebView
     BuildDist -- "加载者" --> WebView
     
-    GoApp -- "1. 注入脚本" .-> WebView
+    GoApp -- "1. 注入脚本" --> WebView
     GoApp -- "2. 监听/保存" --> LocalFS[("本地文件系统\n(.mmd 文件)")]
 
     style WebSrc fill:#e1f5fe,stroke:#01579b
