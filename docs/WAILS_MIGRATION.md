@@ -25,6 +25,7 @@ graph TB
             WailsConfig["wails.json\n(frontend: ../)"]
             GoMain["main.go\n(Wails App)"]
             GoApp["app.go\n(逻辑 & 桥接)"]
+            GoDB["db.go\n(SQLite 数据库)"]
         end
     end
 
@@ -43,7 +44,7 @@ graph TB
     BuildDist -- "加载者" --> WebView
     
     GoApp -- "1. 注入脚本" --> WebView
-    GoApp -- "2. 监听/保存" --> LocalFS[("本地文件系统\n(.mmd 文件)")]
+    GoApp -- "2. 监听/保存" --> DB[("SQLite DB\n(modern-mermaid.db)")]
 
     style WebSrc fill:#e1f5fe,stroke:#01579b
     style GoApp fill:#e8f5e9,stroke:#1b5e20
@@ -61,7 +62,7 @@ sequenceDiagram
     participant DOM as DOM (Textarea)
     participant Bridge as 注入的 JS 桥接
     participant Go as Go 后端
-    participant FS as 文件系统
+    participant DB as SQLite 数据库
 
     Note over Go, React: 应用启动
 
@@ -77,13 +78,13 @@ sequenceDiagram
     DOM->>React: onChange (更新状态)
     DOM->>Bridge: 触发 'input' 事件
     Bridge->>Go: runtime.EventsEmit("codeChanged", content)
-    Go->>FS: 写入 autosave.mmd
+    Go->>DB: UPDATE diagrams SET content=... (实时保存)
 
-    Note over Go, React: 文件打开流程
+    Note over Go, React: 历史记录加载
     
-    User->>Go: 点击菜单 "文件 -> 打开"
-    Go->>FS: 读取 file.mmd
-    FS-->>Go: 内容
+    User->>Go: 点击菜单 "History -> Item"
+    Go->>DB: SELECT content FROM diagrams
+    DB-->>Go: content
     Go->>Bridge: runtime.EventsEmit("fileLoaded", content)
     
     rect rgb(240, 248, 255)
@@ -114,19 +115,20 @@ sequenceDiagram
 }
 ```
 
-### 步骤 3: 后端逻辑 (`desktop/app.go`)
+### 步骤 3: 后端逻辑 (`desktop/app.go` & `db.go`)
 实现 `App` 结构体，包含以下方法：
 1.  **注入 JavaScript**: 在应用启动 (`OnDomReady`) 时，注入一个脚本来监听 `textarea` 的输入事件。
-2.  **保存状态**: 监听来自 JS 的 `codeChanged` 事件，并写入 `~/.config/modern-mermaid/autosave.mmd`。
-3.  **加载状态**: 启动时读取自动保存文件，并向 JS 发射 `fileLoaded` 事件。
+2.  **数据库存储**: 使用 `go-sqlite3` 管理 `modern-mermaid.db`，实现图表的 CRUD 和自动保存。
+3.  **历史记录**: 自动计算内容 Hashcode 进行去重，并通过系统菜单展示最近 50 条历史。
 
 ### 步骤 4: 系统菜单 (`desktop/main.go`)
-配置原生系统菜单（macOS/Windows），如“文件 -> 打开”、“文件 -> 保存”等，并将其链接到 App 的方法。
+配置原生系统菜单（macOS/Windows），包括 "File", "Edit", "View", "History" 等。
 
 ## 5. 存储策略
 
-- **自动保存**：自动保存到用户的配置目录 (`AppUserData`)，防止数据丢失。
-- **文件操作**：使用标准的文件打开/保存对话框来管理 `.mmd` 文件。
+- **持久化**: 所有图表数据存储在 SQLite 数据库中。
+- **自动保存**: 编辑时实时更新当前记录。
+- **文件操作**: 使用标准的文件打开/保存对话框来管理 `.mmd` 文件（导入导出）。
 
 ## 6. 已实现功能与变更记录 (Implemented Features & Changes)
 
@@ -176,3 +178,17 @@ sequenceDiagram
 - **资源打包修复**:
   - **问题**: 以 `_` 开头的 chunk 文件（如 `_basePickBy...js`）被 `//go:embed` 忽略导致应用白屏。
   - **解决**: 修改 `main.go` 为 `//go:embed all:assets`。
+- **SQLite 数据库迁移**:
+  - **架构升级**: 从文件系统 (`autosave.mmd`) 迁移到 SQLite 数据库 (`modern-mermaid.db`)。
+  - **表结构**: 增加了 `hashcode` (MD5 前16位) 用于内容去重，以及 `title`, `updated_at` 等字段。
+  - **自动保存**: 实现了实时（按键级）自动保存到数据库。
+- **智能剪贴板导入**:
+  - 启动时自动检查剪贴板。
+  - 支持从 Markdown 代码块 (` ```mermaid `) 批量导入。
+  - **增强回退逻辑**: 如果未发现代码块，自动检测是否以 Mermaid 关键词（如 `flowchart`, `sequenceDiagram`）开头，智能识别纯代码。
+- **历史记录菜单 (History Menu)**:
+  - **位置**: 新增一级菜单 `History`。
+  - **功能**: 展示最近 50 条编辑过的图表，格式为 `YYYY-MM-DD HH:MM Title`。
+  - **去重**: 导入相同代码时，只更新现有记录的时间戳，不创建重复项。
+  - **清除**: 底部提供 "Clear All History" 选项（软删除）。
+- **标题生成**: 自动截取图表内容的前两行作为标题，方便识别。

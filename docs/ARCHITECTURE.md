@@ -24,6 +24,7 @@ modern_mermaid/          <-- 根目录 (Web 项目)
     ├── go.mod
     ├── main.go          <-- Wails 入口 & 系统菜单
     ├── app.go           <-- 核心逻辑 & JS 桥接
+    ├── db.go            <-- SQLite 数据库逻辑
     ├── wails.json       <-- Wails 配置
     └── assets/          <-- 嵌入资源 (构建后的 dist 副本)
 ```
@@ -44,6 +45,7 @@ graph TB
             WailsConfig["wails.json\n(frontend: ../)"]
             GoMain["main.go\n(Wails App)"]
             GoApp["app.go\n(逻辑 & 桥接)"]
+            GoDB["db.go\n(Data Layer)"]
         end
     end
 
@@ -62,7 +64,8 @@ graph TB
     BuildDist -- "加载者" --> WebView
     
     GoApp -- "1. 注入脚本" .-> WebView
-    GoApp -- "2. 监听/保存" --> LocalFS[("本地文件系统\n(.mmd 文件)")]
+    GoApp -- "2. 读写" --> GoDB
+    GoDB -- "3. 持久化" --> SQLite[("SQLite DB\n(modern-mermaid.db)")]
 
     style WebSrc fill:#e1f5fe,stroke:#01579b
     style GoApp fill:#e8f5e9,stroke:#1b5e20
@@ -83,11 +86,11 @@ graph TB
 1.  用户输入触发 DOM 的 `input` 事件。
 2.  注入的桥接脚本捕获该事件，提取 `target.value`。
 3.  脚本调用 `window.runtime.EventsEmit("codeChanged", content)`。
-4.  Go 后端的 `app.go` 收到事件，将内容写入本地文件 (`autosave.mmd`)。
+4.  Go 后端的 `app.go` 收到事件，调用 `db.go` 的方法将内容**实时更新**到 SQLite 数据库中。
 
 #### C. 数据加载 (Go -> Web)
-当用户打开文件或从剪贴板粘贴时：
-1.  Go 读取文件内容或剪贴板文本。
+当用户从历史记录打开或从剪贴板粘贴时：
+1.  Go 从数据库查询内容或读取剪贴板。
 2.  Go 调用 `runtime.EventsEmit(ctx, "loadFileContent", content)`。
 3.  前端桥接脚本收到事件。
 4.  **关键黑魔法**：脚本通过 `Object.getOwnPropertyDescriptor` 获取原生 `HTMLTextAreaElement` 的值设置器 (Value Setter)，直接更新 `<textarea>` 的值，并手动派发 `input` 事件。
@@ -100,22 +103,23 @@ sequenceDiagram
     participant DOM as DOM (Textarea)
     participant Bridge as JS 桥接脚本
     participant Go as Go 后端
-    participant FS as 文件系统
+    participant DB as SQLite
 
     Note over Go, React: 1. 启动阶段
     Go->>React: 启动 WebView
     Go->>Bridge: 注入桥接脚本
     Bridge->>DOM: 监听 'input' 事件
     
-    Note over Go, React: 2. 用户编辑 (自动保存)
+    Note over Go, React: 2. 用户编辑 (实时保存)
     User->>DOM: 输入代码
     DOM->>Bridge: 触发 'input'
     Bridge->>Go: Emit "codeChanged"
-    Go->>FS: 写入 autosave.mmd
+    Go->>DB: UPDATE diagrams SET content=...
 
-    Note over Go, React: 3. 打开文件 / 粘贴
-    User->>Go: 菜单: 打开文件 / 粘贴
-    Go->>FS: 读取内容
+    Note over Go, React: 3. 从历史/文件加载
+    User->>Go: 菜单: History / Open
+    Go->>DB: SELECT content FROM diagrams
+    DB-->>Go: Content
     Go->>Bridge: Emit "loadFileContent"
     
     rect rgb(240, 248, 255)
@@ -130,16 +134,20 @@ sequenceDiagram
 
 ## 4. 功能实现细节
 
-### 4.1 自动保存 (Auto-Save)
-*   **路径**：用户配置目录下的 `modern-mermaid/autosave.mmd`。
-    *   MacOS: `~/Library/Application Support/modern-mermaid/autosave.mmd`
-    *   Windows: `%APPDATA%\modern-mermaid\autosave.mmd`
-*   **机制**：每次按键触发保存（依赖操作系统的文件缓存优化）。启动时自动读取。
+### 4.1 自动保存与历史记录
+*   **存储**: 使用 SQLite 数据库 (`modern-mermaid.db`) 替代了旧版的文件存储 (`autosave.mmd`)。
+*   **路径**: 用户配置目录下的 `modern-mermaid/modern-mermaid.db`。
+*   **机制**: 
+    *   **实时保存**: 每次按键都会更新当前记录的数据库状态。
+    *   **去重**: 引入 `hashcode` (MD5) 字段。当导入已存在的代码时，不会创建重复记录，而是复用已有记录并更新时间戳。
+    *   **历史菜单**: 顶层 `History` 菜单展示最近 50 条记录，支持软删除 ("Clear All History")。
 
 ### 4.2 剪贴板集成
-*   **读取**：Go 使用 `runtime.ClipboardGetText()` 读取系统剪切板。
-*   **写入**：通过上述的“数据加载”流程，将文本插入到光标位置（如果支持）或替换内容。
-*   **菜单**：在系统菜单栏添加 "Edit -> Paste" 项，绑定到 Go 的 `PasteFromClipboard` 方法。
+*   **智能导入**: 应用启动时或点击 "Import from Clipboard" 时，会自动扫描剪贴板。
+*   **识别逻辑**:
+    1.  优先提取 Markdown 代码块 (` ```mermaid `)。
+    2.  如果没有代码块，检测文本是否以 `flowchart`, `sequenceDiagram` 等 Mermaid 关键词开头。
+*   **写入**: 导入的内容会自动保存为历史记录的新条目。
 
 ### 4.3 配置持久化 (Configuration Persistence)
 

@@ -776,11 +776,24 @@ func (a *App) rebuildHistoryMenu() {
 				a.loadDiagramFromHistory(id)
 			})
 		}
+		
+		a.historyMenu.AddSeparator()
+		a.historyMenu.AddText("Clear All History", nil, func(_ *menu.CallbackData) {
+			a.ClearAllHistory()
+		})
 	}
 
 	if a.ctx != nil {
 		runtime.MenuUpdateApplicationMenu(a.ctx)
 	}
+}
+
+func (a *App) ClearAllHistory() {
+	err := a.dbClearHistory()
+	if err != nil {
+		fmt.Printf("Error clearing history: %v\n", err)
+	}
+	a.rebuildHistoryMenu()
 }
 
 func (a *App) loadDiagramFromHistory(id int64) {
