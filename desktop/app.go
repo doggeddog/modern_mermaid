@@ -40,9 +40,9 @@ type App struct {
 	darkMode   bool
 
 	// Menu References
-	statusItem *menu.MenuItem
-	prevItem   *menu.MenuItem
-	nextItem   *menu.MenuItem
+	statusItem  *menu.MenuItem
+	prevItem    *menu.MenuItem
+	nextItem    *menu.MenuItem
 	historyMenu *menu.Menu
 }
 
@@ -139,8 +139,8 @@ func (a *App) startup(ctx context.Context) {
 	runtime.EventsOn(ctx, "onAppReady", func(optionalData ...interface{}) {
 		a.loadLatestFromDB()
 		a.ImportFromClipboard() // This calls rebuildHistoryMenu inside if it imports something, but maybe not if it doesn't.
-        // To be safe, call it always.
-        a.rebuildHistoryMenu()
+		// To be safe, call it always.
+		a.rebuildHistoryMenu()
 		// Apply saved state
 		a.applyZoom()
 		a.applyHeaderVisibility()
@@ -764,19 +764,19 @@ func (a *App) rebuildHistoryMenu() {
 			// Format: YYYY-MM-DD HH:MM Title
 			timeStr := d.UpdatedAt.Format("2006-01-02 15:04")
 			title := d.Title
-			
+
 			// Truncate title if too long
 			if len(title) > 50 {
 				title = title[:47] + "..."
 			}
-			
+
 			label := fmt.Sprintf("%s %s", timeStr, title)
-			
+
 			a.historyMenu.AddText(label, nil, func(_ *menu.CallbackData) {
 				a.loadDiagramFromHistory(id)
 			})
 		}
-		
+
 		a.historyMenu.AddSeparator()
 		a.historyMenu.AddText("Clear All History", nil, func(_ *menu.CallbackData) {
 			a.ClearAllHistory()
@@ -803,7 +803,7 @@ func (a *App) loadDiagramFromHistory(id int64) {
 		a.currentIndex = 0
 		a.loadCurrentDiagram()
 		a.updateMenuState()
-		// Update history menu order immediately? 
+		// Update history menu order immediately?
 		// Since we just loaded it, its updated_at hasn't changed unless we edit.
 	}
 }
