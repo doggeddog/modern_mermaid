@@ -36,6 +36,7 @@ deps:
 install: build
 	rm -rf "/Applications/Modern Mermaid Desktop.app"
 	cp -r "desktop/build/bin/Modern Mermaid Desktop.app" /Applications/
+	@echo "✅ Modern Mermaid Desktop.app installed to /Applications/"
 
 # Clean build artifacts
 clean:
