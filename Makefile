@@ -2,12 +2,17 @@
 
 .PHONY: dev build build-frontend install clean
 
+# Helper target to setup icons
+setup-icons:
+	mkdir -p desktop/build
+	cp public/icon-512.png desktop/build/appicon.png
+
 # Default target - Start development mode
-dev:
+dev: setup-icons
 	cd desktop && wails dev
 
 # Build the desktop application for production
-build:
+build: setup-icons
 	cd desktop && wails build -debug
 
 # Build the frontend (called by Wails)
