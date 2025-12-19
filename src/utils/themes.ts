@@ -1,6 +1,6 @@
 import type { MermaidConfig } from 'mermaid';
 
-export type ThemeType = 'linearLight' | 'linearDark' | 'notion' | 'ghibli' | 'spotless' | 'brutalist' | 'glassmorphism' | 'memphis' | 'softPop' | 'cyberpunk' | 'monochrome' | 'darkMinimal' | 'wireframe' | 'handDrawn' | 'grafana' | 'noir' | 'material' | 'aurora' | 'win95' | 'doodle' | 'organic' | 'hightech' | 'kawaii' | 'geometricCollage';
+export type ThemeType = 'linearLight' | 'notion' | 'ghibli' | 'spotless' | 'brutalist' | 'glassmorphism' | 'memphis' | 'softPop' | 'cyberpunk' | 'monochrome' | 'wireframe' | 'handDrawn' | 'grafana' | 'noir' | 'material' | 'aurora' | 'win95' | 'doodle' | 'organic' | 'hightech' | 'kawaii' | 'geometricCollage';
 
 export interface ThemeConfig {
   name: string;
@@ -56,51 +56,6 @@ export const themes: Record<ThemeType, ThemeConfig> = {
     bgClass: 'bg-white',
     bgStyle: {
         backgroundImage: 'radial-gradient(#e5e5e5 1px, transparent 1px)',
-        backgroundSize: '20px 20px'
-    }
-  },
-  linearDark: {
-    name: 'Linear Dark',
-      annotationColors: {
-          primary: '#c7c7c7', // Indigo 400
-          secondary: '#c9c9c9', // Indigo 300
-          text: '#d4d4d4', // Indigo 100
-      },
-    mermaidConfig: {
-      theme: 'base',
-      themeVariables: {
-        darkMode: true,
-        background: '#09090b', // Zinc 950
-        primaryColor: '#18181b', // Zinc 900
-        primaryTextColor: '#f4f4f5', // Zinc 100
-        primaryBorderColor: '#27272a', // Zinc 800
-        lineColor: '#52525b', // Zinc 600
-        secondaryColor: '#27272a',
-        tertiaryColor: '#27272a',
-        fontFamily: '"Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-        fontSize: '14px',
-      },
-      themeCSS: `
-        .node rect, .node circle, .node polygon, .node path { stroke-width: 1.5px; }
-        .edgePath .path { stroke-width: 1.5px; }
-        
-        /* XYChart styles - Elegant dark theme palette */
-        .line-plot-0 path { stroke: #7B9BAE !important; stroke-width: 3px !important; } /* Cool steel blue */
-        .line-plot-1 path { stroke: #8EAFA8 !important; stroke-width: 3px !important; } /* Misty teal */
-        .line-plot-2 path { stroke: #D4A5A5 !important; stroke-width: 3px !important; } /* Muted mauve */
-        .bar-plot-0 rect { fill: rgba(123, 155, 174, 0.3) !important; stroke: #7B9BAE !important; stroke-width: 1.5px !important; }
-        .bar-plot-1 rect { fill: rgba(142, 175, 168, 0.3) !important; stroke: #8EAFA8 !important; stroke-width: 1.5px !important; }
-        .bar-plot-2 rect { fill: rgba(212, 165, 165, 0.3) !important; stroke: #D4A5A5 !important; stroke-width: 1.5px !important; }
-        .chart-title text { fill: #f4f4f5 !important; font-weight: 600 !important; font-size: 20px !important; }
-        .left-axis .label text, .bottom-axis .label text { fill: #d4d4d8 !important; font-size: 14px !important; }
-        .left-axis .title text { fill: #a1a1aa !important; font-size: 16px !important; }
-        .bottom-axis .title text { fill: #a1a1aa !important; font-size: 16px !important; }
-      `
-    },
-    bgClass: 'bg-[#09090b]',
-    bgStyle: {
-      backgroundColor: '#09090b',
-        backgroundImage: 'radial-gradient(#27272a 1px, transparent 1px)',
         backgroundSize: '20px 20px'
     }
   },
@@ -1952,109 +1907,6 @@ export const themes: Record<ThemeType, ThemeConfig> = {
       `
     },
     bgClass: 'bg-[#EFF1F5]',
-  },
-  darkMinimal: {
-    name: 'Dark Minimal',
-      annotationColors: {
-          primary: '#ffffff', // White
-          secondary: '#9BA5B0', // Light gray
-          text: '#e5e5e5', // Light grey
-      },
-    mermaidConfig: {
-      theme: 'base',
-      themeVariables: {
-        darkMode: true,
-        background: '#1a1a1a', // Dark grey bg
-        primaryColor: '#1a1a1a', // Match background for transparent look
-        primaryTextColor: '#e5e5e5', // Light grey text
-        primaryBorderColor: '#404040', // Subtle border
-        lineColor: '#ffffff', // White lines
-        secondaryColor: '#1a1a1a',
-        tertiaryColor: '#1a1a1a',
-        fontFamily: '"Inter", "Noto Sans SC", system-ui, sans-serif',
-        fontSize: '15px',
-      },
-      themeCSS: `
-        /* Minimal node styling with subtle borders */
-        .node rect, .node circle, .node polygon {
-            fill: #1a1a1a !important;
-            stroke: #404040 !important;
-            stroke-width: 1px !important;
-            rx: 4px !important;
-            ry: 4px !important;
-        }
-
-        .node .label {
-            font-family: "Inter", "Noto Sans SC", system-ui, sans-serif;
-            font-weight: 400;
-            fill: #e5e5e5 !important;
-        }
-
-        /* Dotted lines for connections - White and thicker */
-        .edgePath .path {
-            stroke: #ffffff !important;
-            stroke-width: 3px !important;
-            stroke-dasharray: 10 8 !important;
-            stroke-linecap: butt !important;
-        }
-        
-        .arrowheadPath {
-            fill: #ffffff !important;
-            stroke: #ffffff !important;
-        }
-        
-        .edgeLabel {
-            color: #e5e5e5 !important;
-            font-family: "Inter", "Noto Sans SC", system-ui, sans-serif;
-            font-size: 13px;
-            font-weight: 400;
-        }
-        
-        /* XYChart styles - Understated elegance */
-        .line-plot-0 path {
-            stroke: #9BA5B0 !important;
-            stroke-width: 3px !important;
-        }
-        .line-plot-1 path {
-            stroke: #A69D93 !important;
-            stroke-width: 3px !important;
-            stroke-dasharray: 8 4 !important;
-        }
-        .line-plot-2 path {
-            stroke: #B39D9D !important;
-            stroke-width: 3px !important;
-            stroke-dasharray: 4 4 !important;
-        }
-        .bar-plot-0 rect {
-            fill: rgba(155, 165, 176, 0.25) !important;
-            stroke: #9BA5B0 !important;
-            stroke-width: 2px !important;
-        }
-        .bar-plot-1 rect {
-            fill: rgba(166, 157, 147, 0.25) !important;
-            stroke: #A69D93 !important;
-            stroke-width: 2px !important;
-        }
-        .bar-plot-2 rect {
-            fill: rgba(179, 157, 157, 0.25) !important;
-            stroke: #B39D9D !important;
-            stroke-width: 2px !important;
-        }
-        .ticks path { stroke: #404040 !important; }
-        .chart-title text {
-            fill: #ffffff !important; 
-            font-weight: 400 !important;
-            font-size: 16px !important;
-            font-family: "Inter", "Noto Sans SC", system-ui, sans-serif;
-        }
-        .left-axis .title text, .bottom-axis .title text { fill: #a3a3a3 !important; font-size: 13px !important; }
-        .legend text { fill: #e5e5e5 !important; font-size: 12px !important; }
-      `
-    },
-    bgClass: 'bg-[#1a1a1a]',
-    bgStyle: {
-      backgroundColor: '#1a1a1a',
-    }
   },
   wireframe: {
     name: 'Wireframe',

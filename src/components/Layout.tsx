@@ -310,7 +310,7 @@ const Layout: React.FC = () => {
       
       // 加载主题（在背景和字体之后）
       if (shareParams.theme) {
-        const validThemes: ThemeType[] = ['linearLight', 'linearDark', 'notion', 'ghibli', 'spotless', 'brutalist', 'glassmorphism', 'memphis', 'softPop', 'cyberpunk', 'monochrome', 'darkMinimal', 'wireframe', 'handDrawn', 'grafana', 'noir', 'material', 'aurora'];
+        const validThemes: ThemeType[] = ['linearLight', 'notion', 'ghibli', 'spotless', 'brutalist', 'glassmorphism', 'memphis', 'softPop', 'cyberpunk', 'monochrome', 'wireframe', 'handDrawn', 'grafana', 'noir', 'material', 'aurora', 'win95', 'doodle', 'organic', 'hightech', 'kawaii', 'geometricCollage'];
         if (validThemes.includes(shareParams.theme as ThemeType)) {
           setCurrentTheme(shareParams.theme as ThemeType);
           
