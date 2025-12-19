@@ -1,6 +1,6 @@
 # Makefile for Modern Mermaid Desktop
 
-.PHONY: dev build build-frontend install clean
+.PHONY: dev build build-frontend deps install clean
 
 # Helper target to setup icons
 setup-icons:
@@ -28,9 +28,14 @@ build-frontend:
 	cp -r dist desktop/assets
 
 # Install all dependencies
-install:
+deps:
 	pnpm install
 	cd desktop && go mod tidy
+
+# Install app to /Applications (overwrites existing)
+install: build
+	rm -rf "/Applications/Modern Mermaid Desktop.app"
+	cp -r "desktop/build/bin/Modern Mermaid Desktop.app" /Applications/
 
 # Clean build artifacts
 clean:
