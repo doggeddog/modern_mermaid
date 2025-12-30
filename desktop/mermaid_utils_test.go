@@ -107,8 +107,8 @@ func TestNormalizeMermaid(t *testing.T) {
 			expected: `Alice->>John: Hello John, how are you?`,
 		},
 		{
-			name:     "Class Diagram (Should Skip Body)",
-			input:    `class BankAccount {
+			name: "Class Diagram (Should Skip Body)",
+			input: `class BankAccount {
     +String owner
     +BigDecimal balance
 }`,

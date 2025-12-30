@@ -14,6 +14,7 @@ type ShapeRule struct {
 }
 
 var shapeRules []*ShapeRule
+
 // Matches quoted strings, handling escaped quotes
 var existingQuoteRegex = regexp.MustCompile(`"(?:[^"\\]|\\.)*"`)
 var tokenRegex = regexp.MustCompile(`^__MQ_\d+__$`)
@@ -39,7 +40,7 @@ func init() {
 		openEsc := regexp.QuoteMeta(def.Open)
 		closeEsc := regexp.QuoteMeta(def.Close)
 		pattern := fmt.Sprintf(`(%s[A-Za-z0-9_-]+)\s*%s(.*?)%s`, prefixPattern, openEsc, closeEsc)
-		
+
 		rule := &ShapeRule{
 			Open:  def.Open,
 			Close: def.Close,
@@ -62,7 +63,7 @@ func NormalizeMermaid(input string) string {
 
 		maskMap := make(map[string]string)
 		maskCounter := 0
-		
+
 		maskFunc := func(s string) string {
 			token := fmt.Sprintf("__MQ_%d__", maskCounter)
 			maskCounter++
@@ -109,9 +110,9 @@ func NormalizeMermaid(input string) string {
 				// If content IS exactly one Token, it means it's fully quoted -> Skip.
 				// If content contains Token mixed with text -> Unmask, Escape, Quote.
 				// If content has no Token but needs quotes -> Quote.
-				
+
 				isFullToken := tokenRegex.MatchString(strings.TrimSpace(content))
-				
+
 				if isFullToken {
 					// Already fully quoted, e.g. ["Text"] -> [__MQ_0__]
 					// Preserve as is, but mask the whole shape
@@ -119,27 +120,27 @@ func NormalizeMermaid(input string) string {
 					token := maskFunc(newShape)
 					return fmt.Sprintf(`%s%s`, fullPrefixWithID, token)
 				}
-				
+
 				// Check if needs quotes (mixed content or special chars)
 				// Note: If content contains `__MQ_`, it implies special chars/quotes, so we definitely need to quote the outer wrapper.
 				// But we must UNMASK first to get the raw text with original quotes.
-				
+
 				rawContent := content
 				if strings.Contains(content, "__MQ_") {
 					rawContent = unmaskStr(content)
 				}
-				
+
 				if needsQuotes(rawContent) || strings.Contains(content, "__MQ_") {
 					// Replace existing quotes with backticks ` to avoid syntax errors
 					// (Mermaid flowcharts don't always support \" escaping well)
 					escapedContent := strings.ReplaceAll(rawContent, `"`, "`")
-					
+
 					// Wrap in quotes
 					newShape := fmt.Sprintf(`%s"%s"%s`, rule.Open, escapedContent, rule.Close)
 					token := maskFunc(newShape)
 					return fmt.Sprintf(`%s%s`, fullPrefixWithID, token)
 				}
-				
+
 				// No quotes needed (simple text)
 				newShape := fmt.Sprintf(`%s%s%s`, rule.Open, content, rule.Close)
 				token := maskFunc(newShape)
@@ -154,7 +155,7 @@ func NormalizeMermaid(input string) string {
 				processedLine = strings.ReplaceAll(processedLine, token, val)
 			}
 		}
-		
+
 		result = append(result, processedLine)
 	}
 
@@ -165,14 +166,14 @@ func needsQuotes(s string) bool {
 	if s == "" {
 		return true
 	}
-	specialChars := `()[]{}:?` 
+	specialChars := `()[]{}:?`
 	if strings.ContainsAny(s, specialChars) {
 		return true
 	}
 	if strings.Contains(s, " ") {
 		return true
 	}
-	
+
 	isASCII := true
 	for _, c := range s {
 		if c > 127 {
