@@ -498,6 +498,8 @@ func (a *App) ImportFromClipboard() {
 		if len(m) > 1 {
 			code := strings.TrimSpace(m[1])
 			if code != "" {
+				// Normalize code to fix potential syntax issues (e.g. unquoted special chars)
+				code = NormalizeMermaid(code)
 				id, err := a.dbInsertDiagram(code, "clipboard")
 				if err == nil {
 					newDiagrams = append(newDiagrams, Diagram{
@@ -515,6 +517,8 @@ func (a *App) ImportFromClipboard() {
 	// If no markdown blocks found, check if the text itself looks like mermaid code.
 	if len(newDiagrams) == 0 {
 		if a.isMermaidCode(text) {
+			// Normalize code
+			text = NormalizeMermaid(text)
 			id, err := a.dbInsertDiagram(text, "clipboard")
 			if err == nil {
 				newDiagrams = append(newDiagrams, Diagram{
@@ -602,6 +606,7 @@ func (a *App) OpenFileDialog() {
 			}
 
 			// Fallback normal load
+			text = NormalizeMermaid(text)
 			id, err := a.dbInsertDiagram(text, "file")
 			if err == nil {
 				a.diagrams = []Diagram{{
