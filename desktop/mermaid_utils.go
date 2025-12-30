@@ -14,11 +14,11 @@ type ShapeRule struct {
 }
 
 var shapeRules []*ShapeRule
-// Matches quoted strings, handling escaped quotes: " text \" inner "
+// Matches quoted strings, handling escaped quotes
 var existingQuoteRegex = regexp.MustCompile(`"(?:[^"\\]|\\.)*"`)
+var tokenRegex = regexp.MustCompile(`^__MQ_\d+__$`)
 
 func init() {
-	// Initialize rules. Order matters: Process longer symbols first.
 	definitions := []struct {
 		Open, Close string
 	}{
@@ -33,15 +33,11 @@ func init() {
 		{"{", "}"},   // Rhombus
 	}
 
-	// Prefix pattern: ensures ID is preceded by Start-of-line, Whitespace, Ampersand, or Arrow/Line chars
 	prefixPattern := `(?:^|\s|&|[-=>])`
 
 	for _, def := range definitions {
 		openEsc := regexp.QuoteMeta(def.Open)
 		closeEsc := regexp.QuoteMeta(def.Close)
-		
-		// Pattern: Prefix + ID + Open + Content + Close
-		// We use non-greedy matching .*? for content
 		pattern := fmt.Sprintf(`(%s[A-Za-z0-9_-]+)\s*%s(.*?)%s`, prefixPattern, openEsc, closeEsc)
 		
 		rule := &ShapeRule{
@@ -53,7 +49,6 @@ func init() {
 	}
 }
 
-// NormalizeMermaid scans the input mermaid code and adds quotes to node labels.
 func NormalizeMermaid(input string) string {
 	lines := strings.Split(input, "\n")
 	var result []string
@@ -65,7 +60,6 @@ func NormalizeMermaid(input string) string {
 			continue
 		}
 
-		// Masking State
 		maskMap := make(map[string]string)
 		maskCounter := 0
 		
@@ -74,6 +68,25 @@ func NormalizeMermaid(input string) string {
 			maskCounter++
 			maskMap[token] = s
 			return token
+		}
+
+		// Helper to unmask a string fully
+		unmaskStr := func(s string) string {
+			// Simple iterative unmasking
+			// Since our tokens don't overlap in the string content (they are replaced),
+			// and we are unmasking a specific substring 's', we can just loop.
+			// But careful about order if 's' contains multiple tokens.
+			// strings.ReplaceAll for each token in the map?
+			// The map might be large, but usually small per line.
+			res := s
+			// Iterate in reverse order of creation to handle nesting
+			for i := maskCounter - 1; i >= 0; i-- {
+				token := fmt.Sprintf("__MQ_%d__", i)
+				if val, ok := maskMap[token]; ok {
+					res = strings.ReplaceAll(res, token, val)
+				}
+			}
+			return res
 		}
 
 		// 1. Mask existing quotes
@@ -90,54 +103,51 @@ func NormalizeMermaid(input string) string {
 				}
 
 				fullPrefixWithID := groups[1]
-				content := groups[2] // This content might contain Tokens
+				content := groups[2]
 
 				// Logic:
-				// 1. If content contains a Mask Token (meaning it had quotes), we SKIP modifying it.
-				//    We assume if the user put quotes, they handled it.
-				//    But we MUST still mask the whole shape to protect it from shorter rules.
-				// 2. If content needs quotes, we Add Quotes.
-				// 3. In both cases, we mask the "Shape Part" (ID + Open + Content + Close) -> ID + Token
-				//    Wait, we match Prefix+ID.
-				//    If we replace the whole match with Prefix + Token, we hide ID.
-				//    But hiding ID is fine for subsequent rules (they won't match inside).
-				//    Actually, we should mask the whole Node Declaration?
-				//    Yes. `A[B]` -> `__MQ__`.
-				//    This is safest.
+				// If content IS exactly one Token, it means it's fully quoted -> Skip.
+				// If content contains Token mixed with text -> Unmask, Escape, Quote.
+				// If content has no Token but needs quotes -> Quote.
 				
-				// Reconstruct the shape string (without prefix logic, which is just lookbehind context in a way)
-				// The `match` is the full string.
-				// `groups[1]` is Prefix+ID.
-				// We want to replace `match` with `groups[1] + MaskedShape`.
-				// But `match` includes the prefix.
-				// So we take the `Open + Content + Close` part.
-				// Wait, `match` = `PrefixID` + `Open` + `Content` + `Close`.
-				// We can reconstruct it.
+				isFullToken := tokenRegex.MatchString(strings.TrimSpace(content))
 				
-				var newShape string
-				
-				if strings.Contains(content, "__MQ_") {
-					// Already has quotes, preserve content
-					newShape = fmt.Sprintf(`%s%s%s`, rule.Open, content, rule.Close)
-				} else if needsQuotes(content) {
-					// Add quotes
-					newShape = fmt.Sprintf(`%s"%s"%s`, rule.Open, content, rule.Close)
-				} else {
-					// No quotes needed
-					newShape = fmt.Sprintf(`%s%s%s`, rule.Open, content, rule.Close)
+				if isFullToken {
+					// Already fully quoted, e.g. ["Text"] -> [__MQ_0__]
+					// Preserve as is, but mask the whole shape
+					newShape := fmt.Sprintf(`%s%s%s`, rule.Open, content, rule.Close)
+					token := maskFunc(newShape)
+					return fmt.Sprintf(`%s%s`, fullPrefixWithID, token)
 				}
 				
-				// Mask the shape part
-				token := maskFunc(newShape)
+				// Check if needs quotes (mixed content or special chars)
+				// Note: If content contains `__MQ_`, it implies special chars/quotes, so we definitely need to quote the outer wrapper.
+				// But we must UNMASK first to get the raw text with original quotes.
 				
-				// Return Prefix+ID + Token
+				rawContent := content
+				if strings.Contains(content, "__MQ_") {
+					rawContent = unmaskStr(content)
+				}
+				
+				if needsQuotes(rawContent) || strings.Contains(content, "__MQ_") {
+					// Replace existing quotes with backticks ` to avoid syntax errors
+					// (Mermaid flowcharts don't always support \" escaping well)
+					escapedContent := strings.ReplaceAll(rawContent, `"`, "`")
+					
+					// Wrap in quotes
+					newShape := fmt.Sprintf(`%s"%s"%s`, rule.Open, escapedContent, rule.Close)
+					token := maskFunc(newShape)
+					return fmt.Sprintf(`%s%s`, fullPrefixWithID, token)
+				}
+				
+				// No quotes needed (simple text)
+				newShape := fmt.Sprintf(`%s%s%s`, rule.Open, content, rule.Close)
+				token := maskFunc(newShape)
 				return fmt.Sprintf(`%s%s`, fullPrefixWithID, token)
 			})
 		}
 
-		// 3. Unmask
-		// We iterate in REVERSE order because later tokens (e.g. from shape matches)
-		// might contain earlier tokens (e.g. from existing quotes).
+		// 3. Final Unmask of the line
 		for i := maskCounter - 1; i >= 0; i-- {
 			token := fmt.Sprintf("__MQ_%d__", i)
 			if val, ok := maskMap[token]; ok {

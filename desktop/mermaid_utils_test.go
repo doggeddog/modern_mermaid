@@ -94,12 +94,43 @@ func TestNormalizeMermaid(t *testing.T) {
 		{
 			name:     "User Reported Case 2 (Already quoted inside)",
 			input:    `MermaidRender[mermaid.render ("解析语法")]`,
-			expected: `MermaidRender[mermaid.render ("解析语法")]`, // Regex should skip this
+			expected: `MermaidRender["mermaid.render (` + "`" + `解析语法` + "`" + `)"]`, // Quotes replaced by backticks
 		},
 		{
 			name:     "User Reported Case 3 (Parens inside Rect)",
 			input:    `EmitEvent --> Bridge[Wails Bridge (DOM Ready)]`,
 			expected: `EmitEvent --> Bridge["Wails Bridge (DOM Ready)"]`,
+		},
+		{
+			name:     "Sequence Diagram (Should Skip)",
+			input:    `Alice->>John: Hello John, how are you?`,
+			expected: `Alice->>John: Hello John, how are you?`,
+		},
+		{
+			name:     "Class Diagram (Should Skip Body)",
+			input:    `class BankAccount {
+    +String owner
+    +BigDecimal balance
+}`,
+			expected: `class BankAccount {
+    +String owner
+    +BigDecimal balance
+}`,
+		},
+		{
+			name:     "ER Diagram",
+			input:    `CUSTOMER ||--o{ ORDER : places`,
+			expected: `CUSTOMER ||--o{ ORDER : places`,
+		},
+		{
+			name:     "Pie Chart",
+			input:    `title What makes a good diagram`,
+			expected: `title What makes a good diagram`,
+		},
+		{
+			name:     "Quotes inside Text",
+			input:    `A[Say "Hello" please]`,
+			expected: `A["Say ` + "`" + `Hello` + "`" + ` please"]`,
 		},
 	}
 
@@ -112,4 +143,3 @@ func TestNormalizeMermaid(t *testing.T) {
 		})
 	}
 }
-
