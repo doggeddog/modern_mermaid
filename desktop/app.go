@@ -15,6 +15,11 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+var (
+	AppVersion = "0.0.0"
+	BuildTime  = "dev"
+)
+
 // App struct
 type App struct {
 	ctx          context.Context
@@ -717,6 +722,16 @@ func (a *App) applyHeaderVisibility() {
 // Quit the application
 func (a *App) Quit() {
 	runtime.Quit(a.ctx)
+}
+
+// ShowVersion displays the application version
+func (a *App) ShowVersion() {
+	message := fmt.Sprintf("Modern Mermaid Desktop\nVersion: %s\nBuild Time: %s", AppVersion, BuildTime)
+	runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		Type:    runtime.InfoDialog,
+		Title:   "About Modern Mermaid",
+		Message: message,
+	})
 }
 
 var mermaidKeywords = []string{

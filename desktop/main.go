@@ -166,6 +166,12 @@ func main() {
 	HistoryMenu := appMenu.AddSubmenu("History")
 	app.SetHistoryMenuRef(HistoryMenu)
 
+	// Help Menu
+	HelpMenu := appMenu.AddSubmenu("Help")
+	HelpMenu.AddText("Version Info", nil, func(_ *menu.CallbackData) {
+		app.ShowVersion()
+	})
+
 	// Navigation Menu (Top Level Item showing Status)
 	// We manually construct the item so we can reference it to change the label
 	NavSubMenu := menu.NewMenu()
@@ -174,11 +180,11 @@ func main() {
 	// Initially hidden until we have diagrams
 	NavTopLevelItem.Hidden = true
 
-	PrevItem := NavSubMenu.AddText("Previous Diagram", keys.CmdOrCtrl("["), func(_ *menu.CallbackData) {
+	PrevItem := NavSubMenu.AddText("Previous Diagram", keys.CmdOrCtrl("PageUp"), func(_ *menu.CallbackData) {
 		app.PrevPreview()
 	})
 
-	NextItem := NavSubMenu.AddText("Next Diagram", keys.CmdOrCtrl("]"), func(_ *menu.CallbackData) {
+	NextItem := NavSubMenu.AddText("Next Diagram", keys.CmdOrCtrl("PageDown"), func(_ *menu.CallbackData) {
 		app.NextPreview()
 	})
 

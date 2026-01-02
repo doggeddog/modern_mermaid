@@ -2,6 +2,11 @@
 
 .PHONY: dev build build-frontend deps install clean
 
+# Version info
+VERSION := 1.0.0
+BUILD_TIME := $(shell date "+%Y-%m-%d %H:%M")
+LDFLAGS := -X 'main.AppVersion=$(VERSION)' -X 'main.BuildTime=$(BUILD_TIME)'
+
 # Helper target to setup icons
 setup-icons:
 	mkdir -p desktop/build
@@ -13,7 +18,7 @@ dev: setup-icons
 
 # Build the desktop application for production
 build: setup-icons
-	cd desktop && wails build -debug
+	cd desktop && wails build -debug -ldflags "$(LDFLAGS)"
 
 # Build the frontend (called by Wails)
 # This command:
@@ -43,4 +48,3 @@ clean:
 	rm -rf dist
 	rm -rf desktop/assets
 	rm -rf desktop/build/bin
-
