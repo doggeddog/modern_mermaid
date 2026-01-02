@@ -114,7 +114,7 @@ func main() {
 	FileMenu.AddText("Open...", keys.CmdOrCtrl("o"), func(_ *menu.CallbackData) {
 		app.OpenFileDialog()
 	})
-	FileMenu.AddText("Import from Clipboard", keys.CmdOrCtrl("i"), func(_ *menu.CallbackData) {
+	FileMenu.AddText("Import from Clipboard", keys.Key("F12"), func(_ *menu.CallbackData) {
 		app.ImportFromClipboard()
 	})
 	FileMenu.AddSeparator()
