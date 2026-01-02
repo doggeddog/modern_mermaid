@@ -106,11 +106,22 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
+	// Check for --new-window flag
+	for _, arg := range os.Args {
+		if arg == "--new-window" {
+			app.isNewWindow = true
+			break
+		}
+	}
+
 	// Create application menu
 	appMenu := menu.NewMenu()
 
 	// File Menu
 	FileMenu := appMenu.AddSubmenu("File")
+	FileMenu.AddText("New Window", keys.CmdOrCtrl("n"), func(_ *menu.CallbackData) {
+		app.NewWindow()
+	})
 	FileMenu.AddText("Open...", keys.CmdOrCtrl("o"), func(_ *menu.CallbackData) {
 		app.OpenFileDialog()
 	})

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -49,6 +50,9 @@ type App struct {
 	prevItem    *menu.MenuItem
 	nextItem    *menu.MenuItem
 	historyMenu *menu.Menu
+
+	// Flags
+	isNewWindow bool
 }
 
 // AppConfig stores persistent configuration
@@ -142,7 +146,11 @@ func (a *App) startup(ctx context.Context) {
 
 	// 监听前端就绪事件
 	runtime.EventsOn(ctx, "onAppReady", func(optionalData ...interface{}) {
-		a.loadLatestFromDB()
+		if a.isNewWindow {
+			a.loadNewDiagram()
+		} else {
+			a.loadLatestFromDB()
+		}
 		a.ImportFromClipboard() // This calls rebuildHistoryMenu inside if it imports something, but maybe not if it doesn't.
 		// To be safe, call it always.
 		a.rebuildHistoryMenu()
@@ -376,6 +384,34 @@ func (a *App) loadLatestFromDB() {
 		a.diagrams = []Diagram{*d}
 		a.currentIndex = 0
 		runtime.EventsEmit(a.ctx, "loadFileContent", d.Content)
+	}
+}
+
+func (a *App) loadNewDiagram() {
+	defaultContent := "graph TD\n    A[Start] --> B[End]"
+	id, err := a.dbInsertDiagram(defaultContent, "new")
+	if err == nil {
+		a.diagrams = []Diagram{{ID: id, Content: defaultContent, Source: "new", Title: "Untitled"}}
+		a.currentIndex = 0
+		runtime.EventsEmit(a.ctx, "loadFileContent", defaultContent)
+	}
+}
+
+func (a *App) NewWindow() {
+	ex, err := os.Executable()
+	if err != nil {
+		fmt.Printf("Error getting executable: %v\n", err)
+		return
+	}
+	fmt.Printf("Launching new window: %s --new-window\n", ex)
+	// 在 macOS 上，如果直接运行 .app 包中的二进制文件，它可能不会作为独立的 App 实例运行，
+	// 或者需要 `open -n -a "App Name" --args ...`
+	// 但是 os.Executable() 指向的是 MacOS/Binary。
+	// 简单尝试直接执行二进制文件。
+	cmd := exec.Command(ex, "--new-window")
+	err = cmd.Start()
+	if err != nil {
+		fmt.Printf("Error launching new window: %v\n", err)
 	}
 }
 
