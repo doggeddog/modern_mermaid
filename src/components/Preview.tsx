@@ -1420,7 +1420,7 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
 
   return (
     <div 
-        className={`flex-1 overflow-hidden flex relative transition-colors duration-300 ${actualBg}`} 
+        className={`flex-1 min-h-0 overflow-hidden flex relative transition-colors duration-300 ${actualBg}`} 
         style={actualBgStyle}
         ref={containerRef}
         onMouseDown={handleMouseDown}
@@ -1587,13 +1587,10 @@ const Preview = forwardRef<PreviewHandle, PreviewProps>(({ code, themeConfig, cu
             height="100%"
             fill="transparent"
             style={{
-              pointerEvents: selectedTool !== null ? 'auto' : 'none',
+              pointerEvents: selectedTool !== null && selectedTool !== 'select' ? 'auto' : 'none',
             }}
             onMouseDown={(e) => {
-              if (selectedTool === 'select') {
-                // 在选择模式下，点击背景取消选择
-                setSelectedAnnotationId(null);
-              } else if (selectedTool) {
+              if (selectedTool) {
                 // 在绘制模式下，处理绘制
                 handleAnnotationMouseDown(e);
               }
