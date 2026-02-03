@@ -1,0 +1,607 @@
+      },
+      themeCSS: `
+        .node rect, .node circle, .node polygon, .node path { stroke-width: 1.5px; }
+        .edgePath .path { stroke-width: 1.5px; }
+        .cluster rect { stroke-dasharray: 4 4; stroke: #d4d4d4; fill: #fafafa; }
+        
+        /* XYChart styles - Sophisticated muted tones */
+        .line-plot-0 path { stroke: #5B7C99 !important; stroke-width: 3px !important; } /* Muted slate blue */
+        .line-plot-1 path { stroke: #6B9080 !important; stroke-width: 3px !important; } /* Sage green */
+        .line-plot-2 path { stroke: #C17C74 !important; stroke-width: 3px !important; } /* Dusty rose */
+        .bar-plot-0 rect { fill: #A8C5DD !important; stroke: #5B7C99 !important; stroke-width: 1.5px !important; }
+        .bar-plot-1 rect { fill: #B8CEC2 !important; stroke: #6B9080 !important; stroke-width: 1.5px !important; }
+        .bar-plot-2 rect { fill: #E0BAB5 !important; stroke: #C17C74 !important; stroke-width: 1.5px !important; }
+        .chart-title text { fill: #171717 !important; font-weight: 600 !important; font-size: 20px !important; }
+        .left-axis .label text, .bottom-axis .label text { fill: #171717 !important; font-size: 14px !important; }
+        .left-axis .title text { fill: #525252 !important; font-size: 16px !important; }
+        .bottom-axis .title text { fill: #525252 !important; font-size: 16px !important; }
+      `
+    },
+    bgClass: 'bg-white',
+    bgStyle: {
+        backgroundImage: 'radial-gradient(#e5e5e5 1px, transparent 1px)',
+        backgroundSize: '20px 20px'
+    }
+  },
+  notion: {
+    name: 'Notion',
+      annotationColors: {
+          primary: '#6B8CAE', // Notion blue
+          secondary: '#73A78D', // Notion green
+          text: '#334155', // Slate 700
+--
+        .ticks path { stroke: #00f2ff !important; opacity: 0.3; }
+        .chart-title text {
+            fill: #00f2ff !important; 
+            font-weight: 700 !important;
+            font-size: 18px !important;
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.8);
+        }
+        .left-axis .title text, .bottom-axis .title text {
+            fill: #00f2ff !important; 
+            font-size: 13px !important;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.6);
+        }
+        .legend text {
+            fill: #00f2ff !important; 
+            font-size: 12px !important;
+            text-shadow: 0 0 8px rgba(0, 242, 255, 0.5);
+        }
+      `
+    },
+    bgClass: 'bg-[#051423]',
+    bgStyle: {
+      backgroundColor: '#051423',
+        backgroundImage: `
+            linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+            radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.05), transparent 70%)
+        `,
+        backgroundSize: '40px 40px, 40px 40px, 100% 100%',
+        backgroundBlendMode: 'screen'
+    }
+  },
+--
+        }
+        .bar-plot-2 rect {
+            fill: #F0DCC4 !important;
+            stroke: #D4A373 !important;
+            stroke-width: 1.5px !important;
+            rx: 6px !important;
+            filter: drop-shadow(0 2px 6px rgba(58, 46, 44, 0.12));
+        }
+        .ticks path { stroke: #E8D5C4 !important; }
+        .chart-title text {
+            fill: #3A2E2C !important; 
+            font-weight: 600 !important;
+            font-size: 16px !important;
+            font-family: "Open Sans", "Noto Sans SC", sans-serif;
+        }
+        .left-axis .title text, .bottom-axis .title text { fill: #6B5B4F !important; font-size: 13px !important; }
+        .legend text { fill: #6B5B4F !important; font-size: 12px !important; }
+      `
+    },
+    bgClass: 'bg-[#FDF6E3]',
+    bgStyle: {
+        backgroundColor: '#FDF6E3',
+        backgroundImage: `
+            linear-gradient(45deg, rgba(210, 180, 140, 0.03) 25%, transparent 25%), 
+            linear-gradient(-45deg, rgba(210, 180, 140, 0.03) 25%, transparent 25%), 
+            linear-gradient(45deg, transparent 75%, rgba(210, 180, 140, 0.03) 75%), 
+            linear-gradient(-45deg, transparent 75%, rgba(210, 180, 140, 0.03) 75%)
+        `,
+        backgroundSize: '20px 20px'
+    }
+  },
+--
+          font-family: "Helvetica Neue", "Arial", "Noto Sans SC", sans-serif;
+          font-weight: 600;
+        }
+        .left-axis .title text, .bottom-axis .title text {
+          fill: #2C2416 !important;
+          font-size: 14px !important;
+          font-family: "Helvetica Neue", "Arial", "Noto Sans SC", sans-serif;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        .legend text {
+          fill: #1a1a1a !important;
+          font-size: 13px !important;
+          font-family: "Helvetica Neue", "Arial", "Noto Sans SC", sans-serif;
+          font-weight: 600;
+        }
+      `
+    },
+    bgClass: 'bg-[#EDE8DC]',
+    bgStyle: {
+      backgroundColor: '#EDE8DC',
+      backgroundImage: `
+        repeating-linear-gradient(
+          0deg,
+          rgba(44, 36, 22, 0.02) 0px,
+          rgba(44, 36, 22, 0.02) 1px,
+          transparent 1px,
+          transparent 40px
+        ),
+        repeating-linear-gradient(
+--
+          fill: #000000 !important;
+          font-size: 14px !important;
+          font-family: "Arial", "Helvetica", "Noto Sans SC", sans-serif;
+          font-weight: 700;
+        }
+        .left-axis .title text, .bottom-axis .title text {
+          fill: #000000 !important;
+          font-size: 16px !important;
+          font-family: "Arial", "Helvetica", "Noto Sans SC", sans-serif;
+          font-weight: 900;
+        }
+        .legend text {
+          fill: #000000 !important;
+          font-size: 14px !important;
+          font-family: "Arial", "Helvetica", "Noto Sans SC", sans-serif;
+          font-weight: 700;
+        }
+      `
+    },
+    bgClass: 'bg-[#f6f3e9]',
+    bgStyle: {
+      backgroundColor: '#f6f3e9',
+    }
+  },
+  glassmorphism: {
+    name: 'Glassmorphism',
+    annotationColors: {
+      primary: '#8B5CF6', // Purple
+      secondary: '#EC4899', // Pink
+      text: '#1F2937', // Dark gray
+    },
+--
+          fill: #1F2937 !important;
+          font-family: "SF Pro Display", "Inter", "Noto Sans SC", sans-serif;
+          font-weight: 700;
+          filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.8));
+        }
+        
+        .slice {
+          stroke: rgba(255, 255, 255, 0.6) !important;
+          stroke-width: 2px !important;
+          filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+        }
+        
+        .legendText {
+          fill: #1F2937 !important;
+          font-family: "SF Pro Display", "Inter", "Noto Sans SC", sans-serif;
+          font-weight: 500;
+        }
+      `
+    },
+    bgClass: 'bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50',
+    bgStyle: {
+      background: 'linear-gradient(135deg, #F3E8FF 0%, #FCE7F3 30%, #DBEAFE 60%, #F3E8FF 100%)',
+      position: 'relative' as const,
+    }
+  },
+  softPop: {
+    name: 'Soft Pop',
+      annotationColors: {
+          primary: '#73D1C8', // Teal
+          secondary: '#FCD34D', // Yellow
+          text: '#2D3748', // Dark grey
+--
+            rx: 2px !important;
+        }
+        .bar-plot-2 rect {
+            fill: #CBD5E0 !important;
+            stroke: #A0AEC0 !important;
+            stroke-width: 2px !important;
+            rx: 2px !important;
+        }
+        .ticks path { stroke: #999999 !important; stroke-dasharray: 4 2 !important; }
+        .chart-title text {
+            fill: #333333 !important; 
+            font-weight: 500 !important;
+            font-size: 16px !important;
+            font-family: "Helvetica Neue", "Noto Sans SC", Arial, sans-serif;
+        }
+        .left-axis .title text, .bottom-axis .title text { fill: #666666 !important; font-size: 13px !important; }
+        .legend text { fill: #333333 !important; font-size: 12px !important; }
+      `
+    },
+    bgClass: 'bg-[#f5f5f5]',
+    bgStyle: {
+        backgroundImage: `
+            linear-gradient(#d4d4d4 1px, transparent 1px),
+            linear-gradient(90deg, #d4d4d4 1px, transparent 1px)
+        `,
+        backgroundSize: '20px 20px'
+    }
+  },
+    handDrawn: {
+        name: 'Hand Drawn',
+        annotationColors: {
+--
+            fill: #1a1a1a !important; 
+            font-weight: 700 !important;
+            font-size: 20px !important;
+            font-family: "Excalifont", "Xiaolai", cursive;
+        }
+        .left-axis .title text, .bottom-axis .title text {
+            fill: #1a1a1a !important; 
+            font-size: 16px !important;
+            font-family: "Excalifont", "Xiaolai", cursive;
+            font-weight: 600;
+        }
+        .legend text {
+            fill: #1a1a1a !important; 
+            font-size: 14px !important;
+            font-family: "Excalifont", "Xiaolai", cursive;
+            font-weight: 600;
+        }
+      `
+        },
+        bgClass: 'bg-[#fffef9]',
+        bgStyle: {
+            backgroundColor: '#fffef9',
+            backgroundImage: `
+            radial-gradient(circle at 2px 2px, rgba(26, 26, 26, 0.03) 1px, transparent 1px)
+        `,
+            backgroundSize: '30px 30px'
+        }
+    },
+    grafana: {
+        name: 'Grafana',
+      annotationColors: {
+--
+        }
+        
+        .titleText {
+          fill: #FFFFFF !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+        }
+        
+        /* Pie chart */
+        .pieTitleText {
+          fill: #FFFFFF !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+        }
+        
+        .legendText {
+          fill: #D8D9DA !important;
+          font-family: "Roboto", "Noto Sans SC", sans-serif;
+        }
+      `
+        },
+        bgClass: 'bg-[#181B1F]',
+        bgStyle: {
+            backgroundColor: '#181B1F',
+            backgroundImage: `
+        linear-gradient(rgba(61, 67, 75, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(61, 67, 75, 0.15) 1px, transparent 1px)
+      `,
+            backgroundSize: '24px 24px'
+        }
+  },
+  memphis: {
+    name: 'Memphis',
+--
+          fill: #000000 !important;
+          font-size: 14px !important;
+          font-family: "Comic Sans MS", "Arial Black", "Noto Sans SC", cursive, sans-serif;
+          font-weight: 900;
+        }
+        .left-axis .title text, .bottom-axis .title text {
+          fill: #000000 !important;
+          font-size: 16px !important;
+          font-family: "Comic Sans MS", "Arial Black", "Noto Sans SC", cursive, sans-serif;
+          font-weight: 900;
+        }
+        .legend text {
+          fill: #000000 !important;
+          font-size: 14px !important;
+          font-family: "Comic Sans MS", "Arial Black", "Noto Sans SC", cursive, sans-serif;
+          font-weight: 900;
+        }
+      `
+    },
+    bgClass: 'bg-white',
+    bgStyle: {
+      backgroundColor: '#FEFEFE',
+      backgroundImage: `
+        linear-gradient(45deg, rgba(255, 107, 107, 0.3) 25%, transparent 25%, transparent 75%, rgba(255, 107, 107, 0.3) 75%, rgba(255, 107, 107, 0.3)),
+        linear-gradient(45deg, rgba(255, 107, 107, 0.3) 25%, transparent 25%, transparent 75%, rgba(255, 107, 107, 0.3) 75%, rgba(255, 107, 107, 0.3)),
+        linear-gradient(45deg, transparent 25%, rgba(254, 202, 87, 0.08) 25%, rgba(254, 202, 87, 0.08) 50%, transparent 50%, transparent),
+        linear-gradient(-45deg, rgba(72, 219, 251, 0.06) 25%, transparent 25%, transparent 75%, rgba(72, 219, 251, 0.06) 75%, rgba(72, 219, 251, 0.06)),
+        linear-gradient(90deg, rgba(255, 159, 243, 0.04) 1px, transparent 1px),
+        linear-gradient(rgba(255, 159, 243, 0.04) 1px, transparent 1px)
+      `,
+      backgroundSize: '50px 50px, 50px 50px, 25px 25px, 25px 25px, 10px 10px, 10px 10px',
+--
+          font-size: 14px !important;
+          font-family: "Courier New", "Consolas", "Monaco", monospace;
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+        .left-axis .title text, .bottom-axis .title text {
+          fill: #ffffff !important;
+          font-size: 16px !important;
+          font-family: "Courier New", "Consolas", "Monaco", monospace;
+          font-weight: 700;
+          text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+        }
+        .legend text {
+          fill: #ffffff !important;
+          font-size: 14px !important;
+          font-family: "Courier New", "Consolas", "Monaco", monospace;
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+      `
+    },
+    bgClass: 'bg-[#0a0a0a]',
+    bgStyle: {
+      backgroundColor: '#0a0a0a',
+      backgroundImage: `
+        linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%),
+        radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 50%)
+      `,
+    }
+  },
+  material: {
+    name: 'Material',
+--
+        }
+        .left-axis .label text, .bottom-axis .label text {
+          fill: rgba(0, 0, 0, 0.60) !important;
+          font-size: 13px !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+        }
+        .left-axis .title text, .bottom-axis .title text {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-size: 14px !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 500;
+        }
+        .legend text {
+          fill: rgba(0, 0, 0, 0.87) !important;
+          font-size: 13px !important;
+          font-family: "Roboto", "Noto Sans SC", -apple-system, sans-serif;
+        }
+      `
+    },
+    bgClass: 'bg-white',
+    bgStyle: {
+      backgroundColor: '#ffffff',
+    }
+  },
+  aurora: {
+    name: 'Aurora',
+    annotationColors: {
+      primary: '#f093fb', // Soft pink
+      secondary: '#667eea', // Soft purple
+      text: '#ffffff', // White
+    },
+--
+          font-size: 13px !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+        .left-axis .title text, .bottom-axis .title text {
+          fill: #ffffff !important;
+          font-size: 14px !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          font-weight: 600;
+          text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+        }
+        .legend text {
+          fill: #ffffff !important;
+          font-size: 13px !important;
+          font-family: "Inter", "Noto Sans SC", -apple-system, sans-serif;
+          text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+      `
+    },
+    bgClass: 'bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f093fb]',
+    bgStyle: {
+      backgroundColor: '#667eea',
+      backgroundImage: `
+        linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%),
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(246, 147, 251, 0.15) 0%, transparent 50%)
+      `,
+    }
+  },
+  win95: {
+    name: 'Windows 95',
+--
+        }
+        .left-axis .label text, .bottom-axis .label text {
+          fill: #000000 !important;
+          font-size: 12px !important;
+          font-family: "MS Sans Serif", "Microsoft YaHei", Tahoma, sans-serif;
+        }
+        .left-axis .title text, .bottom-axis .title text {
+          fill: #000000 !important;
+          font-size: 13px !important;
+          font-family: "MS Sans Serif", "Microsoft YaHei", Tahoma, sans-serif;
+          font-weight: 700;
+        }
+        .legend text {
+          fill: #000000 !important;
+          font-size: 12px !important;
+          font-family: "MS Sans Serif", "Microsoft YaHei", Tahoma, sans-serif;
+        }
+      `
+    },
+    bgClass: 'bg-[#008080]',
+    bgStyle: {
+      backgroundColor: '#008080',
+      backgroundImage: `
+        linear-gradient(45deg, #008080 25%, transparent 25%),
+        linear-gradient(-45deg, #008080 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #008080 75%),
+        linear-gradient(-45deg, transparent 75%, #008080 75%)
+      `,
+      backgroundSize: '2px 2px',
+      backgroundPosition: '0 0, 0 1px, 1px -1px, -1px 0px',
+    }
+--
+          rx: 15px !important;
+          filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.15));
+        }
+        
+        .timeline-event:nth-child(2n) {
+          fill: #dff4ff !important;
+        }
+        
+        .timeline-event:nth-child(3n) {
+          fill: #f0e7ff !important;
+        }
+        
+        .timeline-event-text {
+          fill: #000000 !important;
+          font-family: "Comic Neue", "Comic Sans MS", "Noto Sans SC", cursive, sans-serif;
+          font-weight: 600;
+        }
+      `
+    },
+    bgClass: 'bg-gradient-to-br from-[#ffeef8] to-[#e0f7ff]',
+    bgStyle: {
+      background: 'linear-gradient(135deg, #ffeef8 0%, #e0f7ff 100%)',
+    }
+  },
+  organic: {
+    name: 'Organic Natural',
+    annotationColors: {
+      primary: '#6a9c89', // Sage green
+      secondary: '#8ba888', // Light sage
+      text: '#2d5016', // Dark green
+    },
+--
+          stroke-width: 2px !important;
+          rx: 12px !important;
+          filter: drop-shadow(2px 2px 4px rgba(45,80,22,0.15));
+        }
+        
+        .timeline-event:nth-child(2n) {
+          fill: #e8f4e5 !important;
+        }
+        
+        .timeline-event:nth-child(3n) {
+          fill: #c8d5b9 !important;
+        }
+        
+        .timeline-event-text {
+          fill: #2d5016 !important;
+          font-weight: 600;
+        }
+      `
+    },
+    bgClass: 'bg-gradient-to-br from-[#c8d5b9] to-[#8ba888]',
+    bgStyle: {
+      background: 'linear-gradient(135deg, #c8d5b9 0%, #8ba888 100%)',
+    }
+  },
+  hightech: {
+    name: 'High Tech',
+    annotationColors: {
+      primary: '#00ff41',
+      secondary: '#00ffff',
+      text: '#00ff41',
+    },
+--
+          stroke: #00ff41 !important;
+          stroke-width: 2px !important;
+          stroke-dasharray: 6 6;
+          rx: 5px !important;
+          ry: 5px !important;
+        }
+        
+        .cluster text {
+          fill: #00ff41 !important;
+          font-weight: 700;
+          text-shadow: 0 0 8px rgba(0, 255, 65, 0.6);
+        }
+        
+        .cluster-label {
+          fill: #00ff41 !important;
+          font-weight: 700;
+        }
+      `
+    },
+    bgClass: 'bg-[#0a0f1a]',
+    bgStyle: {
+      background: 'radial-gradient(circle at center, #0a0f1a, #000000)',
+      boxShadow: '0 0 20px rgba(0,255,65,0.3), inset 0 0 20px rgba(0,255,65,0.1)',
+    }
+  },
+  kawaii: {
+    name: 'Kawaii Cute',
+    annotationColors: {
+      primary: '#ff9ec7',
+      secondary: '#ffb3d1',
+      text: '#a8197d',
+--
+          stroke-width: 2.5px !important;
+          stroke-linecap: round !important;
+        }
+        
+        /* 时间线样式 */
+        .timeline-event {
+          fill: #ffe9f5 !important;
+          stroke: #ff9ec7 !important;
+          stroke-width: 3px !important;
+          rx: 18px !important;
+        }
+        
+        .timeline-marker {
+          fill: #ff9ec7 !important;
+          stroke: #ff6b9d !important;
+          stroke-width: 3px !important;
+        }
+      `
+    },
+    bgClass: 'bg-gradient-to-br from-[#ffe4f1] via-[#ffd4e5] to-[#ffe9f5]',
+    bgStyle: {
+      background: 'linear-gradient(135deg, #ffe4f1 0%, #ffd4e5 50%, #ffe9f5 100%)',
+      position: 'relative' as const,
+    }
+  },
+  geometricCollage: {
+    name: 'Geometric Collage',
+    annotationColors: {
+      primary: '#4a90e2',
+      secondary: '#2e5f8f',
+      text: '#1e3a5f',
+--
+        }
+        
+        .timeline-event:nth-child(2n) {
+          fill: #5fb389 !important;
+          stroke: #3d8b6a !important;
+        }
+        
+        .timeline-event:nth-child(3n) {
+          fill: #f4c542 !important;
+          stroke: #d4a532 !important;
+        }
+        
+        .timeline-marker {
+          fill: #4a90e2 !important;
+          stroke: #2e5f8f !important;
+          stroke-width: 2px !important;
+        }
+      `
+    },
+    bgClass: 'bg-[#f5f5f0]',
+    bgStyle: {
+      backgroundColor: '#f5f5f0',
+      backgroundImage: `
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 10px,
+          rgba(74, 144, 226, 0.03) 10px,
+          rgba(74, 144, 226, 0.03) 20px
+        ),
+        repeating-linear-gradient(
