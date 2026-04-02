@@ -132,6 +132,41 @@ func TestNormalizeMermaid(t *testing.T) {
 			input:    `A[Say "Hello" please]`,
 			expected: `A["Say ` + "`" + `Hello` + "`" + ` please"]`,
 		},
+		{
+			name:     "Link Label with Parens",
+			input:    `contentscript -->|click()| dom`,
+			expected: `contentscript -->|"click()"| dom`,
+		},
+		{
+			name:     "Link Label Simple Text",
+			input:    `A -->|yes| B`,
+			expected: `A -->|yes| B`,
+		},
+		{
+			name:     "Link Label with Space",
+			input:    `A -->|some text| B`,
+			expected: `A -->|"some text"| B`,
+		},
+		{
+			name:     "Link Label Already Quoted",
+			input:    `A -->|"click()"| B`,
+			expected: `A -->|"click()"| B`,
+		},
+		{
+			name:     "Link Label with Chinese",
+			input:    `A -->|点击| B`,
+			expected: `A -->|"点击"| B`,
+		},
+		{
+			name:     "Link Label with Colon",
+			input:    `A ---|action: run| B`,
+			expected: `A ---|"action: run"| B`,
+		},
+		{
+			name:     "Link Label Combined with Node Shape",
+			input:    `A[开始] -->|click()| B[End Process]`,
+			expected: `A["开始"] -->|"click()"| B["End Process"]`,
+		},
 	}
 
 	for _, tt := range tests {

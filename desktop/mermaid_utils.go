@@ -19,6 +19,10 @@ var shapeRules []*ShapeRule
 var existingQuoteRegex = regexp.MustCompile(`"(?:[^"\\]|\\.)*"`)
 var tokenRegex = regexp.MustCompile(`^__MQ_\d+__$`)
 
+// Matches link text in pipe syntax: -->|text| or ---|text| etc.
+// Captures: (arrow+pipe)(content)(pipe)
+var linkLabelRegex = regexp.MustCompile(`(--[->]|[.-]=?[=>]|~~)(\|)([^|]+)(\|)`)
+
 func init() {
 	definitions := []struct {
 		Open, Close string
@@ -148,7 +152,37 @@ func NormalizeMermaid(input string) string {
 			})
 		}
 
-		// 3. Final Unmask of the line
+		// 3. Process link labels: -->|text|, ---|text|, etc.
+		processedLine = linkLabelRegex.ReplaceAllStringFunc(processedLine, func(match string) string {
+			groups := linkLabelRegex.FindStringSubmatch(match)
+			if len(groups) < 5 {
+				return match
+			}
+
+			arrow := groups[1]
+			content := groups[3]
+
+			isFullToken := tokenRegex.MatchString(strings.TrimSpace(content))
+			if isFullToken {
+				return match
+			}
+
+			rawContent := content
+			if strings.Contains(content, "__MQ_") {
+				rawContent = unmaskStr(content)
+			}
+
+			if needsQuotes(rawContent) || strings.Contains(content, "__MQ_") {
+				escapedContent := strings.ReplaceAll(rawContent, `"`, "`")
+				quoted := fmt.Sprintf(`%s|"%s"|`, arrow, escapedContent)
+				token := maskFunc(quoted)
+				return token
+			}
+
+			return match
+		})
+
+		// 4. Final Unmask of the line
 		for i := maskCounter - 1; i >= 0; i-- {
 			token := fmt.Sprintf("__MQ_%d__", i)
 			if val, ok := maskMap[token]; ok {
