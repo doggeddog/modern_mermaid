@@ -191,11 +191,11 @@ func main() {
 	// Initially hidden until we have diagrams
 	NavTopLevelItem.Hidden = true
 
-	PrevItem := NavSubMenu.AddText("Previous Diagram", keys.CmdOrCtrl("up"), func(_ *menu.CallbackData) {
+	PrevItem := NavSubMenu.AddText("Previous Diagram", keys.CmdOrCtrl("page up"), func(_ *menu.CallbackData) {
 		app.PrevPreview()
 	})
 
-	NextItem := NavSubMenu.AddText("Next Diagram", keys.CmdOrCtrl("down"), func(_ *menu.CallbackData) {
+	NextItem := NavSubMenu.AddText("Next Diagram", keys.CmdOrCtrl("page down"), func(_ *menu.CallbackData) {
 		app.NextPreview()
 	})
 
