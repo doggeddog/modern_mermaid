@@ -191,6 +191,11 @@ func main() {
 	// Initially hidden until we have diagrams
 	NavTopLevelItem.Hidden = true
 
+	// 导航快捷键特意使用 Page Up/Page Down,而不是方向键。界面运行在 WKWebView 中,
+	// 它会把 Cmd+方向键当作内置文档导航(移到文档开头/末尾)、把无修饰的
+	// Page Up/Down 当作滚动键直接吞掉,这些事件传不到原生菜单,且是否触发还取决于
+	// 焦点和滚动状态,表现不一致。而 Cmd/Ctrl+Page Up/Down 不会被 webview 占用,
+	// 因此始终可靠。
 	PrevItem := NavSubMenu.AddText("Previous Diagram", keys.CmdOrCtrl("page up"), func(_ *menu.CallbackData) {
 		app.PrevPreview()
 	})
